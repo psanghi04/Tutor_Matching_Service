@@ -2,13 +2,13 @@ public class User {
   private String accountUsername;
   private String password;
   private String email;
-  private boolean isBlocked;
+  private boolean[] blockedList;
 
-  public User(String accountUsername, String password, String email, boolean isBlocked){
+  public User(String accountUsername, String password, String email, boolean[] blockedList){
     this.accountUsername = accountUsername;
     this.password = password;
     this.email = email;
-    this.isBlocked = isBlocked;
+    this.blockedList = blockedList;
   }
   
   // get account username
@@ -27,8 +27,8 @@ public class User {
   }
 
   // get isBlocked
-  public boolean isBlocked(){
-    return isBlocked;
+  public boolean[] blockedList(){
+    return blockedList;
   }
 
   // set accountUsername
@@ -47,11 +47,8 @@ public class User {
   }
 
   // set blocked status 
-  public void setBlocked(boolean isBlocked){
-    this.isBlocked = isBlocked;
+  public void setBlocked(boolean[] blockedList){
+    this.blockedList = blockedList;
   }
 
-  
-
-  
 }
