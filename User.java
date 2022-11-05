@@ -1,8 +1,8 @@
 public class User {
-  private String accountUsername;
-  private String password;
-  private String email;
-  private boolean[] blockedList;
+  private String accountUsername; // username of user account
+  private String password; // password of user account
+  private String email; // email of user account
+  private boolean[] blockedList; // list of all blocked users
 
   public User(String accountUsername, String password, String email, boolean[] blockedList){
     this.accountUsername = accountUsername;
