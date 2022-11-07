@@ -24,7 +24,7 @@ public class Tutor extends User {
   }
 
   // set the user
-  public User setUser(User user){
+  public void setUser(User user){
     this.user = user;
   }
   
