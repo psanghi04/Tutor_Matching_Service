@@ -38,8 +38,8 @@ public class Message {
             String line = "%s_%s,%s,%s,%s";
             bfw.write(String.format(
                     line,
-                    this.tutor.getName(),
-                    this.student.getName(),
+                    this.tutor.getAccountUsername(),
+                    this.student.getAccountUsername(),
                     sender,
                     this.getTime(),
                     content ));
@@ -49,6 +49,20 @@ public class Message {
             System.out.println("Writing suspended. Exception caught");
         }
     }
-    public void export(/*<which conversations>*/){}
+    public void export(Tutor tutor) {
+        ArrayList<String> messages = readMsg();
+        String fileName = tutor.getAccountUsername() + "_" + this.student.getAccountUsername();
+        try (BufferedWriter bfw = new BufferedWriter(new FileWriter(fileName))) {
+            for (String msg : messages) {
+                String participants = msg.split(",")[0];
+                if (participants.split("_")[0].equals(tutor.getAccountUsername())) {
+                    bfw.write(msg);
+                    bfw.flush();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error");
+        }
+    }
     public void existing() {}
 }
