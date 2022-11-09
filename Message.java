@@ -4,10 +4,6 @@ import java.time.*;
 import java.util.*;
 
 public class Message {
-    private Tutor tutor;
-    private Student student;
-    private String fileName;
-
     public void isValid(){} // if he is blocked/invisible and correct user
     public void edit(){}
     public void delete(){}
@@ -16,10 +12,10 @@ public class Message {
         return currentTime.toString().substring(0, 19); // returns time with precision as seconds
     }
 
-    public ArrayList<String> readMsg() {
+    public ArrayList<String> readMsg(String sender, String receiver) {
         ArrayList<String> messages = new ArrayList<>();
 
-        try (BufferedReader bfr = new BufferedReader(new FileReader(this.fileName))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(sender + "_" + receiver))) {
             String line = bfr.readLine();
             while (line != null) {
                 messages.add(line);
@@ -33,32 +29,29 @@ public class Message {
 
         return messages;
     }
-    public void writeMsg(String sender, String content) {
-        try (BufferedWriter bfw = new BufferedWriter(new FileWriter(this.fileName,true))) {
-            String line = "%s_%s,%s,%s,%s";
+    public void writeMsg(String sender, String receiver, String content) {
+        try (BufferedWriter bfw = new BufferedWriter(new FileWriter(sender + "_" + receiver, true))) {
+            String line = "%s;%s,%s,%s,%s";
             bfw.write(String.format(
                     line,
-                    this.tutor.getAccountUsername(),
-                    this.student.getAccountUsername(),
+                    sender,
+                    receiver,
                     sender,
                     this.getTime(),
-                    content ));
+                    content));
             bfw.newLine();
             bfw.flush();
         } catch (Exception e) {
             System.out.println("Writing suspended. Exception caught");
         }
     }
-    public void export(Tutor tutor) {
-        ArrayList<String> messages = readMsg();
-        String fileName = tutor.getAccountUsername() + "_" + this.student.getAccountUsername();
+    public void export(String sender, String receiver) {
+        ArrayList<String> messages = readMsg(sender, receiver);
+        String fileName = sender + "_" + receiver;
         try (BufferedWriter bfw = new BufferedWriter(new FileWriter(fileName))) {
             for (String msg : messages) {
-                String participants = msg.split(",")[0];
-                if (participants.split("_")[0].equals(tutor.getAccountUsername())) {
-                    bfw.write(msg);
-                    bfw.flush();
-                }
+                bfw.write(msg);
+                bfw.flush();
             }
         } catch (Exception e) {
             System.out.println("Error");
