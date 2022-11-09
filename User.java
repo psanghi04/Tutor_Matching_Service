@@ -5,10 +5,10 @@ public class User {
   private boolean[] blockedList; // list of all blocked users
 
   public User(String accountUsername, String password, String email, boolean[] blockedList){
-    this.accountUsername = accountUsername;
-    this.password = password;
-    this.email = email;
-    this.blockedList = blockedList;
+    this.accountUsername = accountUsername; // sets the current instance of accountUsername to the parameter accountUsername
+    this.password = password; // sets the current instance of password to the parameter password
+    this.email = email; // sets the current instance of email to the parameter email
+    this.blockedList = blockedList; // sets the current instance of blockedList to the parameter blockedList
   }
   
   // get account username
