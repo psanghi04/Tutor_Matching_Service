@@ -2,9 +2,9 @@ public class User {
   private String accountUsername; // username of user account
   private String password; // password of user account
   private String email; // email of user account
-  private boolean[] blockedList; // list of all blocked users
+  private User[] blockedList; // list of all blocked users
 
-  public User(String accountUsername, String password, String email, boolean[] blockedList){
+  public User(String accountUsername, String password, String email, User[] blockedList){
     this.accountUsername = accountUsername; // sets the current instance of accountUsername to the parameter accountUsername
     this.password = password; // sets the current instance of password to the parameter password
     this.email = email; // sets the current instance of email to the parameter email
@@ -27,7 +27,7 @@ public class User {
   }
 
   // get isBlocked
-  public boolean[] blockedList(){
+  public User[] blockedList(){
     return blockedList;
   }
 
@@ -47,7 +47,7 @@ public class User {
   }
 
   // set blocked status 
-  public void setBlocked(boolean[] blockedList){
+  public void setBlocked(User[] blockedList){
     this.blockedList = blockedList;
   }
 
