@@ -3,6 +3,8 @@ import java.util.*;
 public class Main {
   public static void main(String[] args) {
     Scanner scan = new Scanner(System.in);
+    Message messageClass = new Message();
+
     boolean login = false;
     ArrayList<User> userList = new ArrayList<User>();
     
@@ -46,7 +48,27 @@ public class Main {
         System.out.println("Welcome Back");
         login = true;
       }
-      
+
+
+
+      String ans = ""; // Assuming options are 1. read, 2. write, 3. delete, 4. edit
+      System.out.println("Tutor Name: ");
+      String receiver = scan.nextLine();
+      System.out.println();
+      switch (ans) {
+        case "1":
+          ArrayList<String> messages = messageClass.readMsg(userName, receiver);
+          for (String message : messages) {
+            System.out.println(message);
+          }
+          break;
+
+        case "2":
+          System.out.println("Message Body:\n");
+          String content = scan.nextLine();
+          messageClass.writeMsg(userName, receiver, content);
+          System.out.println("Written Successfully");
+      }
     }    
   }
 }
