@@ -2,7 +2,7 @@ public class Tutor extends User {
   private String[] subjects;
   double price;
   
-  public Tutor(String accountUsername, String password, String email, boolean[] blockedList, String[] subjects, double price){
+  public Tutor(String accountUsername, String password, String email, User[] blockedList, String[] subjects, double price){
     super(accountUsername, password, email, blockedList);
     this.subjects = subjects;
     this.price = price;
