@@ -40,13 +40,18 @@ public class Main {
           if(userList.get(i).getAccountUsername().equals(userName)){
             if(userList.get(i).getPassword().equals(password)){
               System.out.println("Successfully Signed In!");
+              login = true;
               break;
             }
           }
         }
-        
-        System.out.println("Welcome Back");
-        login = true;
+
+        if(login){
+          System.out.println("Welcome Back");
+        } else {
+          System.out.println("Invalid Username or Password");
+          System.out.println("Try Again");
+        }
       }
 
 
