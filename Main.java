@@ -6,53 +6,65 @@ public class Main {
     Message messageClass = new Message();
 
     boolean login = false;
-    ArrayList<User> userList = new ArrayList<User>();
-    
-    while(login == false){
+    ArrayList<User> userList = new ArrayList<>();
+    String userName;
+    String password;
+
+    System.out.println("Welcome to Tutoring Center!");
+
+    while (!login) {
       System.out.println("Do you want to log in or create a account?");
-      System.out.println("C to Create New Account " + "\nL to Login");
+      System.out.println("1. Create New Account\n" +
+              "2. Login");
+      int optionNum = scan.nextInt();
+      scan.nextLine();
 
-      if(scan.nextLine().equals("C")){
-        System.out.println("Welcome to Tutoring Center!");
+      switch (optionNum) {
+        case 1:
+          System.out.println("Enter new username: ");
+          userName = scan.nextLine();
 
-        System.out.println("Enter new username: ");
-        String userName = scan.nextLine();
-      
-        System.out.println("Enter your email: ");
-        String email = scan.nextLine();
-      
-        System.out.println("Create new password: ");
-        String password = scan.nextLine();
-  
-        User user = new User(userName, password, email);
+          System.out.println("Enter your email: ");
+          String email = scan.nextLine();
 
-        userList.add(user);
-        
-      } else {
+          System.out.println("Create new password: ");
+          password = scan.nextLine();
 
-        System.out.println("Username: ");
-        String userName = scan.nextLine();
+          User user = new User(userName, password, email);
 
-        System.out.println("Password: ");
-        String password = scan.nextLine();
+          userList.add(user);
+          break;
 
-        for(int i = 0; i < userList.size(); i++){
-          if(userList.get(i).getAccountUsername().equals(userName)){
-            if(userList.get(i).getPassword().equals(password)){
-              System.out.println("Successfully Signed In!");
-              login = true;
-              break;
+        case 2:
+          System.out.println("Username: ");
+          userName = scan.nextLine();
+
+          System.out.println("Password: ");
+          password = scan.nextLine();
+
+          for (User acc : userList) {
+            if (acc.getAccountUsername().equals(userName)) {
+              if (acc.getPassword().equals(password)) {
+                System.out.println("Successfully Signed In!");
+                login = true;
+                break;
+              }
             }
           }
-        }
 
-        if(login){
-          System.out.println("Welcome Back");
-        } else {
-          System.out.println("Invalid Username or Password");
-          System.out.println("Try Again");
-        }
+          if (login) {
+            System.out.println("Welcome Back");
+          } else {
+            System.out.println("Invalid Username or Password");
+            System.out.println("Try Again");
+          }
+          break;
+
+        default:
+          System.out.println("Invalid Option Number");
+          System.out.println("Please Try Again");
       }
+    }
 
 
 
