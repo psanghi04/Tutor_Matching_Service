@@ -2,8 +2,7 @@ public class Store {
     private String storeName;
     private Tutor owner;
     private String address;
-
-
+    
     public Store(String storeName, Tutor owner, String address) {
         this.storeName = storeName;
         this.owner = owner;
