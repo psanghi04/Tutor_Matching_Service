@@ -4,33 +4,33 @@ public class Store {
     private String address;
 
 
-    public Store(String storeName, Tutor owner, String address){
+    public Store(String storeName, Tutor owner, String address) {
         this.storeName = storeName;
         this.owner = owner;
         this.address = address;
     }
 
-    public String getStoreName(){
+    public String getStoreName() {
         return storeName;
     }
 
-    public Tutor getOwner(){
+    public Tutor getOwner() {
         return owner;
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return address;
     }
 
-    public void setStoreName(String storeName){
+    public void setStoreName(String storeName) {
         this.storeName = storeName;
     }
 
-    public void setOwner(Tutor owner){
+    public void setOwner(Tutor owner) {
         this.owner = owner;
     }
 
-    public void setAddress(String address){
+    public void setAddress(String address) {
         this.address = address;
     }
 }
