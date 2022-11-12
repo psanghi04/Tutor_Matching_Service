@@ -8,26 +8,27 @@ public class Main {
     boolean login = false;
     ArrayList<User> userList = new ArrayList<>();
     String userName;
+    String email;
     String password;
 
-    System.out.println("Welcome to Tutoring Center!");
+    System.out.println("Welcome to the Purdue University Tutoring Center!");
 
     while (!login) {
-      System.out.println("Do you want to log in or create a account?");
+      System.out.println("Do you want to create a new account or log in to an existing account?");
       System.out.println("1. Create New Account\n" +
-              "2. Login");
+              "2. Login to Existing Account");
       int optionNum = scan.nextInt();
       scan.nextLine();
 
       switch (optionNum) {
         case 1:
-          System.out.println("Enter new username: ");
+          System.out.println("Create a username: ");
           userName = scan.nextLine();
 
           System.out.println("Enter your email: ");
-          String email = scan.nextLine();
+          email = scan.nextLine();
 
-          System.out.println("Create new password: ");
+          System.out.println("Create a password: ");
           password = scan.nextLine();
 
           User user = new User(userName, password, email);
@@ -36,16 +37,16 @@ public class Main {
           break;
 
         case 2:
-          System.out.println("Username: ");
+          System.out.println("Enter your username: ");
           userName = scan.nextLine();
 
-          System.out.println("Password: ");
+          System.out.println("Enter your password: ");
           password = scan.nextLine();
 
           for (User acc : userList) {
             if (acc.getAccountUsername().equals(userName)) {
               if (acc.getPassword().equals(password)) {
-                System.out.println("Successfully Signed In!");
+                System.out.println("Log in Successful!");
                 login = true;
                 break;
               }
@@ -53,20 +54,18 @@ public class Main {
           }
 
           if (login) {
-            System.out.println("Welcome Back");
+            System.out.println("Welcome Back!");
           } else {
-            System.out.println("Invalid Username or Password");
-            System.out.println("Try Again");
+            System.out.println("Invalid Username or Password!");
+            System.out.println("Please try again.");
           }
           break;
 
         default:
-          System.out.println("Invalid Option Number");
-          System.out.println("Please Try Again");
+          System.out.println("Invalid Option Number!");
+          System.out.println("Please try again.");
       }
     }
-
-
 
       String ans = ""; // Assuming options are 1. read, 2. write, 3. delete, 4. edit
       System.out.println("Tutor Name: ");
