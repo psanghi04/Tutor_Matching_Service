@@ -25,10 +25,12 @@ public class Message {
             System.out.println("Conversation does not exist!");
         } catch (IOException e) {
             System.out.println("Reading suspended. I/O Exception caught.");
+        } catch (Exception e) {
+            System.out.println("There was an error. Exception caught.");
         }
-
         return messages;
     }
+    
     public void writeMsg(String sender, String receiver, String content) {
         try (BufferedWriter bfw = new BufferedWriter(new FileWriter(sender + "_" + receiver, true))) {
             String line = "%s;%s,%s,%s,%s";
@@ -45,6 +47,7 @@ public class Message {
             System.out.println("Writing suspended. Exception caught");
         }
     }
+    
     public void export(String sender, String receiver) {
         ArrayList<String> messages = readMsg(sender, receiver);
         String fileName = sender + "_" + receiver;
@@ -54,8 +57,9 @@ public class Message {
                 bfw.flush();
             }
         } catch (Exception e) {
-            System.out.println("Error");
+            System.out.println("Error!");
         }
     }
+    
     public void existing() {}
 }
