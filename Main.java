@@ -11,19 +11,37 @@ public class Main {
         String userName = "";
         String password;
 
-        System.out.println("Welcome to Tutoring Center!");
-
+        System.out.println("Welcome to Purdue University's Tutoring Center!");
+        //
 
         File f = new File("UserDetails.txt");
-
-        try{
-            if(!f.exists()){
-                boolean fCreated = f.createNewFile();
-                System.out.println("File has been created..");
+        if (f.exists()) {
+            try {
+                FileOutputStream fos = new FileOutputStream(f, false);
+                PrintWriter pw = new PrintWriter(fos);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (IOException e){
-            System.out.println("Cannot write to file!");
+        } else {
+            try {
+                FileOutputStream fos = new FileOutputStream(f, true);
+                PrintWriter pw = new PrintWriter(fos);
+            } catch (Exception e) {
+                System.out.println("Cannot write to file!");
+                e.printStackTrace();
+            }
         }
+
+//         File f = new File("UserDetails.txt");
+
+//         try{
+//             if(!f.exists()){
+//                 boolean fCreated = f.createNewFile();
+//                 System.out.println("File has been created..");
+//             }
+//         } catch (IOException e){
+//             System.out.println("Cannot write to file!");
+//         }
 
 
         while (login != true) {
@@ -41,7 +59,6 @@ public class Main {
                     System.out.println("Would you like to be a student or a tutor?");
                     System.out.println("1. Student\n2. Tutor");
                     int option = scan.nextInt();
-
                     scan.nextLine();
 
                     System.out.println("Enter new username: ");
@@ -65,19 +82,18 @@ public class Main {
 
                     } else {
                         // Use commas
-                        System.out.println("What subjects are you planning to teach");
+                        System.out.println("What subject(s) are you planning to teach? (Separate each subject with a comma)");
 
                         String subjects = scan.nextLine();
                         String[] newSubjects = subjects.split(",");
 
                         System.out.println("What is the price you charge?");
                         double price = scan.nextDouble();
-
                         scan.nextLine();
 
                         user = new Tutor(userName, password, email, newSubjects, price);
 
-                        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))){
+                        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))){
                             pw.write(userName + "," + password + "," + email + "," + newSubjects + "," + price + "\n");
                             pw.flush();
                         } catch (IOException e) {
@@ -87,22 +103,22 @@ public class Main {
 
                     userList.add(user);
 
-                    System.out.println("Congratulations on creating a new account!!\n");
+                    System.out.println("Congratulations, you created a new account!\n");
 
                     continue;
 
                 case 2:
-                    while(login == false){
-                        System.out.println("Username: ");
+                    while(login == false) {
+                        System.out.println("Enter your Username: ");
                         userName = scan.nextLine();
 
-                        System.out.println("Password: ");
+                        System.out.println("Enter your Password: ");
                         password = scan.nextLine();
 
                         for (User acc : userList) {
                             if (acc.getAccountUsername().equals(userName)) {
                                 if (acc.getPassword().equals(password)) {
-                                    System.out.println("Successfully Signed In!\n");
+                                    System.out.println("Successfully Signed In!");
                                     user = acc;
                                     login = true;
                                     break;
@@ -111,19 +127,18 @@ public class Main {
                         }
 
                         if (login) {
-                            System.out.println("Welcome Back");
+                            System.out.println("Welcome Back.");
                         } else {
-                            System.out.println("Invalid Username or Password");
-                            System.out.println("Try Again");
+                            System.out.println("Invalid Username or Password!");
+                            System.out.println("Try Again.");
                         }
 
                     }
-
                     break;
 
                 default:
-                    System.out.println("Invalid Option Number");
-                    System.out.println("Please Try Again\n");
+                    System.out.println("Invalid Option Number!");
+                    System.out.println("Please Try Again.");
             }
 
 
