@@ -11,54 +11,58 @@ public class Main {
         String userName = "";
         String password;
 
-        System.out.println("Welcome to Purdue University's Tutoring Center!");
-        //
+        System.out.println("Welcome to Tutoring Center!");
+
 
         File f = new File("UserDetails.txt");
-        if (f.exists()) {
-            try {
-                FileOutputStream fos = new FileOutputStream(f, false);
-                PrintWriter pw = new PrintWriter(fos);
-            } catch (Exception e) {
-                e.printStackTrace();
+
+        try {
+            if (!f.exists()) {
+                boolean fCreated = f.createNewFile();
+                System.out.println("File has been created..");
             }
-        } else {
-            try {
-                FileOutputStream fos = new FileOutputStream(f, true);
-                PrintWriter pw = new PrintWriter(fos);
-            } catch (Exception e) {
-                System.out.println("Cannot write to file!");
-                e.printStackTrace();
+
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+
+            String userLine = bfr.readLine();
+            while (userLine != null) {
+                String[] splitLines = userLine.split(",");
+
+                User user;
+
+                if (splitLines[3].equals("Student")) {
+                    user = new Student(splitLines[0], splitLines[1], splitLines[2]);
+                } else {
+                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(","), Double.parseDouble(splitLines[4]));
+                }
+
+                userList.add(user);
+                userLine = bfr.readLine();
             }
+
+            bfr.close();
+        } catch (IOException e) {
+            System.out.println("Cannot write to file!");
         }
 
-//         File f = new File("UserDetails.txt");
 
-//         try{
-//             if(!f.exists()){
-//                 boolean fCreated = f.createNewFile();
-//                 System.out.println("File has been created..");
-//             }
-//         } catch (IOException e){
-//             System.out.println("Cannot write to file!");
-//         }
+        User user = null; // currentUser logged in
 
+        while (!login) {
 
-        while (login != true) {
-            
             System.out.println("Do you want to log in or create a account?");
             System.out.println("1. Create New Account\n" +
                     "2. Login");
             int optionNum = scan.nextInt();
             scan.nextLine();
 
-            User user = null; // currentUser logged in
-
             switch (optionNum) {
                 case 1:
                     System.out.println("Would you like to be a student or a tutor?");
                     System.out.println("1. Student\n2. Tutor");
                     int option = scan.nextInt();
+
                     scan.nextLine();
 
                     System.out.println("Enter new username: ");
@@ -71,10 +75,31 @@ public class Main {
                     password = scan.nextLine();
 
                     if (option == 1) {
-                        user = new Student(userName, password, email);
+                        boolean accountSimilarity = false;
 
-                        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))){
-                            pw.write(userName + "," + password + "," + email + "\n");
+                        for(int i = 0; i < userList.size(); i++){
+                            if(userList.get(i) instanceof Student){
+                                if(userList.get(i).getAccountUsername().equals(userName)){
+                                    accountSimilarity = true;
+                                    break;
+                                }
+
+                                if(userList.get(i).getEmail().equals(email)){
+                                    accountSimilarity = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if(accountSimilarity == false){
+                            user = new Student(userName, password, email);
+                        }else{
+                            System.out.println("Sorry, you have the same username or email as another account");
+                            continue;
+                        }
+
+                        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
+                            pw.write(userName + "," + password + "," + email + "," + "Student\n");
                             pw.flush();
                         } catch (IOException e) {
                             System.out.println("Unable to write file");
@@ -82,19 +107,41 @@ public class Main {
 
                     } else {
                         // Use commas
-                        System.out.println("What subject(s) are you planning to teach? (Separate each subject with a comma)");
+                        System.out.println("What subjects are you planning to teach");
 
                         String subjects = scan.nextLine();
                         String[] newSubjects = subjects.split(",");
 
                         System.out.println("What is the price you charge?");
                         double price = scan.nextDouble();
+
                         scan.nextLine();
 
-                        user = new Tutor(userName, password, email, newSubjects, price);
+                        boolean accountSimilarity = false;
 
-                        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))){
-                            pw.write(userName + "," + password + "," + email + "," + newSubjects + "," + price + "\n");
+                        for(int i = 0; i < userList.size(); i++){
+                            if(userList.get(i) instanceof Tutor){
+                                if(userList.get(i).getAccountUsername().equals(userName)){
+                                    accountSimilarity = true;
+                                    break;
+                                }
+
+                                if(userList.get(i).getEmail().equals(email)){
+                                    accountSimilarity = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if(accountSimilarity == false){
+                            user = new Tutor(userName, password, email, newSubjects, price);
+                        }else{
+                            System.out.println("Sorry, you have the same username or email as another account");
+                            continue;
+                        }
+
+                        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
+                            pw.write(userName + "," + password + "," + email + "," + subjects + "," + price + "," + "Tutor\n");
                             pw.flush();
                         } catch (IOException e) {
                             System.out.println("Unable to write file");
@@ -103,22 +150,24 @@ public class Main {
 
                     userList.add(user);
 
-                    System.out.println("Congratulations, you created a new account!\n");
+                    login = true;
 
-                    continue;
+                    System.out.println("Congratulations on creating a new account!!\n");
+
+                    break;
 
                 case 2:
-                    while(login == false) {
-                        System.out.println("Enter your Username: ");
+                    while (login == false) {
+                        System.out.println("Username: ");
                         userName = scan.nextLine();
 
-                        System.out.println("Enter your Password: ");
+                        System.out.println("Password: ");
                         password = scan.nextLine();
 
                         for (User acc : userList) {
                             if (acc.getAccountUsername().equals(userName)) {
                                 if (acc.getPassword().equals(password)) {
-                                    System.out.println("Successfully Signed In!");
+                                    System.out.println("Successfully Signed In!\n");
                                     user = acc;
                                     login = true;
                                     break;
@@ -127,226 +176,530 @@ public class Main {
                         }
 
                         if (login) {
-                            System.out.println("Welcome Back.");
+                            System.out.println("Welcome Back");
                         } else {
-                            System.out.println("Invalid Username or Password!");
-                            System.out.println("Try Again.");
+                            System.out.println("Invalid Username or Password");
+                            System.out.println("Try Again");
                         }
 
                     }
+
                     break;
 
                 default:
-                    System.out.println("Invalid Option Number!");
-                    System.out.println("Please Try Again.");
+                    System.out.println("Invalid Option Number");
+                    System.out.println("Please Try Again\n");
             }
+        }
 
 
-            int index = -1;
-            boolean unableToMessage = false;
-            int optionSignIn = 0;
+        boolean signedIn = true;
 
-            while(index == -1 || unableToMessage){
-                for (int i = 0; i < userList.size(); i++) {
-                    System.out.println("Who would you like to message?");
-                    String person = scan.nextLine();
+        while (signedIn) {
 
-                    if (userList.get(i).getAccountUsername().equals(person)) {
-                        index = i;
-
-                        // Testing
-                        System.out.println(userList.get(i).getAccountUsername());
-                        System.out.println(user.getAccountUsername());
-
-                        if(((userList.get(i) instanceof Student) && (user instanceof Tutor)) || ((userList.get(i) instanceof Tutor) && (user instanceof Student))){
-                            System.out.println("Person Found");
-                            unableToMessage = false;
-                            break;
-                        } else {
-                            System.out.println("You cannot message this person");
-                            unableToMessage = true;
-                        }
-                    }
-                }
-
-                if(index == -1 || unableToMessage){
-                    if(index == -1){
-                        System.out.println("Unable to find person.");
-                    }
-
-                    System.out.println("Want to try again?");
-                    System.out.println("1. Yes\n2. No");
-
-                    int optionTryAgain = scan.nextInt();
-                    scan.nextLine();
-
-                    if(optionTryAgain == 2){
-                        System.out.println("Do you want to sign in or create a new account?");
-                        System.out.println("1. Yes\n2. No");
-                        optionSignIn = scan.nextInt();
-                        break;
-                    }
-                }
-            }
-
-            if(optionSignIn == 1){
-                login = false;
-                continue;
-            }
-
-
-            while (true) {
-                System.out.println("What would you like to do?");
-                System.out.println("1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. change password\n6. change username\n7. change email\n8. delete account");
-                int ans = scan.nextInt();
+            if (user instanceof Student) {
+                System.out.println("Tutor Interface\n\n1. View tutors\n2. message someone\n3. edit profile\n4. sign out");
+                int option = scan.nextInt();
                 scan.nextLine();
 
-                switch (ans) {
+                switch (option) {
                     case 1:
-                        ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
-                        for (String message : messages) {
-                            System.out.println(message);
+                        ArrayList<User> availableTutors = new ArrayList<User>();
+
+                        for (int i = 0; i < userList.size(); i++) {
+                            if (userList.get(i) instanceof Tutor) {
+                                availableTutors.add(userList.get(i));
+                            }
                         }
+
+                        for (int i = 0; i < availableTutors.size(); i++) {
+                            if (i != availableTutors.size() - 1) {
+                                System.out.print(availableTutors.get(i).getAccountUsername() + ",");
+                            } else {
+                                System.out.print(availableTutors.get(i).getAccountUsername() + "\n");
+                            }
+                        }
+
                         break;
 
                     case 2:
-                        System.out.println("Message Body:");
-                        String content = scan.nextLine();
-                        messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
-                        messageClass.export(userName, userList.get(index).getAccountUsername());
-                        System.out.println("Written Successfully");
+
+                        int index = -1;
+                        boolean unableToMessage = false;
+                        int optionSignIn = 0;
+
+                        for (int i = 0; i < userList.size(); i++) {
+                            System.out.println("Who would you like to message?");
+                            String person = scan.nextLine();
+
+                            if (userList.get(i).getAccountUsername().equals(person)) {
+                                index = i;
+
+                                // Testing
+                                System.out.println(userList.get(i).getAccountUsername());
+                                System.out.println(user.getAccountUsername());
+
+                                if ((userList.get(i) instanceof Tutor) && (user instanceof Student)) {
+                                    System.out.println("Person Found");
+                                    unableToMessage = false;
+                                    break;
+                                } else {
+                                    System.out.println("You cannot message this person");
+                                    unableToMessage = true;
+                                }
+                            }
+                        }
+
+
+                        if (index == -1 || unableToMessage) {
+                            if (index == -1) {
+                                System.out.println("Unable to find person.");
+                            }
+
+                            break;
+                        }
+
+
+                        System.out.println("1. read message\n2. write a message\n3. delete a message\n4. edit a message");
+                        int optionMessage = scan.nextInt();
+                        scan.nextLine();
+
+                        switch (optionMessage) {
+
+                            case 1:
+                                ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                for (String message : messages) {
+                                    System.out.println(message);
+                                }
+                                break;
+                            case 2:
+                                System.out.println("Message Body:");
+                                String content = scan.nextLine();
+                                messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
+                                messageClass.export(userName, userList.get(index).getAccountUsername());
+                                System.out.println("Written Successfully");
+
+                                break;
+                            case 3:
+                                System.out.println("What is the message that you would like to delete?");
+                                String message = scan.nextLine();
+
+                                messageClass.delete(user, userList.get(index).getAccountUsername(), message);
+                                System.out.println("Message Deleted Successfully");
+
+                                break;
+
+                            case 4:
+                                System.out.println("What is the message you would like to edit?");
+                                String oldMessage = scan.nextLine();
+
+                                System.out.println("What would you like your edited message to look like?");
+                                String newMessage = scan.nextLine();
+
+                                messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
+                                messageClass.export(userName, userList.get(index).getAccountUsername());
+
+                                break;
+                        }
 
                         break;
-
                     case 3:
-                        System.out.println("What is the message that you would like to delete?");
-                        String message = scan.nextLine();
+                        System.out.println("1. change password\n2. change username\n3. change email\n4. delete account");
+                        int optionProfile = scan.nextInt();
+                        scan.nextLine();
 
-                        messageClass.delete(user, userList.get(index).getAccountUsername(), message);
-                        System.out.println("Message Deleted Successfully");
+                        switch (optionProfile) {
+                            case 1:
+                                System.out.println("What would you like to change your password to?");
+                                String newPassword = scan.nextLine();
+                                user.setPassword(newPassword);
+
+                                for (int i = 0; i < userList.size(); i++) {
+                                    try {
+                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                        }
+
+                                        pw.flush();
+                                    } catch (IOException e) {
+                                        System.out.println("Can't write to the file!");
+                                    }
+                                }
+
+                                break;
+                            case 2:
+
+                                System.out.println("What would you like to change your username to?");
+                                String newUsername = scan.nextLine();
+
+                                boolean sameUsername = false;
+                                for(int i = 0; i < userList.size(); i++){
+                                    if(userList.get(i) instanceof Student){
+                                        if(userList.get(i).getAccountUsername().equals(newUsername)){
+                                            sameUsername = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if(sameUsername == false){
+                                    user.setAccountUsername(newUsername);
+                                } else {
+                                    System.out.println("Username exists.");
+                                    continue;
+                                }
+
+                                for (int i = 0; i < userList.size(); i++) {
+                                    try {
+                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                        }
+
+                                        pw.flush();
+                                    } catch (IOException e) {
+                                        System.out.println("Can't write to the file!");
+                                    }
+                                }
+
+                                break;
+
+                            case 3:
+                                System.out.println("What would you like to change your email to?");
+                                String newEmail = scan.nextLine();
+
+                                boolean sameEmail = false;
+                                for(int i = 0; i < userList.size(); i++){
+                                    if(userList.get(i) instanceof Student){
+                                        if(userList.get(i).getEmail().equals(newEmail)){
+                                            sameEmail = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if(sameEmail == false){
+                                    user.setEmail(newEmail);
+                                } else {
+                                    System.out.println("Email exists.");
+                                    continue;
+                                }
+
+                                for (int i = 0; i < userList.size(); i++) {
+                                    try {
+                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                        }
+
+                                        pw.flush();
+                                    } catch (IOException e) {
+                                        System.out.println("Can't write to the file!");
+                                    }
+                                }
+
+                                break;
+
+                            case 4:
+                                System.out.println("Deleting Account...");
+
+                                // Removing User from ArrayList
+                                for (int i = 0; i < userList.size(); i++) {
+                                    if (userList.get(i).getAccountUsername().equals(user.getAccountUsername())) {
+                                        if (userList.get(i).getPassword().equals(user.getPassword())) {
+                                            if (userList.get(i).getEmail().equals(user.getEmail())) {
+                                                userList.remove(i);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Rewriting the file again...
+                                for (int i = 0; i < userList.size(); i++) {
+                                    try {
+                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                        }
+
+                                        pw.flush();
+                                    } catch (IOException e) {
+                                        System.out.println("Can't write to the file!");
+                                    }
+                                }
+
+                                break;
+
+                        }
 
                         break;
 
                     case 4:
-                        System.out.println("What is the message you would like to edit?");
-                        String oldMessage = scan.nextLine();
+                        System.out.println("Have a nice day!");
+                        signedIn = false;
+                        break;
+                }
+            } else {
+                System.out.println("1. View students\n2. message someone\n3. edit profile\n4. sign out");
+                int option = scan.nextInt();
+                scan.nextLine();
 
-                        System.out.println("What would you like your edited message to look like?");
-                        String newMessage = scan.nextLine();
+                switch (option) {
+                    case 1:
+                        ArrayList<User> availableStudents = new ArrayList<User>();
 
-                        messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
-                        messageClass.export(userName, userList.get(index).getAccountUsername());
+                        for (int i = 0; i < userList.size(); i++) {
+                            if (userList.get(i) instanceof Student) {
+                                availableStudents.add(userList.get(i));
+                            }
+                        }
+
+                        for (int i = 0; i < availableStudents.size(); i++) {
+                            if (i != availableStudents.size() - 1) {
+                                System.out.print(availableStudents.get(i).getAccountUsername() + ",");
+                            } else {
+                                System.out.print(availableStudents.get(i).getAccountUsername() + "\n");
+                            }
+                        }
 
                         break;
 
-                    case 5:
-                        System.out.println("What would you like to change your password to?");
-                        String newPassword = scan.nextLine();
-                        user.setPassword(newPassword);
+                    case 2:
 
-                        for(int i = 0; i < userList.size(); i++){
-                            try{
-                                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
-                                if(userList.get(i) instanceof Student){
-                                    pw.write(userList.get(i).getAccountUsername() + ","  + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
-                                } else {
-                                    pw.write(userList.get(i).getAccountUsername() + ","  + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor)userList.get(i)).getSubjects() + "," + ((Tutor)userList.get(i)).price());
-                                }
+                        int index = -1;
+                        boolean unableToMessage = false;
+                        int optionSignIn = 0;
 
-                                pw.flush();
-                            } catch (IOException e){
-                                System.out.println("Can't write to the file!");
-                            }
-                        }
-
-                    case 6:
-                        System.out.println("What would you like to change your username to?");
-                        String newUsername = scan.nextLine();
-                        user.setAccountUsername(newUsername);
-
-                        for(int i = 0; i < userList.size(); i++){
-                            try{
-                                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
-                                if(userList.get(i) instanceof Student){
-                                    pw.write(userList.get(i).getAccountUsername() + ","  + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
-                                } else {
-                                    pw.write(userList.get(i).getAccountUsername() + ","  + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor)userList.get(i)).getSubjects() + "," + ((Tutor)userList.get(i)).price());
-                                }
-
-                                pw.flush();
-                            } catch (IOException e){
-                                System.out.println("Can't write to the file!");
-                            }
-                        }
-
-                    case 7:
-                        System.out.println("What would you like to change your email to?");
-                        String newEmail = scan.nextLine();
-                        user.setEmail(newEmail);
-
-                        for(int i = 0; i < userList.size(); i++){
-                            try{
-                                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
-                                if(userList.get(i) instanceof Student){
-                                    pw.write(userList.get(i).getAccountUsername() + ","  + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
-                                } else {
-                                    pw.write(userList.get(i).getAccountUsername() + ","  + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor)userList.get(i)).getSubjects() + "," + ((Tutor)userList.get(i)).price());
-                                }
-
-                                pw.flush();
-                            } catch (IOException e){
-                                System.out.println("Can't write to the file!");
-                            }
-                        }
-
-                    case 8:
-                        System.out.println("Deleting Account...");
-
-                        // Removing User from ArrayList
                         for (int i = 0; i < userList.size(); i++) {
-                            if (userList.get(i).getAccountUsername().equals(user.getAccountUsername())) {
-                                if (userList.get(i).getPassword().equals(user.getPassword())) {
-                                    userList.remove(i);
-                                }
-                            }
-                        }
+                            System.out.println("Who would you like to message?");
+                            String person = scan.nextLine();
 
-                        // Rewriting the file again...
-                        for(int i = 0; i < userList.size(); i++){
-                            try{
-                                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
-                                if(userList.get(i) instanceof Student){
-                                    pw.write(userList.get(i).getAccountUsername() + ","  + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
+                            if (userList.get(i).getAccountUsername().equals(person)) {
+                                index = i;
+
+                                // Testing
+                                System.out.println(userList.get(i).getAccountUsername());
+                                System.out.println(user.getAccountUsername());
+
+                                if ((userList.get(i) instanceof Student) && (user instanceof Tutor)) {
+                                    System.out.println("Person Found");
+                                    unableToMessage = false;
+                                    break;
                                 } else {
-                                    pw.write(userList.get(i).getAccountUsername() + ","  + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor)userList.get(i)).getSubjects() + "," + ((Tutor)userList.get(i)).price());
+                                    System.out.println("You cannot message this person");
+                                    unableToMessage = true;
                                 }
-
-                                pw.flush();
-                            } catch (IOException e){
-                                System.out.println("Can't write to the file!");
                             }
                         }
-                }
 
-                System.out.println("Would you like to choose again");
-                System.out.println("1. Yes\n2. No");
-                int option = scan.nextInt();
 
-                if (option == 2) {
-                    break;
+                        if (index == -1 || unableToMessage) {
+                            if (index == -1) {
+                                System.out.println("Unable to find person.");
+                            }
+
+                            break;
+                        }
+
+
+                        System.out.println("1. read message\n2. write a message\n3. delete a message\n4. edit a message");
+                        int optionMessage = scan.nextInt();
+                        scan.nextLine();
+
+                        switch (optionMessage) {
+
+                            case 1:
+                                ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                for (String message : messages) {
+                                    System.out.println(message);
+                                }
+                                break;
+                            case 2:
+                                System.out.println("Message Body:");
+                                String content = scan.nextLine();
+                                messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
+                                messageClass.export(userName, userList.get(index).getAccountUsername());
+                                System.out.println("Written Successfully\n");
+
+                                break;
+                            case 3:
+                                System.out.println("What is the message that you would like to delete?");
+                                String message = scan.nextLine();
+
+                                messageClass.delete(user, userList.get(index).getAccountUsername(), message);
+                                System.out.println("Message Deleted Successfully\n");
+
+                                break;
+
+                            case 4:
+                                System.out.println("What is the message you would like to edit?");
+                                String oldMessage = scan.nextLine();
+
+                                System.out.println("What would you like your edited message to look like?");
+                                String newMessage = scan.nextLine();
+
+                                messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
+                                messageClass.export(userName, userList.get(index).getAccountUsername());
+                                System.out.println("Edit Successful\n");
+
+                                break;
+                        }
+
+                        break;
+
+                    case 3:
+                        System.out.println("1. change password\n2. change username\n3. change email\n4. delete account");
+                        int optionProfile = scan.nextInt();
+
+                        switch (optionProfile) {
+                            case 1:
+                                System.out.println("What would you like to change your password to?");
+                                String newPassword = scan.nextLine();
+                                user.setPassword(newPassword);
+
+                                for (int i = 0; i < userList.size(); i++) {
+                                    try {
+                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price());
+                                        }
+
+                                        pw.flush();
+                                    } catch (IOException e) {
+                                        System.out.println("Can't write to the file!");
+                                    }
+                                }
+
+                                break;
+
+                            case 2:
+
+                                System.out.println("What would you like to change your username to?");
+                                String newUsername = scan.nextLine();
+
+                                boolean similarUsername = false;
+                                for(int i = 0; i < userList.size(); i++){
+                                    if(userList.get(i) instanceof Tutor){
+                                        if(userList.get(i).getAccountUsername().equals(userName)){
+                                            similarUsername = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if(similarUsername == false){
+                                    user.setAccountUsername(newUsername);
+                                } else {
+                                    System.out.println("Username exists.");
+                                    continue;
+                                }
+
+                                for (int i = 0; i < userList.size(); i++) {
+                                    try {
+                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price());
+                                        }
+
+                                        pw.flush();
+                                    } catch (IOException e) {
+                                        System.out.println("Can't write to the file!");
+                                    }
+                                }
+
+                                break;
+
+                            case 3:
+                                System.out.println("What would you like to change your email to?");
+                                String newEmail = scan.nextLine();
+
+                                boolean similarEmail = false;
+                                for(int i = 0; i < userList.size(); i++){
+                                    if(userList.get(i) instanceof Tutor){
+                                        if(userList.get(i).getEmail().equals(newEmail)){
+                                            similarEmail = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if(similarEmail == false){
+                                    user.setEmail(newEmail);
+                                } else {
+                                    System.out.println("Email exists.");
+                                    continue;
+                                }
+
+                                for (int i = 0; i < userList.size(); i++) {
+                                    try {
+                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price());
+                                        }
+
+                                        pw.flush();
+                                    } catch (IOException e) {
+                                        System.out.println("Can't write to the file!");
+                                    }
+                                }
+
+                                break;
+
+                            case 4:
+                                System.out.println("Deleting Account...");
+
+                                // Removing User from ArrayList
+                                for (int i = 0; i < userList.size(); i++) {
+                                    if (userList.get(i).getAccountUsername().equals(user.getAccountUsername())) {
+                                        if (userList.get(i).getPassword().equals(user.getPassword())) {
+                                            userList.remove(i);
+                                        }
+                                    }
+                                }
+
+                                // Rewriting the file again...
+                                for (int i = 0; i < userList.size(); i++) {
+                                    try {
+                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price());
+                                        }
+
+                                        pw.flush();
+                                    } catch (IOException e) {
+                                        System.out.println("Can't write to the file!");
+                                    }
+                                }
+
+                                break;
+
+                        }
+
+                        break;
+
+                    case 4:
+                        System.out.println("Have a nice day!");
+                        signedIn = false;
+                        break;
                 }
             }
-
-            System.out.println("Would you like to sign out or exit the application?");
-            System.out.println("1. Sign Out\n2. Exit the Application");
-
-            int optionSignOut = scan.nextInt();
-
-            if(optionSignOut == 2){
-                break;
-            }
-
         }
-
     }
 }
