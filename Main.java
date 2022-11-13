@@ -94,7 +94,7 @@ public class Main {
                         if(accountSimilarity == false){
                             user = new Student(userName, password, email);
                         }else{
-                            System.out.println("Sorry, you have the same username or email as another account");
+                            System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
 
@@ -136,12 +136,12 @@ public class Main {
                         if(accountSimilarity == false){
                             user = new Tutor(userName, password, email, newSubjects, price);
                         }else{
-                            System.out.println("Sorry, you have the same username or email as another account");
+                            System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
 
                         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                            pw.write(userName + "," + password + "," + email + "," + subjects + "," + price + "," + "Tutor\n");
+                            pw.write(userName + "," + password + "," + email + ", subjects: " + subjects + ", price: " + "," + "Tutor\n");
                             pw.flush();
                         } catch (IOException e) {
                             System.out.println("Unable to write file");
@@ -223,7 +223,7 @@ public class Main {
                         if(availableTutors.size() == 0){
                             System.out.println("There are no tutors available to message");
                         }
-                        
+
                         break;
 
                     case 2:
@@ -232,9 +232,14 @@ public class Main {
                         boolean unableToMessage = false;
                         int optionSignIn = 0;
 
+                        System.out.println("Who would you like to message?");
+                        String person = scan.nextLine();
+
+                        if(userList.size() == 0){
+                            System.out.println("There are no tutors available");
+                        }
+
                         for (int i = 0; i < userList.size(); i++) {
-                            System.out.println("Who would you like to message?");
-                            String person = scan.nextLine();
 
                             if (userList.get(i).getAccountUsername().equals(person)) {
                                 index = i;
@@ -324,10 +329,11 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ", subjects: " + ((Tutor) userList.get(i)).getSubjects().toString() + ", price: " + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
+                                        System.out.println("Password has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
                                     }
@@ -366,6 +372,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        System.out.println("Username has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
                                     }
@@ -404,6 +411,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        System.out.println("Email has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
                                     }
@@ -474,7 +482,7 @@ public class Main {
                                 System.out.print(availableStudents.get(i).getAccountUsername() + "\n");
                             }
                         }
-                        
+
                         if(availableStudents.size() == 0){
                             System.out.println("There are no students available to message");
                         }
@@ -487,9 +495,14 @@ public class Main {
                         boolean unableToMessage = false;
                         int optionSignIn = 0;
 
+                        System.out.println("Who would you like to message?");
+                        String person = scan.nextLine();
+
+                        if(userList.size() == 0){
+                            System.out.println("There are no students available");
+                        }
+
                         for (int i = 0; i < userList.size(); i++) {
-                            System.out.println("Who would you like to message?");
-                            String person = scan.nextLine();
 
                             if (userList.get(i).getAccountUsername().equals(person)) {
                                 index = i;
@@ -508,7 +521,6 @@ public class Main {
                                 }
                             }
                         }
-
 
                         if (index == -1 || unableToMessage) {
                             if (index == -1) {
@@ -581,7 +593,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price());
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ", subjects: " + ((Tutor) userList.get(i)).getSubjects().toString() + ", price: " + ((Tutor) userList.get(i)).price());
                                         }
 
                                         pw.flush();
