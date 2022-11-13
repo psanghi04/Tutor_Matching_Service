@@ -220,6 +220,10 @@ public class Main {
                             }
                         }
 
+                        if(availableTutors.size() == 0){
+                            System.out.println("There are no tutors available to message");
+                        }
+                        
                         break;
 
                     case 2:
@@ -470,6 +474,10 @@ public class Main {
                                 System.out.print(availableStudents.get(i).getAccountUsername() + "\n");
                             }
                         }
+                        
+                        if(availableStudents.size() == 0){
+                            System.out.println("There are no students available to message");
+                        }
 
                         break;
 
@@ -559,6 +567,7 @@ public class Main {
                     case 3:
                         System.out.println("1. change password\n2. change username\n3. change email\n4. delete account");
                         int optionProfile = scan.nextInt();
+                        scan.nextLine();
 
                         switch (optionProfile) {
                             case 1:
