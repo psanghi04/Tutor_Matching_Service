@@ -368,7 +368,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -407,7 +407,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -440,7 +440,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -591,9 +591,9 @@ public class Main {
                                     try {
                                         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
                                         if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() +  ","  + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ", subjects: " + ((Tutor) userList.get(i)).getSubjects().toString() + ", price: " + ((Tutor) userList.get(i)).price());
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ", subjects: " + ((Tutor) userList.get(i)).getSubjects().toString() + ", price: " + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -630,9 +630,9 @@ public class Main {
                                     try {
                                         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
                                         if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price());
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -668,9 +668,9 @@ public class Main {
                                     try {
                                         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
                                         if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ","  + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price());
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -698,9 +698,9 @@ public class Main {
                                     try {
                                         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
                                         if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ","  + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects() + "," + ((Tutor) userList.get(i)).price());
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
                                         }
 
                                         pw.flush();
