@@ -244,10 +244,6 @@ public class Main {
                             if (userList.get(i).getAccountUsername().equals(person)) {
                                 index = i;
 
-                                // Testing
-                                System.out.println(userList.get(i).getAccountUsername());
-                                System.out.println(user.getAccountUsername());
-
                                 if ((userList.get(i) instanceof Tutor) && (user instanceof Student)) {
                                     System.out.println("Person Found");
                                     unableToMessage = false;
@@ -269,49 +265,70 @@ public class Main {
                         }
 
 
-                        System.out.println("1. read message\n2. write a message\n3. delete a message\n4. edit a message");
-                        int optionMessage = scan.nextInt();
-                        scan.nextLine();
+                        boolean quit = true;
+                        
+                        while(quit){
+                            System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message");
+                            int optionMessage = scan.nextInt();
+                            scan.nextLine();
 
-                        switch (optionMessage) {
+                            switch (optionMessage) {
+                                case 0:
+                                    quit = false;
+                                    break;
+                                case 1:
+                                    ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    for (String message : messages) {
+                                        System.out.println(message);
+                                    }
+                                    break;
+                                case 2:
+                                    System.out.println("Message Body:");
+                                    String content = scan.nextLine();
+                                    messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
+                                    messageClass.export(userName, userList.get(index).getAccountUsername());
+                                    System.out.println("Written Successfully");
 
-                            case 1:
-                                ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
-                                for (String message : messages) {
-                                    System.out.println(message);
-                                }
-                                break;
-                            case 2:
-                                System.out.println("Message Body:");
-                                String content = scan.nextLine();
-                                messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
-                                messageClass.export(userName, userList.get(index).getAccountUsername());
-                                System.out.println("Written Successfully");
+                                    break;
+                                case 3:
+                                    System.out.println("What is the message that you would like to delete?");
+                                    String message = scan.nextLine();
 
-                                break;
-                            case 3:
-                                System.out.println("What is the message that you would like to delete?");
-                                String message = scan.nextLine();
+                                    messageClass.delete(user, userList.get(index).getAccountUsername(), message);
+                                    System.out.println("Message Deleted Successfully");
 
-                                messageClass.delete(user, userList.get(index).getAccountUsername(), message);
-                                System.out.println("Message Deleted Successfully");
+                                    break;
 
-                                break;
+                                case 4:
+                                    System.out.println("What is the message you would like to edit?");
+                                    String oldMessage = scan.nextLine();
 
-                            case 4:
-                                System.out.println("What is the message you would like to edit?");
-                                String oldMessage = scan.nextLine();
+                                    System.out.println("What would you like your edited message to look like?");
+                                    String newMessage = scan.nextLine();
 
-                                System.out.println("What would you like your edited message to look like?");
-                                String newMessage = scan.nextLine();
+                                    messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
+                                    messageClass.export(userName, userList.get(index).getAccountUsername());
 
-                                messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
-                                messageClass.export(userName, userList.get(index).getAccountUsername());
+                                    break;
 
-                                break;
+                                case 5:
+                                    System.out.println("Enter a keyword to search for a message: ");
+                                    String keyword = scan.nextLine();
+
+                                    ArrayList<String> searchableMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+                                    for(int i = 0; i < searchableMessages.size(); i++){
+                                        if(searchableMessages.get(i).contains(keyword)) {
+                                            System.out.println(searchableMessages.get(i));
+                                        }
+                                    }
+
+                            }
+
                         }
 
                         break;
+
                     case 3:
                         System.out.println("1. change password\n2. change username\n3. change email\n4. delete account");
                         int optionProfile = scan.nextInt();
@@ -507,10 +524,6 @@ public class Main {
                             if (userList.get(i).getAccountUsername().equals(person)) {
                                 index = i;
 
-                                // Testing
-                                System.out.println(userList.get(i).getAccountUsername());
-                                System.out.println(user.getAccountUsername());
-
                                 if ((userList.get(i) instanceof Student) && (user instanceof Tutor)) {
                                     System.out.println("Person Found");
                                     unableToMessage = false;
@@ -530,49 +543,66 @@ public class Main {
                             break;
                         }
 
+                        boolean quit = true;
+                        while(quit){
+                            System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message");
+                            int optionMessage = scan.nextInt();
+                            scan.nextLine();
 
-                        System.out.println("1. read message\n2. write a message\n3. delete a message\n4. edit a message");
-                        int optionMessage = scan.nextInt();
-                        scan.nextLine();
+                            switch (optionMessage) {
+                                case 0:
+                                    quit = false;
+                                    break;
+                                case 1:
+                                    ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    for (String message : messages) {
+                                        System.out.println(message);
+                                    }
+                                    break;
+                                case 2:
+                                    System.out.println("Message Body:");
+                                    String content = scan.nextLine();
+                                    messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
+                                    messageClass.export(userName, userList.get(index).getAccountUsername());
+                                    System.out.println("Written Successfully\n");
 
-                        switch (optionMessage) {
+                                    break;
+                                case 3:
+                                    System.out.println("What is the message that you would like to delete?");
+                                    String message = scan.nextLine();
 
-                            case 1:
-                                ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
-                                for (String message : messages) {
-                                    System.out.println(message);
-                                }
-                                break;
-                            case 2:
-                                System.out.println("Message Body:");
-                                String content = scan.nextLine();
-                                messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
-                                messageClass.export(userName, userList.get(index).getAccountUsername());
-                                System.out.println("Written Successfully\n");
+                                    messageClass.delete(user, userList.get(index).getAccountUsername(), message);
+                                    System.out.println("Message Deleted Successfully\n");
 
-                                break;
-                            case 3:
-                                System.out.println("What is the message that you would like to delete?");
-                                String message = scan.nextLine();
+                                    break;
 
-                                messageClass.delete(user, userList.get(index).getAccountUsername(), message);
-                                System.out.println("Message Deleted Successfully\n");
+                                case 4:
+                                    System.out.println("What is the message you would like to edit?");
+                                    String oldMessage = scan.nextLine();
 
-                                break;
+                                    System.out.println("What would you like your edited message to look like?");
+                                    String newMessage = scan.nextLine();
 
-                            case 4:
-                                System.out.println("What is the message you would like to edit?");
-                                String oldMessage = scan.nextLine();
+                                    messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
+                                    messageClass.export(userName, userList.get(index).getAccountUsername());
+                                    System.out.println("Edit Successful\n");
 
-                                System.out.println("What would you like your edited message to look like?");
-                                String newMessage = scan.nextLine();
+                                    break;
 
-                                messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
-                                messageClass.export(userName, userList.get(index).getAccountUsername());
-                                System.out.println("Edit Successful\n");
+                                case 5:
+                                    System.out.println("Enter a keyword to search for a message: ");
+                                    String keyword = scan.nextLine();
 
-                                break;
+                                    ArrayList<String> searchMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+                                    for(int i = 0; i < searchMessages.size(); i++){
+                                        if(searchMessages.get(i).contains(keyword)) {
+                                            System.out.println(searchMessages.get(i));
+                                        }
+                                    }
+                            }
                         }
+
 
                         break;
 
