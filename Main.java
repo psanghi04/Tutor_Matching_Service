@@ -34,7 +34,7 @@ public class Main {
                 if (splitLines[3].equals("Student")) {
                     user = new Student(splitLines[0], splitLines[1], splitLines[2]);
                 } else {
-                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(","), Double.parseDouble(splitLines[4]));
+                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(";"), Double.parseDouble(splitLines[4]));
                 }
 
                 userList.add(user);
@@ -62,9 +62,10 @@ public class Main {
                     System.out.println("Would you like to be a student or a tutor?");
                     System.out.println("1. Student\n2. Tutor");
                     int option = scan.nextInt();
+
                     scan.nextLine();
 
-                    System.out.println("Enter a new username: ");
+                    System.out.println("Enter new username: ");
                     userName = scan.nextLine();
 
                     System.out.println("Enter your email: ");
@@ -76,23 +77,24 @@ public class Main {
                     if (option == 1) {
                         boolean accountSimilarity = false;
 
-                        for (int i = 0; i < userList.size(); i++) {
-                            if (userList.get(i) instanceof Student) {
-                                if (userList.get(i).getAccountUsername().equals(userName)) {
+                        for(int i = 0; i < userList.size(); i++){
+                            if(userList.get(i) instanceof Student){
+                                if(userList.get(i).getAccountUsername().equals(userName)){
                                     accountSimilarity = true;
                                     break;
                                 }
-                                if (userList.get(i).getEmail().equals(email)) {
+
+                                if(userList.get(i).getEmail().equals(email)){
                                     accountSimilarity = true;
                                     break;
                                 }
                             }
                         }
 
-                        if (accountSimilarity == false) {
+                        if(accountSimilarity == false){
                             user = new Student(userName, password, email);
-                        } else {
-                            System.out.println("Sorry, you have the same username or email as another account!");
+                        }else{
+                            System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
 
@@ -139,7 +141,7 @@ public class Main {
                         }
 
                         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                            pw.write(userName + "," + password + "," + email + ", subjects: " + subjects + ", price: " + "," + "Tutor\n");
+                            pw.write(userName + "," + password + "," + email + "," + subjects.replace(",", ";") + "," + price + "," + "Tutor\n");
                             pw.flush();
                         } catch (IOException e) {
                             System.out.println("Unable to write file");
@@ -327,7 +329,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ", subjects: " + ((Tutor) userList.get(i)).getSubjects().toString() + ", price: " + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -366,7 +368,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -405,7 +407,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -438,7 +440,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -591,7 +593,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() +  ","  + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ", subjects: " + ((Tutor) userList.get(i)).getSubjects().toString() + ", price: " + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -630,7 +632,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -668,7 +670,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ","  + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -698,7 +700,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ","  + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString() + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
                                         }
 
                                         pw.flush();
