@@ -4,32 +4,32 @@ import java.time.*;
 import java.util.*;
 import java.util.ArrayList;
 public class Message {
-    public void isBlocked(User user, String personBlocked){
-        ArrayList<User> blocked = new ArrayList<User>();
-        blocked = user.getBlockedList();
-        for(int i=0;i<blocked.size();i++){
-            if(blocked.get(i).getAccountUsername().equals(personBlocked)){
-                try{
-                    File f = new File(user.getAccountUsername() + "_" + personBlocked);
-                    BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
-                    bfw.write("This person is blocked");
-                    bfw.close();
-                    break;
-                } catch(IOException e){
-                    System.out.println("This chat does not exist");
-                }
-            }
-        }
-    } // if he is blocked/invisible and correct user
+//    public void isBlocked(User user, String personBlocked){
+//        ArrayList<User> blocked = new ArrayList<User>();
+//        blocked = user.getBlockedList();
+//        for(int i=0;i<blocked.size();i++){
+//            if(blocked.get(i).getAccountUsername().equals(personBlocked)){
+//                try{
+//                    File f = new File(user.getAccountUsername() + "_" + personBlocked);
+//                    BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
+//                    bfw.write("This person is blocked");
+//                    bfw.close();
+//                    break;
+//                } catch(IOException e){
+//                    System.out.println("This chat does not exist");
+//                }
+//            }
+//        }
+//    } // if he is blocked/invisible and correct user
 
-    public boolean isInvisible(User user, String personInvisible){
-        for(int i=0;i<user.getInvisibleList().size();i++){
-            if(user.getInvisibleList().get(i).getAccountUsername().equals(personInvisible)){
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean isInvisible(User user, String personInvisible){
+//        for(int i=0;i<user.getInvisibleList().size();i++){
+//            if(user.getInvisibleList().get(i).getAccountUsername().equals(personInvisible)){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     public void edit(User user, String otherPerson, String message, String edit){
         ArrayList<String> conversation = new ArrayList<String>();
         try{
@@ -37,22 +37,25 @@ public class Message {
             BufferedReader bfr = new BufferedReader(new FileReader(f));
             while(true){
                 String line = bfr.readLine();
-                conversation.add(line);
+
                 if(line == null){
                     break;
                 }
-                }
+
+                conversation.add(line);
+            }
             BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
-            for(int i=0;i< conversation.size();i++) {
-                if (conversation.get(i).equals(message)) {
-                    bfw.write(edit + "\n");
+            for(int i = 0; i < conversation.size(); i++) {
+
+                if (conversation.get(i).contains(message)) {
+                    bfw.write(conversation.get(i).replace(message, edit));
                     continue;
                 }
                 bfw.write(conversation.get(i) + "\n");
             }
             bfr.close();
             bfw.close();
-            }  catch(IOException e){
+        }  catch(IOException e){
             System.out.println("This chat does not exist");
         }
     }
@@ -71,7 +74,7 @@ public class Message {
             bfr.close();
             BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
             for(int i=0;i< conversation.size();i++){
-                if(conversation.get(i).equals(messageDeleted)){
+                if(conversation.get(i).contains(messageDeleted)){
                     continue;
                 }
                 bfw.write(conversation.get(i) + "\n");
@@ -104,7 +107,7 @@ public class Message {
         }
         return messages;
     }
-    
+
     public void writeMsg(String sender, String receiver, String content) {
         try (BufferedWriter bfw = new BufferedWriter(new FileWriter(sender + "_" + receiver, true))) {
             String line = "%s;%s,%s,%s,%s";
@@ -121,19 +124,19 @@ public class Message {
             System.out.println("Writing suspended. Exception caught");
         }
     }
-    
+
     public void export(String sender, String receiver) {
         ArrayList<String> messages = readMsg(sender, receiver);
-        String fileName = sender + "_" + receiver;
+        String fileName = receiver + "_" + sender;
         try (BufferedWriter bfw = new BufferedWriter(new FileWriter(fileName))) {
             for (String msg : messages) {
                 bfw.write(msg);
+                bfw.newLine();
                 bfw.flush();
             }
         } catch (Exception e) {
             System.out.println("Error!");
         }
     }
-
-
+    
 }
