@@ -62,10 +62,9 @@ public class Main {
                     System.out.println("Would you like to be a student or a tutor?");
                     System.out.println("1. Student\n2. Tutor");
                     int option = scan.nextInt();
-
                     scan.nextLine();
 
-                    System.out.println("Enter new username: ");
+                    System.out.println("Enter a new username: ");
                     userName = scan.nextLine();
 
                     System.out.println("Enter your email: ");
@@ -77,24 +76,23 @@ public class Main {
                     if (option == 1) {
                         boolean accountSimilarity = false;
 
-                        for(int i = 0; i < userList.size(); i++){
-                            if(userList.get(i) instanceof Student){
-                                if(userList.get(i).getAccountUsername().equals(userName)){
+                        for (int i = 0; i < userList.size(); i++) {
+                            if (userList.get(i) instanceof Student) {
+                                if (userList.get(i).getAccountUsername().equals(userName)) {
                                     accountSimilarity = true;
                                     break;
                                 }
-
-                                if(userList.get(i).getEmail().equals(email)){
+                                if (userList.get(i).getEmail().equals(email)) {
                                     accountSimilarity = true;
                                     break;
                                 }
                             }
                         }
 
-                        if(accountSimilarity == false){
+                        if (accountSimilarity == false) {
                             user = new Student(userName, password, email);
-                        }else{
-                            System.out.println("Sorry, you have the same username or email as another account\n");
+                        } else {
+                            System.out.println("Sorry, you have the same username or email as another account!");
                             continue;
                         }
 
