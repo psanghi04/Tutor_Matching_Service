@@ -137,7 +137,7 @@ public class Main {
                         }
 
                         if(accountSimilarity == false){
-                            user = new Tutor(userName, password, email, newSubjects, price);
+                            user = new Tutor(userName, password, email, newSubjects, price, null);
                         }else{
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
@@ -420,6 +420,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        pw.close();
                                         System.out.println("Password has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
@@ -459,6 +460,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        pw.close();
                                         System.out.println("Username has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
@@ -498,6 +500,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        pw.close();
                                         System.out.println("Email has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
@@ -531,6 +534,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        pw.close();
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
                                     }
