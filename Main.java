@@ -229,7 +229,9 @@ public class Main {
                                      }
 
                                     if(blockedUser == false){
-                                        availableTutors.add(userList.get(i));
+                                        if(userList.get(i) instanceof Tutor){
+                                            availableTutors.add(userList.get(i));
+                                        }
                                     }else{
                                         userList.get(i).setAccountUsername(userList.get(i).getAccountUsername() + "(blocked)");
                                         availableTutors.add(userList.get(i));
@@ -594,7 +596,7 @@ public class Main {
                             PrintWriter pw = new PrintWriter(bw);
 
                             for(int i = 0; i < blockedUserList.size(); i++){
-                                pw.write("Student," + user.getAccountUsername() + ";" + blockUsername);
+                                pw.println("Student," + user.getAccountUsername() + ";" + blockUsername);
                                 pw.flush();
                             }
                         } catch (IOException e){
@@ -611,10 +613,10 @@ public class Main {
 
                 switch (option) {
                     case 1:
-                        ArrayList<User> availableTutors = new ArrayList<User>();
+                        ArrayList<User> availableStudents = new ArrayList<User>();
 
                         for (int i = 0; i < userList.size(); i++) {
-                            if (userList.get(i) instanceof Tutor) {
+                            if (userList.get(i) instanceof Student) {
                                 try {
                                     File blockedUsers = new File(user.getAccountUsername() + "_" + userList.get(i).getAccountUsername());
 
@@ -638,10 +640,12 @@ public class Main {
                                     }
 
                                     if(blockedUser == false){
-                                        availableTutors.add(userList.get(i));
+                                        if(userList.get(i) instanceof Tutor){
+                                            availableStudents.add(userList.get(i));
+                                        }
                                     }else{
                                         userList.get(i).setAccountUsername(userList.get(i).getAccountUsername() + "(blocked)");
-                                        availableTutors.add(userList.get(i));
+                                        availableStudents.add(userList.get(i));
                                     }
 
                                     bfr.close();
@@ -652,15 +656,15 @@ public class Main {
                             }
                         }
 
-                        for (int i = 0; i < availableTutors.size(); i++) {
-                            if (i != availableTutors.size() - 1) {
-                                System.out.print(availableTutors.get(i).getAccountUsername() + ",");
+                        for (int i = 0; i < availableStudents.size(); i++) {
+                            if (i != availableStudents.size() - 1) {
+                                System.out.print(availableStudents.get(i).getAccountUsername() + ",");
                             } else {
-                                System.out.print(availableTutors.get(i).getAccountUsername() + "\n");
+                                System.out.print(availableStudents.get(i).getAccountUsername() + "\n");
                             }
                         }
 
-                        if(availableTutors.size() == 0){
+                        if(availableStudents.size() == 0){
                             System.out.println("There are no tutors available to message");
                         }
 
