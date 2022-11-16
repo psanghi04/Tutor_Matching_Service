@@ -80,23 +80,23 @@ public class Main {
                     if (option == 1) {
                         boolean accountSimilarity = false;
 
-                        for(int i = 0; i < userList.size(); i++){
-                            if(userList.get(i) instanceof Student){
-                                if(userList.get(i).getAccountUsername().equals(userName)){
+                        for (int i = 0; i < userList.size(); i++) {
+                            if (userList.get(i) instanceof Student) {
+                                if (userList.get(i).getAccountUsername().equals(userName)) {
                                     accountSimilarity = true;
                                     break;
                                 }
 
-                                if(userList.get(i).getEmail().equals(email)){
+                                if (userList.get(i).getEmail().equals(email)) {
                                     accountSimilarity = true;
                                     break;
                                 }
                             }
                         }
 
-                        if(accountSimilarity == false){
+                        if (accountSimilarity == false) {
                             user = new Student(userName, password, email);
-                        }else{
+                        } else {
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
@@ -122,23 +122,23 @@ public class Main {
 
                         boolean accountSimilarity = false;
 
-                        for(int i = 0; i < userList.size(); i++){
-                            if(userList.get(i) instanceof Tutor){
-                                if(userList.get(i).getAccountUsername().equals(userName)){
+                        for (int i = 0; i < userList.size(); i++) {
+                            if (userList.get(i) instanceof Tutor) {
+                                if (userList.get(i).getAccountUsername().equals(userName)) {
                                     accountSimilarity = true;
                                     break;
                                 }
 
-                                if(userList.get(i).getEmail().equals(email)){
+                                if (userList.get(i).getEmail().equals(email)) {
                                     accountSimilarity = true;
                                     break;
                                 }
                             }
                         }
 
-                        if(accountSimilarity == false){
+                        if (accountSimilarity == false) {
                             user = new Tutor(userName, password, email, newSubjects, price);
-                        }else{
+                        } else {
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
@@ -218,27 +218,27 @@ public class Main {
 
                                     String line = bfr.readLine();
                                     boolean blockedUser = false;
-                                    while(line != null){
-                                        if(line.equals("This person is blocked")){
+                                    while (line != null) {
+                                        if (line.equals("This person is blocked")) {
                                             blockedUser = true;
                                             break;
                                         }
 
                                         bfr.readLine();
 
-                                     }
+                                    }
 
-                                    if(blockedUser == false){
-                                        if(userList.get(i) instanceof Tutor){
+                                    if (blockedUser == false) {
+                                        if (userList.get(i) instanceof Tutor) {
                                             availableTutors.add(userList.get(i));
                                         }
-                                    }else{
+                                    } else {
                                         userList.get(i).setAccountUsername(userList.get(i).getAccountUsername() + "(blocked)");
                                         availableTutors.add(userList.get(i));
                                     }
 
                                     bfr.close();
-                                } catch(IOException e){
+                                } catch (IOException e) {
                                     e.printStackTrace();
                                 }
 
@@ -253,7 +253,7 @@ public class Main {
                             }
                         }
 
-                        if(availableTutors.size() == 0){
+                        if (availableTutors.size() == 0) {
                             System.out.println("There are no tutors available to message");
                         }
 
@@ -268,7 +268,7 @@ public class Main {
                         System.out.println("Who would you like to message?");
                         String person = scan.nextLine();
 
-                        if(userList.size() == 0){
+                        if (userList.size() == 0) {
                             System.out.println("There are no tutors available");
                         }
 
@@ -276,7 +276,7 @@ public class Main {
                         try {
                             File convos = new File(user.getAccountUsername() + "_" + person);
 
-                            if(!convos.exists()){
+                            if (!convos.exists()) {
                                 boolean convCreated = convos.createNewFile();
                             }
 
@@ -284,8 +284,8 @@ public class Main {
                             BufferedReader bfr = new BufferedReader(fr);
 
                             String line = bfr.readLine();
-                            while(line != null){
-                                if(line.equals("This person is blocked")){
+                            while (line != null) {
+                                if (line.equals("This person is blocked")) {
                                     userBlocked = true;
                                     break;
                                 }
@@ -293,7 +293,7 @@ public class Main {
                                 line = bfr.readLine();
                             }
 
-                            if(userBlocked == true){
+                            if (userBlocked == true) {
                                 System.out.println("You cannot message a blocked user.");
                                 break;
                             }
@@ -331,7 +331,7 @@ public class Main {
 
                         boolean quit = true;
 
-                        while(quit){
+                        while (quit) {
                             System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message");
                             int optionMessage = scan.nextInt();
                             scan.nextLine();
@@ -343,7 +343,7 @@ public class Main {
                                 case 1:
                                     ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
-                                    if(messages.size() == 0){
+                                    if (messages.size() == 0) {
                                         System.out.println("No Messages Available");
                                         continue;
                                     }
@@ -387,8 +387,8 @@ public class Main {
 
                                     ArrayList<String> searchableMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
-                                    for(int i = 0; i < searchableMessages.size(); i++){
-                                        if(searchableMessages.get(i).contains(keyword)) {
+                                    for (int i = 0; i < searchableMessages.size(); i++) {
+                                        if (searchableMessages.get(i).contains(keyword)) {
                                             System.out.println(searchableMessages.get(i));
                                         }
                                     }
@@ -433,16 +433,16 @@ public class Main {
                                 String newUsername = scan.nextLine();
 
                                 boolean sameUsername = false;
-                                for(int i = 0; i < userList.size(); i++){
-                                    if(userList.get(i) instanceof Student){
-                                        if(userList.get(i).getAccountUsername().equals(newUsername)){
+                                for (int i = 0; i < userList.size(); i++) {
+                                    if (userList.get(i) instanceof Student) {
+                                        if (userList.get(i).getAccountUsername().equals(newUsername)) {
                                             sameUsername = true;
                                             break;
                                         }
                                     }
                                 }
 
-                                if(sameUsername == false){
+                                if (sameUsername == false) {
                                     user.setAccountUsername(newUsername);
                                 } else {
                                     System.out.println("Username exists.");
@@ -472,16 +472,16 @@ public class Main {
                                 String newEmail = scan.nextLine();
 
                                 boolean sameEmail = false;
-                                for(int i = 0; i < userList.size(); i++){
-                                    if(userList.get(i) instanceof Student){
-                                        if(userList.get(i).getEmail().equals(newEmail)){
+                                for (int i = 0; i < userList.size(); i++) {
+                                    if (userList.get(i) instanceof Student) {
+                                        if (userList.get(i).getEmail().equals(newEmail)) {
                                             sameEmail = true;
                                             break;
                                         }
                                     }
                                 }
 
-                                if(sameEmail == false){
+                                if (sameEmail == false) {
                                     user.setEmail(newEmail);
                                 } else {
                                     System.out.println("Email exists.");
@@ -494,7 +494,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -550,8 +550,8 @@ public class Main {
                         System.out.println("Which user would you like to block?");
                         String blockUsername = scan.nextLine();
 
-                        for(int i = 0; i < userList.size(); i++){
-                            if(userList.get(i).getAccountUsername().equals(blockUsername)){
+                        for (int i = 0; i < userList.size(); i++) {
+                            if (userList.get(i).getAccountUsername().equals(blockUsername)) {
                                 blockedUserList.add(userList.get(i).getAccountUsername());
                             }
                         }
@@ -565,9 +565,9 @@ public class Main {
 
                             String line = bfr.readLine();
 
-                            while(line != null){
+                            while (line != null) {
                                 String[] lines = line.split(";");
-                                if(lines[0].contains(user.getAccountUsername())){
+                                if (lines[0].contains(user.getAccountUsername())) {
                                     blockedUserList.add(lines[1]);
                                 }
                                 line = bfr.readLine();
@@ -577,16 +577,16 @@ public class Main {
 
                             user.setBlockedList(blockedUserList);
 
-                            if(messageClass.isBlocked(user, blockUsername)){
+                            if (messageClass.isBlocked(user, blockUsername)) {
                                 System.out.println("User has been blocked");
                             }
-                        } catch (IOException e){
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
 
                         try {
                             File blockedUsers = new File("BlockedUsers.txt");
-                            if(!blockedUsers.exists()){
+                            if (!blockedUsers.exists()) {
                                 boolean blockedFile = blockedUsers.createNewFile();
                                 System.out.println("Blocked Users file has been created");
                             }
@@ -595,11 +595,11 @@ public class Main {
                             BufferedWriter bw = new BufferedWriter(fr);
                             PrintWriter pw = new PrintWriter(bw);
 
-                            for(int i = 0; i < blockedUserList.size(); i++){
+                            for (int i = 0; i < blockedUserList.size(); i++) {
                                 pw.println("Student," + user.getAccountUsername() + ";" + blockUsername);
                                 pw.flush();
                             }
-                        } catch (IOException e){
+                        } catch (IOException e) {
                             System.out.println("There are no blocked users");
                         }
 
@@ -620,7 +620,7 @@ public class Main {
                                 try {
                                     File blockedUsers = new File(user.getAccountUsername() + "_" + userList.get(i).getAccountUsername());
 
-                                    if(!blockedUsers.exists()){
+                                    if (!blockedUsers.exists()) {
                                         boolean fCreated = blockedUsers.createNewFile();
                                     }
 
@@ -629,8 +629,8 @@ public class Main {
 
                                     String line = bfr.readLine();
                                     boolean blockedUser = false;
-                                    while(line != null){
-                                        if(line.equals("This person is blocked")){
+                                    while (line != null) {
+                                        if (line.equals("This person is blocked")) {
                                             blockedUser = true;
                                             break;
                                         }
@@ -639,17 +639,17 @@ public class Main {
 
                                     }
 
-                                    if(blockedUser == false){
-                                        if(userList.get(i) instanceof Tutor){
+                                    if (blockedUser == false) {
+                                        if (userList.get(i) instanceof Tutor) {
                                             availableStudents.add(userList.get(i));
                                         }
-                                    }else{
+                                    } else {
                                         userList.get(i).setAccountUsername(userList.get(i).getAccountUsername() + "(blocked)");
                                         availableStudents.add(userList.get(i));
                                     }
 
                                     bfr.close();
-                                } catch(IOException e){
+                                } catch (IOException e) {
                                     e.printStackTrace();
                                 }
 
@@ -664,7 +664,7 @@ public class Main {
                             }
                         }
 
-                        if(availableStudents.size() == 0){
+                        if (availableStudents.size() == 0) {
                             System.out.println("There are no tutors available to message");
                         }
 
@@ -679,7 +679,7 @@ public class Main {
                         System.out.println("Who would you like to message?");
                         String person = scan.nextLine();
 
-                        if(userList.size() == 0){
+                        if (userList.size() == 0) {
                             System.out.println("There are no students available");
                         }
 
@@ -691,7 +691,7 @@ public class Main {
                             BufferedReader bfr = new BufferedReader(fr);
 
                             String line = bfr.readLine();
-                            while(line != null) {
+                            while (line != null) {
                                 if (line.equals("This person is blocked")) {
                                     userBlocked = true;
                                     break;
@@ -702,7 +702,7 @@ public class Main {
 
                             bfr.close();
 
-                            if(userBlocked == true){
+                            if (userBlocked == true) {
                                 System.out.println("Cannot message a blocked user");
                                 break;
                             }
@@ -735,7 +735,7 @@ public class Main {
                         }
 
                         boolean quit = true;
-                        while(quit){
+                        while (quit) {
                             System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message");
                             int optionMessage = scan.nextInt();
                             scan.nextLine();
@@ -747,7 +747,7 @@ public class Main {
                                 case 1:
                                     ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
-                                    if(messages.size() == 0){
+                                    if (messages.size() == 0) {
                                         System.out.println("No Messages Available");
                                         continue;
                                     }
@@ -792,8 +792,8 @@ public class Main {
 
                                     ArrayList<String> searchMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
-                                    for(int i = 0; i < searchMessages.size(); i++){
-                                        if(searchMessages.get(i).contains(keyword)) {
+                                    for (int i = 0; i < searchMessages.size(); i++) {
+                                        if (searchMessages.get(i).contains(keyword)) {
                                             System.out.println(searchMessages.get(i));
                                         }
                                     }
@@ -818,9 +818,9 @@ public class Main {
                                     try {
                                         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
                                         if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() +  ","  + "Student\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -837,16 +837,16 @@ public class Main {
                                 String newUsername = scan.nextLine();
 
                                 boolean similarUsername = false;
-                                for(int i = 0; i < userList.size(); i++){
-                                    if(userList.get(i) instanceof Tutor){
-                                        if(userList.get(i).getAccountUsername().equals(userName)){
+                                for (int i = 0; i < userList.size(); i++) {
+                                    if (userList.get(i) instanceof Tutor) {
+                                        if (userList.get(i).getAccountUsername().equals(userName)) {
                                             similarUsername = true;
                                             break;
                                         }
                                     }
                                 }
 
-                                if(similarUsername == false){
+                                if (similarUsername == false) {
                                     user.setAccountUsername(newUsername);
                                 } else {
                                     System.out.println("Username exists.");
@@ -875,16 +875,16 @@ public class Main {
                                 String newEmail = scan.nextLine();
 
                                 boolean similarEmail = false;
-                                for(int i = 0; i < userList.size(); i++){
-                                    if(userList.get(i) instanceof Tutor){
-                                        if(userList.get(i).getEmail().equals(newEmail)){
+                                for (int i = 0; i < userList.size(); i++) {
+                                    if (userList.get(i) instanceof Tutor) {
+                                        if (userList.get(i).getEmail().equals(newEmail)) {
                                             similarEmail = true;
                                             break;
                                         }
                                     }
                                 }
 
-                                if(similarEmail == false){
+                                if (similarEmail == false) {
                                     user.setEmail(newEmail);
                                 } else {
                                     System.out.println("Email exists.");
@@ -895,7 +895,7 @@ public class Main {
                                     try {
                                         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
                                         if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ","  + "Student\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
@@ -925,9 +925,9 @@ public class Main {
                                     try {
                                         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
                                         if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ","  + "Student\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -950,8 +950,8 @@ public class Main {
                         System.out.println("Which user would you like to block?");
                         String blockUsername = scan.nextLine();
 
-                        for(int i = 0; i < userList.size(); i++){
-                            if(userList.get(i).getAccountUsername().equals(blockUsername)){
+                        for (int i = 0; i < userList.size(); i++) {
+                            if (userList.get(i).getAccountUsername().equals(blockUsername)) {
                                 blockedUserList.add(userList.get(i).getAccountUsername());
                             }
                         }
@@ -959,7 +959,7 @@ public class Main {
 //
                         try {
                             File blockedUsers = new File("BlockedUsers.txt");
-                            if(!blockedUsers.exists()){
+                            if (!blockedUsers.exists()) {
                                 boolean blockedFile = blockedUsers.createNewFile();
                                 System.out.println("Blocked Users file has been created");
                             }
@@ -968,11 +968,11 @@ public class Main {
                             BufferedWriter bw = new BufferedWriter(fr);
                             PrintWriter pw = new PrintWriter(bw);
 
-                            for(int i = 0; i < blockedUserList.size(); i++){
+                            for (int i = 0; i < blockedUserList.size(); i++) {
                                 pw.println("Student," + user.getAccountUsername() + ";" + blockedUserList.get(i));
                                 pw.flush();
                             }
-                        } catch (IOException e){
+                        } catch (IOException e) {
                             System.out.println("There are no blocked users");
                         }
 
@@ -984,9 +984,9 @@ public class Main {
 
                             String line = bfr.readLine();
 
-                            while(line != null){
+                            while (line != null) {
                                 String[] lines = line.split(";");
-                                if(lines[0].contains(user.getAccountUsername())){
+                                if (lines[0].contains(user.getAccountUsername())) {
                                     blockedUserList.add(lines[1]);
                                 }
                                 line = bfr.readLine();
@@ -994,10 +994,10 @@ public class Main {
 
                             user.setBlockedList(blockedUserList);
 
-                            if(messageClass.isBlocked(user, blockUsername)){
+                            if (messageClass.isBlocked(user, blockUsername)) {
                                 System.out.println("User has been blocked");
                             }
-                        } catch (IOException e){
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
 

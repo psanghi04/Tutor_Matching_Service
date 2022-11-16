@@ -3,6 +3,7 @@ import java.sql.*;
 import java.time.*;
 import java.util.*;
 import java.util.ArrayList;
+
 public class Message {
 //    public void isBlocked(User user, String personBlocked){
 //        ArrayList<User> blocked = new ArrayList<User>();
@@ -22,7 +23,7 @@ public class Message {
 //        }
 //    } // if he is blocked/invisible and correct user
 
-//    public boolean isInvisible(User user, String personInvisible){
+    //    public boolean isInvisible(User user, String personInvisible){
 //        for(int i=0;i<user.getInvisibleList().size();i++){
 //            if(user.getInvisibleList().get(i).getAccountUsername().equals(personInvisible)){
 //                return true;
@@ -30,22 +31,22 @@ public class Message {
 //        }
 //        return false;
 //    }
-    public void edit(User user, String otherPerson, String message, String edit){
+    public void edit(User user, String otherPerson, String message, String edit) {
         ArrayList<String> conversation = new ArrayList<String>();
-        try{
+        try {
             File f = new File(user.getAccountUsername() + "_" + otherPerson);
             BufferedReader bfr = new BufferedReader(new FileReader(f));
-            while(true){
+            while (true) {
                 String line = bfr.readLine();
 
-                if(line == null){
+                if (line == null) {
                     break;
                 }
 
                 conversation.add(line);
             }
             BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
-            for(int i = 0; i < conversation.size(); i++) {
+            for (int i = 0; i < conversation.size(); i++) {
 
                 if (conversation.get(i).contains(message)) {
                     bfw.write(conversation.get(i).replace(message, edit));
@@ -55,16 +56,17 @@ public class Message {
             }
             bfr.close();
             bfw.close();
-        }  catch(IOException e){
+        } catch (IOException e) {
             System.out.println("This chat does not exist");
         }
     }
-    public void delete(User user, String otherPerson, String messageDeleted){
+
+    public void delete(User user, String otherPerson, String messageDeleted) {
         ArrayList<String> conversation = new ArrayList<String>();
-        try{
+        try {
             File f = new File(user.getAccountUsername() + "_" + otherPerson);
             BufferedReader bfr = new BufferedReader(new FileReader(f));
-            while(true){
+            while (true) {
                 String line = bfr.readLine();
                 if (line == null) {
                     break;
@@ -73,17 +75,18 @@ public class Message {
             }
             bfr.close();
             BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
-            for(int i=0;i< conversation.size();i++){
-                if(conversation.get(i).contains(messageDeleted)){
+            for (int i = 0; i < conversation.size(); i++) {
+                if (conversation.get(i).contains(messageDeleted)) {
                     continue;
                 }
                 bfw.write(conversation.get(i) + "\n");
             }
             bfw.close();
-        } catch(IOException e){
+        } catch (IOException e) {
             System.out.println("This chat does not exist");
         }
     }
+
     public String getTime() {
         Timestamp currentTime = Timestamp.from(Instant.now()); // gets current system time
         return currentTime.toString().substring(0, 19); // returns time with precision as seconds
@@ -138,5 +141,5 @@ public class Message {
             System.out.println("Error!");
         }
     }
-    
+
 }
