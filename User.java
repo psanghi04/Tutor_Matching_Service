@@ -7,7 +7,7 @@ public class User {
     private ArrayList<User> blockedList; // list of all blocked users
     private ArrayList<User> invisibleList;
 
-    public User(String accountUsername, String password, String email, ArrayList<User> blockedList, ArrayList<User> invisibleList) {
+    public User(String accountUsername, String password, String email, ArrayList<String> blockedList, ArrayList<String> invisibleList) {
         this.accountUsername = accountUsername; // sets the current instance of accountUsername to the parameter accountUsername
         this.password = password; // sets the current instance of password to the parameter password
         this.email = email; // sets the current instance of email to the parameter email
@@ -51,15 +51,15 @@ public class User {
     }
 
     // set blocked status
-    public void setBlocked(ArrayList<User> blockedList) {
+    public void setBlocked(ArrayList<String> blockedList) {
         this.blockedList = blockedList;
     }
 
-    public ArrayList<User> getInvisibleList() {
+    public ArrayList<String> getInvisibleList() {
         return invisibleList;
     }
 
-    public void setInvisibleList(ArrayList<User> invisibleList) {
+    public void setInvisibleList(ArrayList<String> invisibleList) {
         this.invisibleList = invisibleList;
     }
 }
