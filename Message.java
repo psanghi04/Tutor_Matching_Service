@@ -6,10 +6,12 @@ import java.util.ArrayList;
 
 public class Message {
     public void isBlocked(User user, String personBlocked){
-        ArrayList<User> blocked = new ArrayList<User>();
-        blocked = user.getBlockedList();
+        ArrayList<String> blocked = new ArrayList<String>();
+        for(int i=0;i<user.getBlockedList().size();i++){
+            blocked.add(user.getBlockedList().get(i).getAccountUsername());
+        }
         for(int i=0;i<blocked.size();i++){
-            if(blocked.get(i).getAccountUsername().equals(personBlocked)){
+            if(blocked.get(i).equals(personBlocked)){
                 try{
                     File f = new File(user.getAccountUsername() + "_" + personBlocked);
                     BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
@@ -22,6 +24,25 @@ public class Message {
             }
         }
     } // if he is blocked/invisible and correct user
+
+    public boolean blockedStatus(User user, String personBlocked){
+        try{
+            File f = new File(user.getAccountUsername() + "_" + personBlocked);
+            BufferedReader bfr = new BufferedReader(new FileReader(f));
+            while(true){
+                String line = bfr.readLine();
+                if(line == null){
+                    break;
+                }
+                if(line.equals("This person is blocked")){
+                    return true;
+                }
+            }
+        } catch(Exception e){
+            System.out.println("This chat does not exist");
+        }
+        return false;
+    }
 
         public boolean isInvisible(User user, String personInvisible){
         for(int i=0;i<user.getInvisibleList().size();i++){
