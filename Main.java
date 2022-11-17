@@ -201,7 +201,7 @@ public class Main {
         while (signedIn) {
 
             if (user instanceof Student) {
-                System.out.println("Tutor Interface\n\n1. View tutors\n2. message a user\n3. edit profile\n4. sign out\n5. block a user");
+                System.out.println("Tutor Interface\n\n1. View tutors\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. make a user invisible");
                 int option = scan.nextInt();
                 scan.nextLine();
 
@@ -609,9 +609,17 @@ public class Main {
 
 
                         break;
+                        case 6:
+                        System.out.println("Which user would you like to make invisible?");
+                        String invisiblePerson = scan.nextLine();
+                        for (int i = 0; i < userList.size(); i++) {
+                            if (userList.get(i).getAccountUsername().equals(invisiblePerson)) {
+                                invisibleList.add(userList.get(i).getAccountUsername());
+                            }
+                        }
                 }
             } else {
-                System.out.println("1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user");
+                System.out.println("1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. Make a user invisible");
                 int option = scan.nextInt();
                 scan.nextLine();
 
@@ -1007,6 +1015,14 @@ public class Main {
 
 
                         break;
+                        case 6:
+                        System.out.println("Which user would you like to make invisible?");
+                        String invisiblePerson = scan.nextLine();
+                        for (int i = 0; i < userList.size(); i++) {
+                            if (userList.get(i).getAccountUsername().equals(invisiblePerson)) {
+                                invisibleList.add(userList.get(i).getAccountUsername());
+                            }
+                        }
 
                 }
             }
