@@ -420,6 +420,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        pw.close();
                                         System.out.println("Password has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
@@ -459,6 +460,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        pw.close();
                                         System.out.println("Username has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
@@ -498,6 +500,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        close();
                                         System.out.println("Email has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
@@ -531,6 +534,7 @@ public class Main {
                                         }
 
                                         pw.flush();
+                                        pw.close();
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
                                     }
