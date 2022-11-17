@@ -22,7 +22,7 @@ public class Main {
 
         try {
             if (!f.exists()) {
-                boolean fCreated = f.createNewFile();
+                f.createNewFile();
                 System.out.println("File has been created..");
             }
 
@@ -278,7 +278,7 @@ public class Main {
                             File convos = new File(user.getAccountUsername() + "_" + person);
 
                             if(!convos.exists()){
-                                boolean convCreated = convos.createNewFile();
+                                convos.createNewFile();
                             }
 
                             FileReader fr = new FileReader(convos);
