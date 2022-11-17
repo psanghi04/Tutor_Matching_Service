@@ -1,4 +1,4 @@
-import java.io.Buffer;
+
 import java.util.*;
 import java.io.*;
 
@@ -13,6 +13,7 @@ public class Main {
         String password;
 
         ArrayList<String> blockedUserList = new ArrayList<String>();
+        ArrayList<String> invisibleList = new ArrayList<String>();
 
         System.out.println("Welcome to Tutoring Center!");
 
