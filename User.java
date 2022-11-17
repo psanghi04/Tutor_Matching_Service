@@ -4,8 +4,8 @@ public class User {
     private String accountUsername; // username of user account
     private String password; // password of user account
     private String email; // email of user account
-    private ArrayList<User> blockedList; // list of all blocked users
-    private ArrayList<User> invisibleList;
+    private ArrayList<String> blockedList; // list of all blocked users
+    private ArrayList<String> invisibleList;
 
     public User(String accountUsername, String password, String email, ArrayList<String> blockedList, ArrayList<String> invisibleList) {
         this.accountUsername = accountUsername; // sets the current instance of accountUsername to the parameter accountUsername
