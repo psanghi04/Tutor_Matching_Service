@@ -5,32 +5,32 @@ import java.util.*;
 import java.util.ArrayList;
 
 public class Message {
-//    public void isBlocked(User user, String personBlocked){
-//        ArrayList<User> blocked = new ArrayList<User>();
-//        blocked = user.getBlockedList();
-//        for(int i=0;i<blocked.size();i++){
-//            if(blocked.get(i).getAccountUsername().equals(personBlocked)){
-//                try{
-//                    File f = new File(user.getAccountUsername() + "_" + personBlocked);
-//                    BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
-//                    bfw.write("This person is blocked");
-//                    bfw.close();
-//                    break;
-//                } catch(IOException e){
-//                    System.out.println("This chat does not exist");
-//                }
-//            }
-//        }
-//    } // if he is blocked/invisible and correct user
+    public void isBlocked(User user, String personBlocked){
+        ArrayList<User> blocked = new ArrayList<User>();
+        blocked = user.getBlockedList();
+        for(int i=0;i<blocked.size();i++){
+            if(blocked.get(i).getAccountUsername().equals(personBlocked)){
+                try{
+                    File f = new File(user.getAccountUsername() + "_" + personBlocked);
+                    BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
+                    bfw.write("This person is blocked");
+                    bfw.close();
+                    break;
+                } catch(IOException e){
+                    System.out.println("This chat does not exist");
+                }
+            }
+        }
+    } // if he is blocked/invisible and correct user
 
-    //    public boolean isInvisible(User user, String personInvisible){
-//        for(int i=0;i<user.getInvisibleList().size();i++){
-//            if(user.getInvisibleList().get(i).getAccountUsername().equals(personInvisible)){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+        public boolean isInvisible(User user, String personInvisible){
+        for(int i=0;i<user.getInvisibleList().size();i++){
+           if(user.getInvisibleList().get(i).getAccountUsername().equals(personInvisible)){
+                return true;
+            }
+        }
+        return false;
+    }
     public void edit(User user, String otherPerson, String message, String edit) {
         ArrayList<String> conversation = new ArrayList<String>();
         try {
