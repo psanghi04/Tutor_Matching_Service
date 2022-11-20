@@ -1,4 +1,3 @@
-
 import java.util.*;
 import java.io.*;
 
@@ -36,9 +35,9 @@ public class Main {
                 User user;
 
                 if (splitLines[3].equals("Student")) {
-                    user = new Student(splitLines[0], splitLines[1], splitLines[2]);
+                    user = new Student(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList);
                 } else {
-                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(";"), Double.parseDouble(splitLines[4]));
+                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList, splitLines[3].split(";"), Double.parseDouble(splitLines[4]));
                 }
 
                 userList.add(user);
@@ -96,7 +95,7 @@ public class Main {
                         }
 
                         if(accountSimilarity == false){
-                            user = new Student(userName, password, email);
+                            user = new Student(userName, password, email, blockedUserList, invisibleList);
                         }else{
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
@@ -138,10 +137,19 @@ public class Main {
                         }
 
                         if(accountSimilarity == false){
-                            user = new Tutor(userName, password, email, newSubjects, price);
+                            user = new Tutor(userName, password, email, blockedUserList, invisibleList, newSubjects, price);
                         }else{
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
+                        }
+
+                        String blockedUsers = "";
+                        for(int i = 0; i < blockedUserList.size(); i++){
+                            if(i != blockedUserList.size() - 1){
+                                blockedUsers += blockedUserList.get(i) + "{";
+                            } else {
+                                blockedUsers += blockedUserList.get(i);
+                            }
                         }
 
                         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
@@ -227,7 +235,7 @@ public class Main {
 
                                         bfr.readLine();
 
-                                     }
+                                    }
 
                                     if(blockedUser == false){
                                         if(userList.get(i) instanceof Tutor){
@@ -417,7 +425,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -457,7 +465,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," +  Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -497,11 +505,11 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
                                         }
 
                                         pw.flush();
-                                        close();
+
                                         System.out.println("Email has been successfully changed\n");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
@@ -531,7 +539,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -610,7 +618,7 @@ public class Main {
 
 
                         break;
-                        case 6:
+                    case 6:
                         System.out.println("Which user would you like to make invisible?");
                         String invisiblePerson = scan.nextLine();
                         for (int i = 0; i < userList.size(); i++) {
@@ -626,6 +634,7 @@ public class Main {
 
                 switch (option) {
                     case 1:
+                        System.out.println("Inside");
                         ArrayList<User> availableStudents = new ArrayList<User>();
 
                         for (int i = 0; i < userList.size(); i++) {
@@ -652,16 +661,15 @@ public class Main {
 
                                     }
 
+                                    bfr.close();
+
                                     if(blockedUser == false){
-                                        if(userList.get(i) instanceof Tutor){
-                                            availableStudents.add(userList.get(i));
-                                        }
+                                        availableStudents.add(userList.get(i));
                                     }else{
                                         userList.get(i).setAccountUsername(userList.get(i).getAccountUsername() + "(blocked)");
                                         availableStudents.add(userList.get(i));
                                     }
 
-                                    bfr.close();
                                 } catch(IOException e){
                                     e.printStackTrace();
                                 }
@@ -678,7 +686,7 @@ public class Main {
                         }
 
                         if(availableStudents.size() == 0){
-                            System.out.println("There are no tutors available to message");
+                            System.out.println("There are no students available to message");
                         }
 
                         break;
@@ -827,20 +835,24 @@ public class Main {
                                 String newPassword = scan.nextLine();
                                 user.setPassword(newPassword);
 
-                                for (int i = 0; i < userList.size(); i++) {
-                                    try {
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() +  ","  + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
-                                        }
+                                try {
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
 
-                                        pw.flush();
-                                    } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
+                                    for (int i = 0; i < userList.size(); i++) {
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                        }
                                     }
+
+                                    pw.flush();
+
+                                    System.out.println("Password has been changed successfully");
+                                } catch (IOException e) {
+                                    System.out.println("Can't write to the file!");
                                 }
+
 
                                 break;
 
@@ -852,7 +864,7 @@ public class Main {
                                 boolean similarUsername = false;
                                 for(int i = 0; i < userList.size(); i++){
                                     if(userList.get(i) instanceof Tutor){
-                                        if(userList.get(i).getAccountUsername().equals(userName)){
+                                        if(userList.get(i).getAccountUsername().equals(newUsername)){
                                             similarUsername = true;
                                             break;
                                         }
@@ -866,19 +878,23 @@ public class Main {
                                     continue;
                                 }
 
-                                for (int i = 0; i < userList.size(); i++) {
-                                    try {
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                try {
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+
+                                    for (int i = 0; i < userList.size(); i++) {
+
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
-                                        pw.flush();
-                                    } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
+
+                                    pw.flush();
+                                    System.out.println("Username has been changed succesfully!");
+                                } catch (IOException e) {
+                                    System.out.println("Can't write to the file!");
                                 }
 
                                 break;
@@ -904,20 +920,25 @@ public class Main {
                                     continue;
                                 }
 
-                                for (int i = 0; i < userList.size(); i++) {
+
                                     try {
                                         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ","  + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+
+                                        for (int i = 0; i < userList.size(); i++) {
+                                            if (userList.get(i) instanceof Student) {
+                                                pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
+                                            } else {
+                                                pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            }
+
                                         }
 
                                         pw.flush();
+
+                                        System.out.println("Email has been successfully changed!");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
                                     }
-                                }
 
                                 break;
 
@@ -940,7 +961,7 @@ public class Main {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ","  + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + ((Tutor) userList.get(i)).getSubjects().toString().replace(",", ";") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
                                         }
 
                                         pw.flush();
@@ -1016,7 +1037,7 @@ public class Main {
 
 
                         break;
-                        case 6:
+                    case 6:
                         System.out.println("Which user would you like to make invisible?");
                         String invisiblePerson = scan.nextLine();
                         for (int i = 0; i < userList.size(); i++) {
