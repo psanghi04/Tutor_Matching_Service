@@ -31,7 +31,7 @@ public class User {
     }
 
     // get isBlocked
-    public ArrayList<User> getBlockedList() {
+    public ArrayList<String> getBlockedList() {
         return blockedList;
     }
 
@@ -51,7 +51,7 @@ public class User {
     }
 
     // set blocked status
-    public void setBlocked(ArrayList<String> blockedList) {
+    public void setBlockedList(ArrayList<String> blockedList) {
         this.blockedList = blockedList;
     }
 
@@ -62,4 +62,5 @@ public class User {
     public void setInvisibleList(ArrayList<String> invisibleList) {
         this.invisibleList = invisibleList;
     }
+
 }
