@@ -383,7 +383,7 @@ public class Main {
 
                                     boolean dMessageExists = false;
                                     for(int i = 0; i < messagesDelete.size(); i++){
-                                        if(messagesDelete.get(i).equals(message)){
+                                        if(messagesDelete.get(i).substring(messagesDelete.get(i).indexOf("is", messagesDelete.get(i).indexOf("is", messagesDelete.get(i).indexOf("is") + 1) + 1)).equals(message)){
                                             dMessageExists = true;
                                         }
                                     }
@@ -403,15 +403,15 @@ public class Main {
                                     String oldMessage = scan.nextLine();
 
                                     ArrayList<String> allMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
-                                    
-                                    
+
+
                                     boolean messageExists = false;
                                     for(int i = 0; i < allMessages.size(); i++){
-                                        if(allMessages.get(i).equals(oldMessage)){
+                                        if(allMessages.get(i).substring(allMessages.get(i).indexOf("is", allMessages.get(i).indexOf("is", allMessages.get(i).indexOf("is") + 1) + 1)).equals(oldMessage)){
                                             messageExists = true;
                                         }
                                     }
-                                    
+
                                     if(messageExists == false){
                                         System.out.println("Message not found!");
                                         break;
@@ -419,6 +419,8 @@ public class Main {
 
                                     System.out.println("What would you like your edited message to look like?");
                                     String newMessage = scan.nextLine();
+
+
 
                                     messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
                                     messageClass.export(userName, userList.get(index).getAccountUsername());
@@ -698,7 +700,7 @@ public class Main {
                                             break;
                                         }
 
-                                        bfr.readLine();
+                                        line = bfr.readLine();
 
                                     }
 
@@ -839,7 +841,7 @@ public class Main {
 
                                     boolean DMessageExists = false;
                                     for(int i = 0; i < allDMessages.size(); i++){
-                                        if(allDMessages.get(i).equals(message)){
+                                        if(allDMessages.get(i).substring(allDMessages.get(i).indexOf("is", allDMessages.get(i).indexOf("is", allDMessages.get(i).indexOf("is") + 1) + 1)).equals(message)){
                                             DMessageExists = true;
                                         }
                                     }
@@ -862,7 +864,7 @@ public class Main {
 
                                     boolean messageEExists = false;
                                     for(int i = 0; i < allEMessages.size(); i++){
-                                        if(allEMessages.get(i).equals(oldMessage)){
+                                        if(allEMessages.get(i).substring(allEMessages.get(i).indexOf("is", allEMessages.get(i).indexOf("is", allEMessages.get(i).indexOf("is") + 1) + 1)).equals(oldMessage)){
                                             messageEExists = true;
                                         }
                                     }
@@ -995,24 +997,24 @@ public class Main {
                                 }
 
 
-                                    try {
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                try {
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
 
-                                        for (int i = 0; i < userList.size(); i++) {
-                                            if (userList.get(i) instanceof Student) {
-                                                pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
-                                            } else {
-                                                pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
-                                            }
-
+                                    for (int i = 0; i < userList.size(); i++) {
+                                        if (userList.get(i) instanceof Student) {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
+                                        } else {
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
 
-                                        pw.flush();
-
-                                        System.out.println("Email has been successfully changed!");
-                                    } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
+
+                                    pw.flush();
+
+                                    System.out.println("Email has been successfully changed!");
+                                } catch (IOException e) {
+                                    System.out.println("Can't write to the file!");
+                                }
 
                                 break;
 
