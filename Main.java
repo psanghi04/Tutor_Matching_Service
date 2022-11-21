@@ -210,7 +210,7 @@ public class Main {
         while (signedIn) {
 
             if (user instanceof Student) {
-                System.out.println("Tutor Interface\n\n1. View tutors\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. make a user invisible");
+                System.out.println("Student Interface\n\n1. View tutors\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. make a user invisible");
                 int option = scan.nextInt();
                 scan.nextLine();
 
@@ -490,7 +490,10 @@ public class Main {
                                 case 7:
 
                                     try{
-                                        File exportFile = new File("convo" + "_" + userName + "_" +  userList.get(index).getAccountUsername());
+                                        System.out.println("What is the name of the file which you would like your exported contents to be placed in?");
+                                        String expFileName = scan.nextLine();
+
+                                        File exportFile = new File(expFileName);
 
                                         if(!exportFile.exists()){
                                             exportFile.createNewFile();
@@ -747,7 +750,7 @@ public class Main {
                         }
                 }
             } else {
-                System.out.println("Student Interface\n\n1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. Make a user invisible");
+                System.out.println("Tutor Interface\n\n1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. Make a user invisible");
                 int option = scan.nextInt();
                 scan.nextLine();
 
@@ -1016,7 +1019,10 @@ public class Main {
                                     break;
                                 case 7:
                                     try{
-                                        File exportFile = new File("convo" + "_" + userName + "_" +  userList.get(index).getAccountUsername());
+                                        System.out.println("What is the name of the file which you would like your exported contents to be placed in?");
+                                        String exportFileName = scan.nextLine();
+
+                                        File exportFile = new File(exportFileName);
 
                                         if(!exportFile.exists()){
                                             exportFile.createNewFile();
