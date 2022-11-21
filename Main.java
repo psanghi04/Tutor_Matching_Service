@@ -425,7 +425,7 @@ public class Main {
                                 String newPassword = scan.nextLine();
                                 user.setPassword(newPassword);
 
-                                
+
                                 try {
                                     PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
 
@@ -442,7 +442,7 @@ public class Main {
                                 } catch (IOException e) {
                                     System.out.println("Can't write to the file!");
                                 }
-                                
+
 
                                 break;
                             case 2:
@@ -469,7 +469,7 @@ public class Main {
 
                                 try {
                                     PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-                                    
+
                                     for (int i = 0; i < userList.size(); i++) {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
@@ -477,9 +477,9 @@ public class Main {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
                                     }
-                                    
+
                                     pw.flush();
-                                    
+
                                     System.out.println("Username has been successfully changed\n");
                                 } catch (IOException e) {
                                     System.out.println("Can't write to the file!");
@@ -508,7 +508,7 @@ public class Main {
                                     continue;
                                 }
 
-                                
+
                                 try {
                                     PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
 
@@ -560,7 +560,7 @@ public class Main {
                                 } catch (IOException e) {
                                     System.out.println("Can't write to the file!");
                                 }
-                                
+
 
                                 break;
 
@@ -989,7 +989,7 @@ public class Main {
                                 } catch (IOException e) {
                                     System.out.println("Can't write to the file!");
                                 }
-                                
+
                                 break;
 
                         }
