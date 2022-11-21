@@ -238,7 +238,7 @@ public class Main {
                                             break;
                                         }
 
-                                        bfr.readLine();
+                                        line = bfr.readLine();
 
                                     }
 
@@ -383,7 +383,7 @@ public class Main {
 
                                     boolean dMessageExists = false;
                                     for(int i = 0; i < messagesDelete.size(); i++){
-                                        if(messagesDelete.get(i).substring(messagesDelete.get(i).indexOf("is", messagesDelete.get(i).indexOf("is", messagesDelete.get(i).indexOf("is") + 1) + 1)).equals(message)){
+                                        if(messagesDelete.get(i).substring(messagesDelete.get(i).indexOf(",") + 1).substring(messagesDelete.get(i).indexOf(",")).substring(messagesDelete.get(i).indexOf(",")).equals(message)){
                                             dMessageExists = true;
                                         }
                                     }
@@ -404,10 +404,15 @@ public class Main {
 
                                     ArrayList<String> allMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
+                                    if(allMessages.size() == 0){
+                                        System.out.println("There are no messages!");
+                                        break;
+                                    }
 
                                     boolean messageExists = false;
+
                                     for(int i = 0; i < allMessages.size(); i++){
-                                        if(allMessages.get(i).substring(allMessages.get(i).indexOf("is", allMessages.get(i).indexOf("is", allMessages.get(i).indexOf("is") + 1) + 1)).equals(oldMessage)){
+                                        if(allMessages.get(i).substring(allMessages.get(i).indexOf(",") + 1).substring(allMessages.get(i).indexOf(",")).substring(allMessages.get(i).indexOf(",")).equals(oldMessage)){
                                             messageExists = true;
                                         }
                                     }
@@ -422,7 +427,7 @@ public class Main {
 
 
 
-                                    messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
+                                    messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage + "\n");
                                     messageClass.export(userName, userList.get(index).getAccountUsername());
 
                                     break;
@@ -433,10 +438,17 @@ public class Main {
 
                                     ArrayList<String> searchableMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
+                                    boolean foundMessage = false;
+
                                     for(int i = 0; i < searchableMessages.size(); i++){
                                         if(searchableMessages.get(i).contains(keyword)) {
                                             System.out.println(searchableMessages.get(i));
+                                            foundMessage = true;
                                         }
+                                    }
+
+                                    if(foundMessage == false){
+                                        System.out.println("Message not found!");
                                     }
 
                             }
@@ -672,7 +684,7 @@ public class Main {
                         }
                 }
             } else {
-                System.out.println("1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. Make a user invisible");
+                System.out.println("Student Interface\n\n1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. Make a user invisible");
                 int option = scan.nextInt();
                 scan.nextLine();
 
@@ -841,7 +853,7 @@ public class Main {
 
                                     boolean DMessageExists = false;
                                     for(int i = 0; i < allDMessages.size(); i++){
-                                        if(allDMessages.get(i).substring(allDMessages.get(i).indexOf("is", allDMessages.get(i).indexOf("is", allDMessages.get(i).indexOf("is") + 1) + 1)).equals(message)){
+                                        if(allDMessages.get(i).substring(allDMessages.get(i).indexOf(",") + 1).substring(allDMessages.get(i).indexOf(",")).substring(allDMessages.get(i).indexOf(",")).equals(message)){
                                             DMessageExists = true;
                                         }
                                     }
@@ -862,9 +874,14 @@ public class Main {
 
                                     ArrayList<String> allEMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
+                                    if(allEMessages.size() == 0){
+                                        System.out.println("There are no messages!");
+                                        break;
+                                    }
+
                                     boolean messageEExists = false;
                                     for(int i = 0; i < allEMessages.size(); i++){
-                                        if(allEMessages.get(i).substring(allEMessages.get(i).indexOf("is", allEMessages.get(i).indexOf("is", allEMessages.get(i).indexOf("is") + 1) + 1)).equals(oldMessage)){
+                                        if(allEMessages.get(i).substring(allEMessages.get(i).indexOf(",") + 1).substring(allEMessages.get(i).indexOf(",")).substring(allEMessages.get(i).indexOf(",")).equals(oldMessage)){
                                             messageEExists = true;
                                         }
                                     }
@@ -877,7 +894,7 @@ public class Main {
                                     System.out.println("What would you like your edited message to look like?");
                                     String newMessage = scan.nextLine();
 
-                                    messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage);
+                                    messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage + "\n");
                                     messageClass.export(userName, userList.get(index).getAccountUsername());
                                     System.out.println("Edit Successful\n");
 
@@ -889,10 +906,16 @@ public class Main {
 
                                     ArrayList<String> searchMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
+                                    boolean messageFound = false;
                                     for(int i = 0; i < searchMessages.size(); i++){
                                         if(searchMessages.get(i).contains(keyword)) {
                                             System.out.println(searchMessages.get(i));
+                                            messageFound = true;
                                         }
+                                    }
+
+                                    if(messageFound == false){
+                                        System.out.println("Message not found!");
                                     }
                             }
                         }
