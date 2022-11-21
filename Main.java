@@ -346,7 +346,7 @@ public class Main {
                         boolean quit = true;
 
                         while(quit){
-                            System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message");
+                            System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message\n6. import to a conversation\n7. export a conversation");
                             int optionMessage = scan.nextInt();
                             scan.nextLine();
 
@@ -450,6 +450,69 @@ public class Main {
                                     if(foundMessage == false){
                                         System.out.println("Message not found!");
                                     }
+
+                                    break;
+
+                                case 6:
+
+                                    System.out.println("Please list the filename.");
+                                    String ifileName = scan.nextLine();
+
+                                    ArrayList<String> oldMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+                                    try{
+                                        File importFile = new File(ifileName);
+                                        FileReader fr = new FileReader(importFile);
+                                        BufferedReader bfr = new BufferedReader(fr);
+
+                                        String line = bfr.readLine();
+                                        while(line != null){
+                                            oldMessages.add(line);
+                                            line = bfr.readLine();
+                                        }
+
+                                        BufferedWriter bfw = new BufferedWriter(new FileWriter(userName + "_" + userList.get(index).getAccountUsername(), true));
+                                        for(int i = 0; i < oldMessages.size(); i++){
+                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + oldMessages.get(i) + "\n");
+                                        }
+
+                                        bfr.close();
+                                        bfw.flush();
+
+                                        System.out.println("Imported conversation successfully!");
+
+                                    } catch (IOException e){
+                                        System.out.println("Cannot find or read from file!");
+                                    }
+
+                                    break;
+
+                                case 7:
+
+                                    try{
+                                        File exportFile = new File("convo" + "_" + userName + "_" +  userList.get(index).getAccountUsername());
+
+                                        if(!exportFile.exists()){
+                                            exportFile.createNewFile();
+                                        }
+
+                                        FileWriter fw = new FileWriter(exportFile, false);
+                                        BufferedWriter bfw = new BufferedWriter(fw);
+
+                                        ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+                                        for(int i = 0; i < pastMessages.size(); i++){
+                                            System.out.println(pastMessages.get(i));
+                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + pastMessages.get(i) + "\n");
+                                        }
+
+                                        bfw.flush();
+                                        System.out.println("Conversation exported successfully!");
+                                    } catch (IOException e){
+                                        System.out.println("Unable to export file");
+                                    }
+
+                                    break;
 
                             }
 
@@ -817,7 +880,7 @@ public class Main {
 
                         boolean quit = true;
                         while(quit){
-                            System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message");
+                            System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message\n6. import to a conversation\n7. export a conversation");
                             int optionMessage = scan.nextInt();
                             scan.nextLine();
 
@@ -917,6 +980,65 @@ public class Main {
                                     if(messageFound == false){
                                         System.out.println("Message not found!");
                                     }
+
+                                    break;
+                                case 6:
+                                    System.out.println("Please list the filename.");
+                                    String ifileName = scan.nextLine();
+
+                                    ArrayList<String> oldMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+                                    try{
+                                        File importFile = new File(ifileName);
+                                        FileReader fr = new FileReader(importFile);
+                                        BufferedReader bfr = new BufferedReader(fr);
+
+                                        String line = bfr.readLine();
+                                        while(line != null){
+                                            oldMessages.add(line);
+                                            line = bfr.readLine();
+                                        }
+
+                                        BufferedWriter bfw = new BufferedWriter(new FileWriter(userName + "_" + userList.get(index).getAccountUsername(), true));
+                                        for(int i = 0; i < oldMessages.size(); i++){
+                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + oldMessages.get(i) + "\n");
+                                        }
+
+                                        bfr.close();
+                                        bfw.flush();
+
+                                        System.out.println("Imported conversation successfully!");
+
+                                    } catch (IOException e){
+                                        System.out.println("Cannot find or read from file!");
+                                    }
+
+                                    break;
+                                case 7:
+                                    try{
+                                        File exportFile = new File("convo" + "_" + userName + "_" +  userList.get(index).getAccountUsername());
+
+                                        if(!exportFile.exists()){
+                                            exportFile.createNewFile();
+                                        }
+
+                                        FileWriter fw = new FileWriter(exportFile, false);
+                                        BufferedWriter bfw = new BufferedWriter(fw);
+
+                                        ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+                                        for(int i = 0; i < pastMessages.size(); i++){
+                                            System.out.println(pastMessages.get(i));
+                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + pastMessages.get(i) + "\n");
+                                        }
+
+                                        bfw.flush();
+                                        System.out.println("Conversation exported successfully!");
+                                    } catch (IOException e){
+                                        System.out.println("Unable to export file");
+                                    }
+
+                                    break;
                             }
                         }
 
