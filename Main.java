@@ -225,7 +225,6 @@ public class Main {
 
                                     if(!blockedUsers.exists()){
                                         boolean fCr = blockedUsers.createNewFile();
-                                        System.out.println("Conversation Created");
                                     }
 
                                     FileReader fr = new FileReader(blockedUsers);
@@ -372,6 +371,7 @@ public class Main {
                                     String content = scan.nextLine();
                                     messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
                                     messageClass.export(userName, userList.get(index).getAccountUsername());
+                                    System.out.println(userList.get(index).getAccountUsername());
                                     System.out.println("Written Successfully");
 
                                     break;
@@ -723,7 +723,6 @@ public class Main {
 
                             if(!convos.exists()){
                                 boolean fCr = convos.createNewFile();
-                                System.out.println("Conversation Created");
                             }
 
                             FileReader fr = new FileReader(convos);
