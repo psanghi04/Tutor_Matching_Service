@@ -5,11 +5,12 @@ public class Tutor extends User {
     double price;
     ArrayList<Store> stores = new ArrayList<Store>();
 
-    public Tutor(String accountUsername, String password, String email, ArrayList<User> blockedList, ArrayList<User> invisibleList, String[] subjects, double price, ArrayList<Store> stores) {
+    // add as a parameter ArrayList<Store> stores
+    public Tutor(String accountUsername, String password, String email, ArrayList<String> blockedList, ArrayList<String> invisibleList, String[] subjects, double price) {
         super(accountUsername, password, email, blockedList, invisibleList);
         this.subjects = subjects;
         this.price = price;
-        this.stores = stores;
+        // this.stores = stores;
     }
 
     public String[] getSubjects() {
