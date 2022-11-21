@@ -57,6 +57,9 @@ public class Message {
         ArrayList<String> conversation = new ArrayList<String>();
         try {
             File f = new File(user.getAccountUsername() + "_" + otherPerson);
+            if(!f.exists()){
+                f.createNewFile();
+            }
             BufferedReader bfr = new BufferedReader(new FileReader(f));
             while (true) {
                 String line = bfr.readLine();
@@ -87,6 +90,11 @@ public class Message {
         ArrayList<String> conversation = new ArrayList<String>();
         try {
             File f = new File(user.getAccountUsername() + "_" + otherPerson);
+
+            if(f.exists()){
+                f.createNewFile();
+            }
+
             BufferedReader bfr = new BufferedReader(new FileReader(f));
             while (true) {
                 String line = bfr.readLine();
@@ -134,7 +142,15 @@ public class Message {
     }
 
     public void writeMsg(String sender, String receiver, String content) {
-        try (BufferedWriter bfw = new BufferedWriter(new FileWriter(sender + "_" + receiver, true))) {
+
+        try {
+            File f = new File(sender + "_" + receiver);
+            if(f.exists()){
+                f.createNewFile();
+            }
+
+            BufferedWriter bfw = new BufferedWriter(new FileWriter(f, true));
+
             String line = "%s;%s,%s,%s,%s";
             bfw.write(String.format(
                     line,
@@ -153,15 +169,25 @@ public class Message {
     public void export(String sender, String receiver) {
         ArrayList<String> messages = readMsg(sender, receiver);
         String fileName = receiver + "_" + sender;
-        try (BufferedWriter bfw = new BufferedWriter(new FileWriter(fileName))) {
+        File f = new File(fileName);
+
+        try{
+            if(!f.exists()){
+                f.createNewFile();
+            }
+
+            BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
+
             for (String msg : messages) {
                 bfw.write(msg);
                 bfw.newLine();
                 bfw.flush();
             }
-        } catch (Exception e) {
+        } catch (IOException e){
             System.out.println("Error!");
         }
+
+
     }
 
 }
