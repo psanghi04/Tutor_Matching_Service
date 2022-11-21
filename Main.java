@@ -383,7 +383,7 @@ public class Main {
 
                                     boolean dMessageExists = false;
                                     for(int i = 0; i < messagesDelete.size(); i++){
-                                        if(messagesDelete.get(i).substring(messagesDelete.get(i).indexOf(",") + 1).substring(messagesDelete.get(i).indexOf(",")).substring(messagesDelete.get(i).indexOf(",")).equals(message)){
+                                        if(messagesDelete.get(i).substring(messagesDelete.get(i).lastIndexOf(",") + 1).equals(message)){
                                             dMessageExists = true;
                                         }
                                     }
@@ -412,7 +412,7 @@ public class Main {
                                     boolean messageExists = false;
 
                                     for(int i = 0; i < allMessages.size(); i++){
-                                        if(allMessages.get(i).substring(allMessages.get(i).indexOf(",") + 1).substring(allMessages.get(i).indexOf(",")).substring(allMessages.get(i).indexOf(",")).equals(oldMessage)){
+                                        if(allMessages.get(i).substring(allMessages.get(i).lastIndexOf(",") + 1).equals(oldMessage)){
                                             messageExists = true;
                                         }
                                     }
@@ -853,7 +853,7 @@ public class Main {
 
                                     boolean DMessageExists = false;
                                     for(int i = 0; i < allDMessages.size(); i++){
-                                        if(allDMessages.get(i).substring(allDMessages.get(i).indexOf(",") + 1).substring(allDMessages.get(i).indexOf(",")).substring(allDMessages.get(i).indexOf(",")).equals(message)){
+                                        if(allDMessages.get(i).substring(allDMessages.get(i).lastIndexOf(",") + 1).equals(message)){
                                             DMessageExists = true;
                                         }
                                     }
@@ -881,7 +881,7 @@ public class Main {
 
                                     boolean messageEExists = false;
                                     for(int i = 0; i < allEMessages.size(); i++){
-                                        if(allEMessages.get(i).substring(allEMessages.get(i).indexOf(",") + 1).substring(allEMessages.get(i).indexOf(",")).substring(allEMessages.get(i).indexOf(",")).equals(oldMessage)){
+                                        if(allEMessages.get(i).substring(allEMessages.get(i).lastIndexOf(",") + 1).equals(oldMessage)){
                                             messageEExists = true;
                                         }
                                     }
