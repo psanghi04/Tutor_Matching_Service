@@ -1,14 +1,13 @@
 import java.io.*;
 import java.sql.*;
 import java.time.*;
-import java.util.*;
 import java.util.ArrayList;
 
 public class Message {
-    public void isBlocked(User user, String personBlocked){
+    public boolean isBlocked(User user, String personBlocked){
         ArrayList<String> blocked = new ArrayList<String>();
         for(int i=0;i<user.getBlockedList().size();i++){
-            blocked.add(user.getBlockedList().get(i).getAccountUsername());
+            blocked.add(user.getBlockedList().get(i));
         }
         for(int i=0;i<blocked.size();i++){
             if(blocked.get(i).equals(personBlocked)){
@@ -17,12 +16,14 @@ public class Message {
                     BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
                     bfw.write("This person is blocked");
                     bfw.close();
-                    break;
+                    return true;
+                    // break;
                 } catch(IOException e){
                     System.out.println("This chat does not exist");
                 }
             }
         }
+        return false;
     } // if he is blocked/invisible and correct user
 
     public boolean blockedStatus(User user, String personBlocked){
@@ -44,9 +45,9 @@ public class Message {
         return false;
     }
 
-        public boolean isInvisible(User user, String personInvisible){
+    public boolean isInvisible(User user, String personInvisible){
         for(int i=0;i<user.getInvisibleList().size();i++){
-           if(user.getInvisibleList().get(i).getAccountUsername().equals(personInvisible)){
+            if(user.getInvisibleList().get(i).equals(personInvisible)){
                 return true;
             }
         }
