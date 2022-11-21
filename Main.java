@@ -379,6 +379,20 @@ public class Main {
                                     System.out.println("What is the message that you would like to delete?");
                                     String message = scan.nextLine();
 
+                                    ArrayList<String> messagesDelete = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+                                    boolean dMessageExists = false;
+                                    for(int i = 0; i < messagesDelete.size(); i++){
+                                        if(messagesDelete.get(i).equals(message)){
+                                            dMessageExists = true;
+                                        }
+                                    }
+
+                                    if(dMessageExists == false){
+                                        System.out.println("Message not found!");
+                                        break;
+                                    }
+
                                     messageClass.delete(user, userList.get(index).getAccountUsername(), message);
                                     System.out.println("Message Deleted Successfully");
 
@@ -387,6 +401,21 @@ public class Main {
                                 case 4:
                                     System.out.println("What is the message you would like to edit?");
                                     String oldMessage = scan.nextLine();
+
+                                    ArrayList<String> allMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    
+                                    
+                                    boolean messageExists = false;
+                                    for(int i = 0; i < allMessages.size(); i++){
+                                        if(allMessages.get(i).equals(oldMessage)){
+                                            messageExists = true;
+                                        }
+                                    }
+                                    
+                                    if(messageExists == false){
+                                        System.out.println("Message not found!");
+                                        break;
+                                    }
 
                                     System.out.println("What would you like your edited message to look like?");
                                     String newMessage = scan.nextLine();
@@ -806,6 +835,20 @@ public class Main {
                                     System.out.println("What is the message that you would like to delete?");
                                     String message = scan.nextLine();
 
+                                    ArrayList<String> allDMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+                                    boolean DMessageExists = false;
+                                    for(int i = 0; i < allDMessages.size(); i++){
+                                        if(allDMessages.get(i).equals(message)){
+                                            DMessageExists = true;
+                                        }
+                                    }
+
+                                    if(DMessageExists == false){
+                                        System.out.println("Message not found!");
+                                        break;
+                                    }
+
                                     messageClass.delete(user, userList.get(index).getAccountUsername(), message);
                                     System.out.println("Message Deleted Successfully\n");
 
@@ -814,6 +857,20 @@ public class Main {
                                 case 4:
                                     System.out.println("What is the message you would like to edit?");
                                     String oldMessage = scan.nextLine();
+
+                                    ArrayList<String> allEMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+                                    boolean messageEExists = false;
+                                    for(int i = 0; i < allEMessages.size(); i++){
+                                        if(allEMessages.get(i).equals(oldMessage)){
+                                            messageEExists = true;
+                                        }
+                                    }
+
+                                    if(messageEExists == false){
+                                        System.out.println("Message not found!");
+                                        break;
+                                    }
 
                                     System.out.println("What would you like your edited message to look like?");
                                     String newMessage = scan.nextLine();
