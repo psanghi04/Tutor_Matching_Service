@@ -222,6 +222,12 @@ public class Main {
                             if (userList.get(i) instanceof Tutor) {
                                 try {
                                     File blockedUsers = new File(user.getAccountUsername() + "_" + userList.get(i).getAccountUsername());
+
+                                    if(!blockedUsers.exists()){
+                                        boolean fCr = blockedUsers.createNewFile();
+                                        System.out.println("Conversation Created");
+                                    }
+
                                     FileReader fr = new FileReader(blockedUsers);
                                     BufferedReader bfr = new BufferedReader(fr);
 
@@ -419,22 +425,24 @@ public class Main {
                                 String newPassword = scan.nextLine();
                                 user.setPassword(newPassword);
 
-                                for (int i = 0; i < userList.size(); i++) {
-                                    try {
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                
+                                try {
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+
+                                    for (int i = 0; i < userList.size(); i++) {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
-
-                                        pw.flush();
-                                        pw.close();
-                                        System.out.println("Password has been successfully changed\n");
-                                    } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
+
+                                    pw.flush();
+                                    System.out.println("Password has been successfully changed\n");
+                                } catch (IOException e) {
+                                    System.out.println("Can't write to the file!");
                                 }
+                                
 
                                 break;
                             case 2:
@@ -459,21 +467,22 @@ public class Main {
                                     continue;
                                 }
 
-                                for (int i = 0; i < userList.size(); i++) {
-                                    try {
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                try {
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                    
+                                    for (int i = 0; i < userList.size(); i++) {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," +  Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
-
-                                        pw.flush();
-                                        pw.close();
-                                        System.out.println("Username has been successfully changed\n");
-                                    } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
+                                    
+                                    pw.flush();
+                                    
+                                    System.out.println("Username has been successfully changed\n");
+                                } catch (IOException e) {
+                                    System.out.println("Can't write to the file!");
                                 }
 
                                 break;
@@ -499,21 +508,23 @@ public class Main {
                                     continue;
                                 }
 
-                                for (int i = 0; i < userList.size(); i++) {
-                                    try {
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                
+                                try {
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+
+                                    for (int i = 0; i < userList.size(); i++) {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
-
-                                        pw.flush();
-
-                                        System.out.println("Email has been successfully changed\n");
-                                    } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
+
+                                    pw.flush();
+
+                                    System.out.println("Email has been successfully changed\n");
+                                } catch (IOException e) {
+                                    System.out.println("Can't write to the file!");
                                 }
 
                                 break;
@@ -533,21 +544,23 @@ public class Main {
                                 }
 
                                 // Rewriting the file again...
-                                for (int i = 0; i < userList.size(); i++) {
-                                    try {
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                try {
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+
+                                    for (int i = 0; i < userList.size(); i++) {
                                         if (userList.get(i) instanceof Student) {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
                                             pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
-
-                                        pw.flush();
-                                        pw.close();
-                                    } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
+
+                                    pw.flush();
+                                    System.out.println("Account has been deleted");
+                                } catch (IOException e) {
+                                    System.out.println("Can't write to the file!");
                                 }
+                                
 
                                 break;
 
@@ -634,7 +647,6 @@ public class Main {
 
                 switch (option) {
                     case 1:
-                        System.out.println("Inside");
                         ArrayList<User> availableStudents = new ArrayList<User>();
 
                         for (int i = 0; i < userList.size(); i++) {
@@ -708,6 +720,12 @@ public class Main {
 
                         try {
                             File convos = new File(user.getAccountUsername() + "_" + person);
+
+                            if(!convos.exists()){
+                                boolean fCr = convos.createNewFile();
+                                System.out.println("Conversation Created");
+                            }
+
                             FileReader fr = new FileReader(convos);
                             BufferedReader bfr = new BufferedReader(fr);
 
@@ -955,21 +973,23 @@ public class Main {
                                 }
 
                                 // Rewriting the file again...
-                                for (int i = 0; i < userList.size(); i++) {
-                                    try {
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                                try {
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+
+                                    for (int i = 0; i < userList.size(); i++) {
                                         if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + ","  + "Student\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
                                         } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + ","  + "Tutor\n");
+                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
                                         }
-
-                                        pw.flush();
-                                    } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
-                                }
 
+                                    pw.flush();
+                                    System.out.println("Account has been deleted");
+                                } catch (IOException e) {
+                                    System.out.println("Can't write to the file!");
+                                }
+                                
                                 break;
 
                         }
