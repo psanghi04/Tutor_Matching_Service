@@ -1234,8 +1234,7 @@ public class Main {
                                 blockedUserList.add(userList.get(i).getAccountUsername());
                             }
                         }
-//
-//
+
                         try {
                             File blockedUsers = new File("BlockedUsers.txt");
                             if(!blockedUsers.exists()){
