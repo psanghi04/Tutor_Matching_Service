@@ -214,7 +214,10 @@ public class Main {
                 int option = scan.nextInt();
                 scan.nextLine();
 
+                boolean deletedAccount = false;
+
                 switch (option) {
+
                     case 1:
                         ArrayList<User> availableTutors = new ArrayList<User>();
 
@@ -454,11 +457,10 @@ public class Main {
                                     break;
 
                                 case 6:
-
                                     System.out.println("Please list the filename.");
                                     String ifileName = scan.nextLine();
 
-                                    ArrayList<String> oldMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> importMessages = new ArrayList<String>();
 
                                     try{
                                         File importFile = new File(ifileName);
@@ -467,17 +469,19 @@ public class Main {
 
                                         String line = bfr.readLine();
                                         while(line != null){
-                                            oldMessages.add(line);
+                                            importMessages.add(line);
                                             line = bfr.readLine();
                                         }
 
                                         BufferedWriter bfw = new BufferedWriter(new FileWriter(userName + "_" + userList.get(index).getAccountUsername(), true));
-                                        for(int i = 0; i < oldMessages.size(); i++){
-                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + oldMessages.get(i) + "\n");
+                                        for(int i = 0; i < importMessages.size(); i++){
+                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + importMessages.get(i) + "\n");
                                         }
 
                                         bfr.close();
                                         bfw.flush();
+
+                                        messageClass.export(userName, userList.get(index).getAccountUsername());
 
                                         System.out.println("Imported conversation successfully!");
 
@@ -641,6 +645,8 @@ public class Main {
                             case 4:
                                 System.out.println("Deleting Account...");
 
+                                deletedAccount = true;
+
                                 // Removing User from ArrayList
                                 for (int i = 0; i < userList.size(); i++) {
                                     if (userList.get(i).getAccountUsername().equals(user.getAccountUsername())) {
@@ -665,7 +671,9 @@ public class Main {
                                     }
 
                                     pw.flush();
+
                                     System.out.println("Account has been deleted");
+
                                 } catch (IOException e) {
                                     System.out.println("Can't write to the file!");
                                 }
@@ -748,6 +756,12 @@ public class Main {
                                 invisibleList.add(userList.get(i).getAccountUsername());
                             }
                         }
+
+                        break;
+                }
+
+                if(deletedAccount == true){
+                    break;
                 }
             } else {
                 System.out.println("Tutor Interface\n\n1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. Make a user invisible");
@@ -989,7 +1003,7 @@ public class Main {
                                     System.out.println("Please list the filename.");
                                     String ifileName = scan.nextLine();
 
-                                    ArrayList<String> oldMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> importMessages = new ArrayList<String>();
 
                                     try{
                                         File importFile = new File(ifileName);
@@ -998,17 +1012,19 @@ public class Main {
 
                                         String line = bfr.readLine();
                                         while(line != null){
-                                            oldMessages.add(line);
+                                            importMessages.add(line);
                                             line = bfr.readLine();
                                         }
 
                                         BufferedWriter bfw = new BufferedWriter(new FileWriter(userName + "_" + userList.get(index).getAccountUsername(), true));
-                                        for(int i = 0; i < oldMessages.size(); i++){
-                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + oldMessages.get(i) + "\n");
+                                        for(int i = 0; i < importMessages.size(); i++){
+                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + importMessages.get(i) + "\n");
                                         }
 
                                         bfr.close();
                                         bfw.flush();
+
+                                        messageClass.export(userName, userList.get(index).getAccountUsername());
 
                                         System.out.println("Imported conversation successfully!");
 
