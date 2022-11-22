@@ -497,7 +497,7 @@ public class Main {
                                         System.out.println("What is the name of the file which you would like your exported contents to be placed in?");
                                         String expFileName = scan.nextLine();
 
-                                        File exportFile = new File(expFileName);
+                                        File exportFile = new File(expFileName + ".csv");
 
                                         if(!exportFile.exists()){
                                             exportFile.createNewFile();
@@ -1038,7 +1038,7 @@ public class Main {
                                         System.out.println("What is the name of the file which you would like your exported contents to be placed in?");
                                         String exportFileName = scan.nextLine();
 
-                                        File exportFile = new File(exportFileName);
+                                        File exportFile = new File(exportFileName + ".csv");
 
                                         if(!exportFile.exists()){
                                             exportFile.createNewFile();
