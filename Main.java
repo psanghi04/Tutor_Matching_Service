@@ -1114,7 +1114,7 @@ public class Main {
                                     }
                                 }
 
-                                if(similarUsername == false){
+                                if(!similarUsername){
                                     user.setAccountUsername(newUsername);
                                 } else {
                                     System.out.println("Username exists.");
