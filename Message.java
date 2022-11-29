@@ -138,6 +138,27 @@ public class Message {
         try (BufferedReader bfr = new BufferedReader(new FileReader(sender + "_" + receiver))) {
             String line = bfr.readLine();
             while (line != null) {
+                String message = line.split(",")[1] + ": " + line.split(",")[3];
+                messages.add(message);
+                line = bfr.readLine();
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Conversation does not exist!");
+        } catch (IOException e) {
+            System.out.println("Reading suspended. I/O Exception caught.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("There was an error. Exception caught.");
+        }
+        return messages;
+    }
+
+    public ArrayList<String> readMsg(String sender, String receiver, boolean ex) {
+        ArrayList<String> messages = new ArrayList<>();
+
+        try (BufferedReader bfr = new BufferedReader(new FileReader(sender + "_" + receiver))) {
+            String line = bfr.readLine();
+            while (line != null) {
                 messages.add(line);
                 line = bfr.readLine();
             }
@@ -146,6 +167,7 @@ public class Message {
         } catch (IOException e) {
             System.out.println("Reading suspended. I/O Exception caught.");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("There was an error. Exception caught.");
         }
         return messages;
@@ -177,7 +199,7 @@ public class Message {
     }
 
     public void export(String sender, String receiver) {
-        ArrayList<String> messages = readMsg(sender, receiver);
+        ArrayList<String> messages = readMsg(sender, receiver, true);
         String fileName = receiver + "_" + sender;
         File f = new File(fileName);
 

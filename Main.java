@@ -91,13 +91,21 @@ public class Main {
                         }
                     }
 
-                    if (option == 1)
-                        if(!accountSimilarity){
+                    if (option == 1) {
+                        if (!accountSimilarity) {
                             user = new Student(userName, password, email, blockedUserList, invisibleList);
+
+                            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
+                                pw.write(userName + "," + password + "," + email + "," + user + "\n");
+                                pw.flush();
+                            } catch (IOException e) {
+                                System.out.println("Unable to write file");
+                            }
                         } else {
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
+                    }
                     else {
                         if(!accountSimilarity){
                             // Use commas
@@ -110,17 +118,17 @@ public class Main {
                             double price = scan.nextDouble();
                             scan.nextLine();
                             user = new Tutor(userName, password, email, blockedUserList, invisibleList, newSubjects, price);
+
+                            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
+                                pw.write(userName + "," + password + "," + email + "," + subjects + "," + price + "," + user +"\n");
+                                pw.flush();
+                            } catch (IOException e) {
+                                System.out.println("Unable to write file");
+                            }
                         } else {
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
-                    }
-
-                    try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                        pw.write(userName + "," + password + "," + email + "," + user + "\n");
-                        pw.flush();
-                    } catch (IOException e) {
-                        System.out.println("Unable to write file");
                     }
 
                     userList.add(user);
@@ -340,8 +348,9 @@ public class Main {
                                         continue;
                                     }
 
+                                    int count = 1;
                                     for (String message : messages) {
-                                        System.out.println(message);
+                                        System.out.printf("[%d]: %s\n", count++, message);
                                     }
                                     break;
                                 case 2:
@@ -481,11 +490,12 @@ public class Main {
                                         FileWriter fw = new FileWriter(exportFile, false);
                                         BufferedWriter bfw = new BufferedWriter(fw);
 
-                                        ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                        ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
+                                        ArrayList<String> unEditPastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
                                         for(int i = 0; i < pastMessages.size(); i++){
-                                            System.out.println(pastMessages.get(i));
-                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + pastMessages.get(i) + "\n");
+                                            System.out.printf("[%d]: %s", i+1, unEditPastMessages.get(i));
+                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
                                         }
 
                                         bfw.flush();
@@ -915,8 +925,9 @@ public class Main {
                                         continue;
                                     }
 
+                                    int count = 1;
                                     for (String message : messages) {
-                                        System.out.println(message);
+                                        System.out.printf("[%d]: %s\n", count++, message);
                                     }
                                     break;
                                 case 2:
