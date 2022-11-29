@@ -7,15 +7,14 @@ public class Main {
         Message messageClass = new Message();
 
         boolean login = false;
-        ArrayList<User> userList = new ArrayList<User>();
+        ArrayList<User> userList = new ArrayList<>();
         String userName = "";
         String password;
 
-        ArrayList<String> blockedUserList = new ArrayList<String>();
-        ArrayList<String> invisibleList = new ArrayList<String>();
+        ArrayList<String> blockedUserList = new ArrayList<>();
+        ArrayList<String> invisibleList = new ArrayList<>();
 
         System.out.println("Welcome to Tutoring Center!");
-
 
         File f = new File("UserDetails.txt");
 
@@ -48,7 +47,6 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Cannot write to file!");
         }
-
 
         User user = null; // currentUser logged in
 
@@ -94,9 +92,9 @@ public class Main {
                             }
                         }
 
-                        if(accountSimilarity == false){
+                        if(!accountSimilarity){
                             user = new Student(userName, password, email, blockedUserList, invisibleList);
-                        }else{
+                        } else{
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
@@ -136,9 +134,9 @@ public class Main {
                             }
                         }
 
-                        if(accountSimilarity == false){
+                        if(!accountSimilarity){
                             user = new Tutor(userName, password, email, blockedUserList, invisibleList, newSubjects, price);
-                        }else{
+                        } else{
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
@@ -169,7 +167,7 @@ public class Main {
                     break;
 
                 case 2:
-                    while (login == false) {
+                    while (!login) {
                         System.out.println("Username: ");
                         userName = scan.nextLine();
 
@@ -191,6 +189,11 @@ public class Main {
                             System.out.println("Welcome Back");
                         } else {
                             System.out.println("Invalid Username or Password");
+                            System.out.println("Do you want to go back? [Y/N]");
+                            String answer = scan.nextLine();
+                            if (answer.equals("Y")) {
+                                break;
+                            }
                             System.out.println("Try Again");
                         }
 
