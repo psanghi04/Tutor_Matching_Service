@@ -251,7 +251,7 @@ public class Main {
                             }
                         }
 
-                        if(availableTutors.size() == 0){
+                        if (availableTutors.size() == 0) {
                             System.out.println("There are no tutors available to message");
                         }
 
@@ -293,7 +293,7 @@ public class Main {
 //                            }
 //
 //                            bfr.close();
-                        if(messageClass.isBlocked(user, person)){
+                        if (messageClass.isBlocked(user, person)) {
                             System.out.printf("Unable to message %s\n", person);
                             break;
                         }
@@ -331,7 +331,7 @@ public class Main {
 
                         boolean quit = true;
 
-                        while(quit){
+                        while (quit) {
                             System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message\n6. import to a conversation\n7. export a conversation");
                             int optionMessage = scan.nextInt();
                             scan.nextLine();
@@ -343,7 +343,7 @@ public class Main {
                                 case 1:
                                     ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
-                                    if(messages.size() == 0){
+                                    if (messages.size() == 0) {
                                         System.out.println("No Messages Available");
                                         continue;
                                     }
