@@ -27,7 +27,6 @@ public class Message {
         String[] lineArr;
         try (BufferedReader bfr = new BufferedReader(new FileReader("BlockedUsers.txt"))) {
             String line = bfr.readLine();
-            System.out.println(user.getAccountUsername());
             while (line != null) {
                 lineArr = line.split(";");
                 if (lineArr[0].contains(personBlocked) && lineArr[1].equals(user.getAccountUsername())) {
@@ -36,35 +35,31 @@ public class Message {
                 line = bfr.readLine();
             }
         } catch (Exception e) {
-            System.out.println("Error");
+            return false;
         }
     return false;
     } // if he is blocked/invisible and correct user
 
-    public boolean blockedStatus(User user, String personBlocked){
-        try{
-            File f = new File(user.getAccountUsername() + "_" + personBlocked);
-            BufferedReader bfr = new BufferedReader(new FileReader(f));
-            while(true){
-                String line = bfr.readLine();
-                if(line == null){
-                    break;
-                }
-                if(line.equals("This person is blocked")){
+    public boolean isInvisible(User user, String personInvisible){
+//        for(int i=0;i<user.getInvisibleList().size();i++){
+//            if(user.getInvisibleList().get(i).equals(personInvisible)){
+//                return true;
+//            }
+//        }
+//        return false;
+
+        String[] lineArr;
+        try (BufferedReader bfr = new BufferedReader(new FileReader("InvisibleUsers.txt"))) {
+            String line = bfr.readLine();
+            while (line != null) {
+                lineArr = line.split(";");
+                if (lineArr[0].contains(personInvisible) && lineArr[1].equals(user.getAccountUsername())) {
                     return true;
                 }
+                line = bfr.readLine();
             }
-        } catch(Exception e){
-            System.out.println("This chat does not exist");
-        }
-        return false;
-    }
-
-    public boolean isInvisible(User user, String personInvisible){
-        for(int i=0;i<user.getInvisibleList().size();i++){
-            if(user.getInvisibleList().get(i).equals(personInvisible)){
-                return true;
-            }
+        } catch (Exception e) {
+            return false;
         }
         return false;
     }
