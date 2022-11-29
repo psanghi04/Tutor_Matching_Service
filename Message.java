@@ -5,25 +5,42 @@ import java.util.ArrayList;
 
 public class Message {
     public boolean isBlocked(User user, String personBlocked){
-        ArrayList<String> blocked = new ArrayList<String>();
-        for(int i=0;i<user.getBlockedList().size();i++){
-            blocked.add(user.getBlockedList().get(i));
-        }
-        for(int i=0;i<blocked.size();i++){
-            if(blocked.get(i).equals(personBlocked)){
-                try{
-                    File f = new File(user.getAccountUsername() + "_" + personBlocked);
-                    BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
-                    bfw.write("This person is blocked");
-                    bfw.close();
+//        ArrayList<String> blocked = new ArrayList<String>();
+//        for(int i=0;i<user.getBlockedList().size();i++){
+//            blocked.add(user.getBlockedList().get(i));
+//        }
+//        for (String s : blocked) {
+//            if (s.equals(personBlocked)) {
+//                try {
+//                    File f = new File(user.getAccountUsername() + "_" + personBlocked);
+//                    BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
+//                    bfw.write("This person is blocked");
+//                    bfw.close();
+//                    return true;
+//                    // break;
+//                } catch (IOException e) {
+//                    System.out.println("This chat does not exist");
+//                }
+//            }
+//        }
+//        return false;
+        String[] lineArr;
+        try (BufferedReader bfr = new BufferedReader(new FileReader("BlockedUsers.txt"))) {
+            String line = bfr.readLine();
+            System.out.println(user.getAccountUsername());
+            while (line != null) {
+                lineArr = line.split(";");
+                if (lineArr[0].contains(personBlocked) && lineArr[1].equals(user.getAccountUsername())) {
+                    System.out.println("bye");
                     return true;
-                    // break;
-                } catch(IOException e){
-                    System.out.println("This chat does not exist");
                 }
+                line = bfr.readLine();
             }
+        } catch (Exception e) {
+            System.out.println("Error");
         }
-        return false;
+        System.out.println("Hi");
+    return false;
     } // if he is blocked/invisible and correct user
 
     public boolean blockedStatus(User user, String personBlocked){

@@ -279,39 +279,39 @@ public class Main {
                         String person = scan.nextLine();
 
                         if(userList.size() == 0){
-                            System.out.println("There are no tutors available");
+                            System.out.println("There are no students available");
                         }
 
-                        boolean userBlocked = false;
-                        try {
-                            File convos = new File(user.getAccountUsername() + "_" + person);
+//                        boolean userBlocked = false;
 
-                            if(!convos.exists()){
-                                convos.createNewFile();
-                            }
-
-                            FileReader fr = new FileReader(convos);
-                            BufferedReader bfr = new BufferedReader(fr);
-
-                            String line = bfr.readLine();
-                            while(line != null){
-                                if(line.equals("This person is blocked")){
-                                    userBlocked = true;
-                                    break;
-                                }
-
-                                line = bfr.readLine();
-                            }
-
-                            if(userBlocked){
-                                System.out.println("You cannot message a blocked user.");
-                                break;
-                            }
-
-                            bfr.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+//                        try {
+//                            File convos = new File(user.getAccountUsername() + "_" + person);
+//
+//                            if(!convos.exists()){
+//                                boolean fCr = convos.createNewFile();
+//                            }
+//
+//                            FileReader fr = new FileReader(convos);
+//                            BufferedReader bfr = new BufferedReader(fr);
+//
+//                            String line = bfr.readLine();
+//                            while(line != null) {
+//                                if (line.equals("This person is blocked")) {
+//                                    userBlocked = true;
+//                                    break;
+//                                }
+//
+//                                line = bfr.readLine();
+//                            }
+//
+//                            bfr.close();
+                        System.out.println("y");
+                        System.out.println(user);
+                        if(messageClass.isBlocked(user, person)){
+                            System.out.println("User has been blocked");
+                            break;
                         }
+                        System.out.println("n");
 
                         for (int i = 0; i < userList.size(); i++) {
 
@@ -687,38 +687,38 @@ public class Main {
                         String blockUsername = scan.nextLine();
 
                         for(int i = 0; i < userList.size(); i++){
-                            if(userList.get(i).getAccountUsername().equals(blockUsername)){
+                            if (userList.get(i).getAccountUsername().equals(blockUsername)){
                                 blockedUserList.add(userList.get(i).getAccountUsername());
                             }
                         }
 //
 
-                        try {
-                            File blockedUsers = new File("BlockedUsers.txt");
-                            FileReader fr = new FileReader(blockedUsers);
-                            BufferedReader bfr = new BufferedReader(fr);
-                            System.out.println(blockUsername);
-
-                            String line = bfr.readLine();
-
-                            while(line != null){
-                                String[] lines = line.split(";");
-                                if(lines[0].contains(user.getAccountUsername())){
-                                    blockedUserList.add(lines[1]);
-                                }
-                                line = bfr.readLine();
-                            }
-
-                            bfr.close();
-
-                            user.setBlockedList(blockedUserList);
-
-                            if(messageClass.isBlocked(user, blockUsername)){
-                                System.out.println("User has been blocked");
-                            }
-                        } catch (IOException e){
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            File blockedUsers = new File("BlockedUsers.txt");
+//                            FileReader fr = new FileReader(blockedUsers);
+//                            BufferedReader bfr = new BufferedReader(fr);
+//                            System.out.println(blockUsername);
+//
+//                            String line = bfr.readLine();
+//
+//                            while(line != null){
+//                                String[] lines = line.split(";");
+//                                if(lines[0].contains(user.getAccountUsername())){
+//                                    blockedUserList.add(lines[1]);
+//                                }
+//                                line = bfr.readLine();
+//                            }
+//
+//                            bfr.close();
+//
+//                            user.setBlockedList(blockedUserList);
+//
+//                            if(messageClass.isBlocked(user, blockUsername)){
+//                                System.out.println("User has been blocked");
+//                            }
+//                        } catch (IOException e){
+//                            e.printStackTrace();
+//                        }
 
                         try {
                             File blockedUsers = new File("BlockedUsers.txt");
@@ -728,13 +728,14 @@ public class Main {
                             }
 
                             FileWriter fr = new FileWriter(blockedUsers, true);
-                            BufferedWriter bw = new BufferedWriter(fr);
-                            PrintWriter pw = new PrintWriter(bw);
+                            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
 
-                            for(int i = 0; i < blockedUserList.size(); i++){
-                                pw.println("Student," + user.getAccountUsername() + ";" + blockUsername);
-                                pw.flush();
-                            }
+//                            for(int i = 0; i < blockedUserList.size(); i++){
+//                                pw.println(user + "," + user.getAccountUsername() + ";" + blockUsername);
+//                                pw.flush();
+//                            }
+                            pw.println(user + "," + user.getAccountUsername() + ";" + blockUsername);
+                            pw.flush();
                         } catch (IOException e){
                             System.out.println("There are no blocked users");
                         }
@@ -832,37 +833,42 @@ public class Main {
                             System.out.println("There are no students available");
                         }
 
-                        boolean userBlocked = false;
+//                        boolean userBlocked = false;
 
-                        try {
-                            File convos = new File(user.getAccountUsername() + "_" + person);
-
-                            if(!convos.exists()){
-                                boolean fCr = convos.createNewFile();
-                            }
-
-                            FileReader fr = new FileReader(convos);
-                            BufferedReader bfr = new BufferedReader(fr);
-
-                            String line = bfr.readLine();
-                            while(line != null) {
-                                if (line.equals("This person is blocked")) {
-                                    userBlocked = true;
-                                    break;
-                                }
-
-                                line = bfr.readLine();
-                            }
-
-                            bfr.close();
-
-                            if(userBlocked){
-                                System.out.println("Cannot message a blocked user");
+//                        try {
+//                            File convos = new File(user.getAccountUsername() + "_" + person);
+//
+//                            if(!convos.exists()){
+//                                boolean fCr = convos.createNewFile();
+//                            }
+//
+//                            FileReader fr = new FileReader(convos);
+//                            BufferedReader bfr = new BufferedReader(fr);
+//
+//                            String line = bfr.readLine();
+//                            while(line != null) {
+//                                if (line.equals("This person is blocked")) {
+//                                    userBlocked = true;
+//                                    break;
+//                                }
+//
+//                                line = bfr.readLine();
+//                            }
+//
+//                            bfr.close();
+                        System.out.println("yyyyyyy");
+                            if(messageClass.isBlocked(user, person)){
+                                System.out.println("User has been blocked");
                                 break;
                             }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        System.out.println("nnnnnnnnn");
+//                            if(userBlocked){
+//                                System.out.println("Cannot message a blocked user");
+//                                break;
+//                            }
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
 
                         for (int i = 0; i < userList.size(); i++) {
 
@@ -1223,10 +1229,38 @@ public class Main {
                         String blockUsername = scan.nextLine();
 
                         for(int i = 0; i < userList.size(); i++){
-                            if(userList.get(i).getAccountUsername().equals(blockUsername)){
+                            if (userList.get(i).getAccountUsername().equals(blockUsername)){
                                 blockedUserList.add(userList.get(i).getAccountUsername());
                             }
                         }
+//
+
+//                        try {
+//                            File blockedUsers = new File("BlockedUsers.txt");
+//                            FileReader fr = new FileReader(blockedUsers);
+//                            BufferedReader bfr = new BufferedReader(fr);
+//                            System.out.println(blockUsername);
+//
+//                            String line = bfr.readLine();
+//
+//                            while(line != null){
+//                                String[] lines = line.split(";");
+//                                if(lines[0].contains(user.getAccountUsername())){
+//                                    blockedUserList.add(lines[1]);
+//                                }
+//                                line = bfr.readLine();
+//                            }
+//
+//                            bfr.close();
+//
+//                            user.setBlockedList(blockedUserList);
+//
+//                            if(messageClass.isBlocked(user, blockUsername)){
+//                                System.out.println("User has been blocked");
+//                            }
+//                        } catch (IOException e){
+//                            e.printStackTrace();
+//                        }
 
                         try {
                             File blockedUsers = new File("BlockedUsers.txt");
@@ -1236,40 +1270,16 @@ public class Main {
                             }
 
                             FileWriter fr = new FileWriter(blockedUsers, true);
-                            BufferedWriter bw = new BufferedWriter(fr);
-                            PrintWriter pw = new PrintWriter(bw);
+                            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
 
-                            for(int i = 0; i < blockedUserList.size(); i++){
-                                pw.println("Student," + user.getAccountUsername() + ";" + blockedUserList.get(i));
-                                pw.flush();
-                            }
+//                            for(int i = 0; i < blockedUserList.size(); i++){
+//                                pw.println(user + "," + user.getAccountUsername() + ";" + blockUsername);
+//                                pw.flush();
+//                            }
+                            pw.println(user + "," + user.getAccountUsername() + ";" + blockUsername);
+                            pw.flush();
                         } catch (IOException e){
                             System.out.println("There are no blocked users");
-                        }
-
-                        try {
-                            File blockedUsers = new File("BlockedUsers.txt");
-                            FileReader fr = new FileReader(blockedUsers);
-                            BufferedReader bfr = new BufferedReader(fr);
-                            System.out.println(blockUsername);
-
-                            String line = bfr.readLine();
-
-                            while(line != null){
-                                String[] lines = line.split(";");
-                                if(lines[0].contains(user.getAccountUsername())){
-                                    blockedUserList.add(lines[1]);
-                                }
-                                line = bfr.readLine();
-                            }
-
-                            user.setBlockedList(blockedUserList);
-
-                            if(messageClass.isBlocked(user, blockUsername)){
-                                System.out.println("User has been blocked");
-                            }
-                        } catch (IOException e){
-                            e.printStackTrace();
                         }
 
 

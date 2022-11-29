@@ -6,4 +6,8 @@ public class Student extends User {
         super(message, accountUsername, email, blockedList, invisibleList);
     }
 
+    @Override
+    public String toString() {
+        return "Student";
+    }
 }

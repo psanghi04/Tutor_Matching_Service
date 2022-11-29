@@ -40,4 +40,9 @@ public class Tutor extends User {
     public void addStore(Store store) {
         stores.add(store);
     }
+
+    @Override
+    public String toString() {
+        return "Tutor";
+    }
 }
