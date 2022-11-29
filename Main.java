@@ -141,15 +141,6 @@ public class Main {
                             continue;
                         }
 
-                        String blockedUsers = "";
-                        for(int i = 0; i < blockedUserList.size(); i++){
-                            if(i != blockedUserList.size() - 1){
-                                blockedUsers += blockedUserList.get(i) + "{";
-                            } else {
-                                blockedUsers += blockedUserList.get(i);
-                            }
-                        }
-
                         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
                             pw.write(userName + "," + password + "," + email + "," + subjects.replace(",", ";") + "," + price + "," + "Tutor\n");
                             pw.flush();
@@ -221,7 +212,7 @@ public class Main {
                 switch (option) {
 
                     case 1:
-                        ArrayList<User> availableTutors = new ArrayList<User>();
+                        ArrayList<User> availableTutors = new ArrayList<>();
 
                         for (int i = 0; i < userList.size(); i++) {
                             if (userList.get(i) instanceof Tutor) {
@@ -237,7 +228,7 @@ public class Main {
 
                                     String line = bfr.readLine();
                                     boolean blockedUser = false;
-                                    while(line != null){
+                                    while(line != null) {
                                         if(line.equals("This person is blocked")){
                                             blockedUser = true;
                                             break;
@@ -251,7 +242,7 @@ public class Main {
                                         if(userList.get(i) instanceof Tutor){
                                             availableTutors.add(userList.get(i));
                                         }
-                                    }else{
+                                    } else{
                                         userList.get(i).setAccountUsername(userList.get(i).getAccountUsername() + "(blocked)");
                                         availableTutors.add(userList.get(i));
                                     }
