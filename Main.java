@@ -305,20 +305,17 @@ public class Main {
 //                            }
 //
 //                            bfr.close();
-                        System.out.println("y");
-                        System.out.println(user);
                         if(messageClass.isBlocked(user, person)){
                             System.out.println("User has been blocked");
                             break;
                         }
-                        System.out.println("n");
 
                         for (int i = 0; i < userList.size(); i++) {
 
                             if (userList.get(i).getAccountUsername().equals(person)) {
                                 index = i;
 
-                                if ((userList.get(i) instanceof Tutor) && (user instanceof Student)) {
+                                if (userList.get(i) instanceof Tutor) {
                                     System.out.println("Person Found");
                                     unableToMessage = false;
                                     break;
@@ -856,12 +853,10 @@ public class Main {
 //                            }
 //
 //                            bfr.close();
-                        System.out.println("yyyyyyy");
                             if(messageClass.isBlocked(user, person)){
                                 System.out.println("User has been blocked");
                                 break;
                             }
-                        System.out.println("nnnnnnnnn");
 //                            if(userBlocked){
 //                                System.out.println("Cannot message a blocked user");
 //                                break;

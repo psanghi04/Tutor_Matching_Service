@@ -31,7 +31,6 @@ public class Message {
             while (line != null) {
                 lineArr = line.split(";");
                 if (lineArr[0].contains(personBlocked) && lineArr[1].equals(user.getAccountUsername())) {
-                    System.out.println("bye");
                     return true;
                 }
                 line = bfr.readLine();
@@ -39,7 +38,6 @@ public class Message {
         } catch (Exception e) {
             System.out.println("Error");
         }
-        System.out.println("Hi");
     return false;
     } // if he is blocked/invisible and correct user
 
