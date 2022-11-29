@@ -207,7 +207,6 @@ public class Main {
             }
         }
 
-
         boolean signedIn = true;
 
         while (signedIn) {
@@ -248,7 +247,7 @@ public class Main {
 
                                     }
 
-                                    if(blockedUser == false){
+                                    if(!blockedUser){
                                         if(userList.get(i) instanceof Tutor){
                                             availableTutors.add(userList.get(i));
                                         }
@@ -313,7 +312,7 @@ public class Main {
                                 line = bfr.readLine();
                             }
 
-                            if(userBlocked == true){
+                            if(userBlocked){
                                 System.out.println("You cannot message a blocked user.");
                                 break;
                             }
@@ -394,7 +393,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(dMessageExists == false){
+                                    if(!dMessageExists){
                                         System.out.println("Message not found!");
                                         break;
                                     }
@@ -423,7 +422,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(messageExists == false){
+                                    if(!messageExists){
                                         System.out.println("Message not found!");
                                         break;
                                     }
@@ -453,7 +452,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(foundMessage == false){
+                                    if(!foundMessage){
                                         System.out.println("Message not found!");
                                     }
 
@@ -576,7 +575,7 @@ public class Main {
                                     }
                                 }
 
-                                if(sameUsername == false){
+                                if(!sameUsername){
                                     user.setAccountUsername(newUsername);
                                 } else {
                                     System.out.println("Username exists.");
@@ -617,7 +616,7 @@ public class Main {
                                     }
                                 }
 
-                                if(sameEmail == false){
+                                if(!sameEmail){
                                     user.setEmail(newEmail);
                                 } else {
                                     System.out.println("Email exists.");
@@ -763,7 +762,7 @@ public class Main {
                         break;
                 }
 
-                if(deletedAccount == true){
+                if(deletedAccount){
                     break;
                 }
             } else {
@@ -801,7 +800,7 @@ public class Main {
 
                                     bfr.close();
 
-                                    if(blockedUser == false){
+                                    if(!blockedUser){
                                         availableStudents.add(userList.get(i));
                                     }else{
                                         userList.get(i).setAccountUsername(userList.get(i).getAccountUsername() + "(blocked)");
@@ -866,7 +865,7 @@ public class Main {
 
                             bfr.close();
 
-                            if(userBlocked == true){
+                            if(userBlocked){
                                 System.out.println("Cannot message a blocked user");
                                 break;
                             }
@@ -941,7 +940,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(DMessageExists == false){
+                                    if(!DMessageExists){
                                         System.out.println("Message not found!");
                                         break;
                                     }
@@ -969,7 +968,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(messageEExists == false){
+                                    if(!messageEExists){
                                         System.out.println("Message not found!");
                                         break;
                                     }
@@ -997,7 +996,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(messageFound == false){
+                                    if(!messageFound){
                                         System.out.println("Message not found!");
                                     }
 
@@ -1159,7 +1158,7 @@ public class Main {
                                     }
                                 }
 
-                                if(similarEmail == false){
+                                if(!similarEmail){
                                     user.setEmail(newEmail);
                                 } else {
                                     System.out.println("Email exists.");
