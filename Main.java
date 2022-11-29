@@ -11,6 +11,7 @@ public class Main {
         String userName = "";
         String password;
 
+        // not used
         ArrayList<String> blockedUserList = new ArrayList<>();
         ArrayList<String> invisibleList = new ArrayList<>();
 
@@ -54,99 +55,72 @@ public class Main {
 
             System.out.println("Do you want to log in or create a account?");
             System.out.println("1. Create New Account\n" +
-                    "2. Login");
+                               "2. Login");
             int optionNum = scan.nextInt();
             scan.nextLine();
 
             switch (optionNum) {
                 case 1:
-                    System.out.println("Would you like to be a student or a tutor?");
-                    System.out.println("1. Student\n2. Tutor");
+                    System.out.println("Are you a student or a tutor?");
+                    System.out.println("1. Student\n" +
+                                       "2. Tutor");
                     int option = scan.nextInt();
 
                     scan.nextLine();
 
-                    System.out.println("Enter new username: ");
+                    System.out.println("Enter your username: ");
                     userName = scan.nextLine();
 
                     System.out.println("Enter your email: ");
                     String email = scan.nextLine();
 
-                    System.out.println("Create new password: ");
+                    System.out.println("Enter password: ");
                     password = scan.nextLine();
 
-                    if (option == 1) {
-                        boolean accountSimilarity = false;
+                    boolean accountSimilarity = false;
 
-                        for(int i = 0; i < userList.size(); i++){
-                            if(userList.get(i) instanceof Student){
-                                if(userList.get(i).getAccountUsername().equals(userName)){
-                                    accountSimilarity = true;
-                                    break;
-                                }
-
-                                if(userList.get(i).getEmail().equals(email)){
-                                    accountSimilarity = true;
-                                    break;
-                                }
-                            }
+                    for (User person : userList) {
+                        if (person.getAccountUsername().equals(userName)) {
+                            accountSimilarity = true;
+                            break;
                         }
 
+                        if (person.getEmail().equals(email)) {
+                            accountSimilarity = true;
+                            break;
+                        }
+                    }
+
+                    if (option == 1)
                         if(!accountSimilarity){
                             user = new Student(userName, password, email, blockedUserList, invisibleList);
-                        } else{
+                        } else {
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
-
-                        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                            pw.write(userName + "," + password + "," + email + "," + "Student\n");
-                            pw.flush();
-                        } catch (IOException e) {
-                            System.out.println("Unable to write file");
-                        }
-
-                    } else {
-                        // Use commas
-                        System.out.println("What subjects are you planning to teach");
-
-                        String subjects = scan.nextLine();
-                        String[] newSubjects = subjects.split(",");
-
-                        System.out.println("What is the price you charge?");
-                        double price = scan.nextDouble();
-
-                        scan.nextLine();
-
-                        boolean accountSimilarity = false;
-
-                        for(int i = 0; i < userList.size(); i++){
-                            if(userList.get(i) instanceof Tutor){
-                                if(userList.get(i).getAccountUsername().equals(userName)){
-                                    accountSimilarity = true;
-                                    break;
-                                }
-
-                                if(userList.get(i).getEmail().equals(email)){
-                                    accountSimilarity = true;
-                                    break;
-                                }
-                            }
-                        }
-
+                    else {
                         if(!accountSimilarity){
+                            // Use commas
+                            System.out.println("What subjects are you planning to teach");
+
+                            String subjects = scan.nextLine();
+                            String[] newSubjects = subjects.split(",");
+
+                            System.out.println("What is the price you charge?");
+                            double price = scan.nextDouble();
+                            scan.nextLine();
                             user = new Tutor(userName, password, email, blockedUserList, invisibleList, newSubjects, price);
-                        } else{
+                        } else {
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
+                    }
 
-                        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                            pw.write(userName + "," + password + "," + email + "," + subjects.replace(",", ";") + "," + price + "," + "Tutor\n");
-                            pw.flush();
-                        } catch (IOException e) {
-                            System.out.println("Unable to write file");
-                        }
+                    try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
+                        pw.write(userName + "," + password + "," + email + "," + user + "\n");
+                        pw.flush();
+                    } catch (IOException e) {
+                        System.out.println("Unable to write file");
                     }
 
                     userList.add(user);
