@@ -1,5 +1,5 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,6 +14,7 @@ public class Main {
         // not used
         ArrayList<String> blockedUserList = new ArrayList<>();
         ArrayList<String> invisibleList = new ArrayList<>();
+
         ArrayList<String> filterList = new ArrayList<>();
 
         System.out.println("Welcome to Tutoring Center!");
@@ -124,7 +125,7 @@ public class Main {
                             user = new Tutor(userName, password, email, blockedUserList, invisibleList, newSubjects, price, "****", filterList);
 
                             try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                                pw.write(userName + "," + password + "," + email + "," + subjects + "," + price + "," + "****,," + user +"\n");
+                                pw.write(userName + "," + password + "," + email + "," + String.join(";", newSubjects) + "," + price + "," + "****,," + user +"\n");
                                 pw.flush();
                             } catch (IOException e) {
                                 System.out.println("Unable to write file");
@@ -213,16 +214,11 @@ public class Main {
                             }
                         }
 
-                        for (int i = 0; i < availableTutors.size(); i++) {
-                            if (i != availableTutors.size() - 1) {
-                                System.out.print(availableTutors.get(i).getAccountUsername() + ",");
-                            } else {
-                                System.out.print(availableTutors.get(i).getAccountUsername() + "\n");
-                            }
-                        }
 
                         if(availableTutors.size() == 0){
                             System.out.println("There are no tutors available to message");
+                        } else {
+                            availability(availableTutors);
                         }
 
                         break;
@@ -296,12 +292,7 @@ public class Main {
                                     }
 
                                     int count = 1;
-                                    for (String message : messages) {
-                                        for (String filterWord : ((Student) user).getFilterWordList()) {
-                                            message = message.replaceAll(String.format("(?i)%s", filterWord), ((Student) user).getFilter());
-                                        }
-                                        System.out.printf("[%d]: %s\n", count++, message);
-                                    }
+                                    printMsg(messages, count, user);
                                     break;
                                 case 2:
                                     System.out.println("Message Body:");
@@ -392,66 +383,15 @@ public class Main {
                                     System.out.println("Please list the filename.");
                                     String ifileName = scan.nextLine();
 
-                                    ArrayList<String> importMessages = new ArrayList<String>();
+                                    ArrayList<String> importMessages = new ArrayList<>();
 
-                                    try{
-                                        File importFile = new File(ifileName);
-                                        FileReader fr = new FileReader(importFile);
-                                        BufferedReader bfr = new BufferedReader(fr);
-
-                                        String line = bfr.readLine();
-                                        while(line != null){
-                                            importMessages.add(line);
-                                            line = bfr.readLine();
-                                        }
-
-                                        BufferedWriter bfw = new BufferedWriter(new FileWriter(userName + "_" + userList.get(index).getAccountUsername(), true));
-                                        for(int i = 0; i < importMessages.size(); i++){
-                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + importMessages.get(i) + "\n");
-                                        }
-
-                                        bfr.close();
-                                        bfw.flush();
-
-                                        messageClass.export(userName, userList.get(index).getAccountUsername());
-
-                                        System.out.println("Imported conversation successfully!");
-
-                                    } catch (IOException e){
-                                        System.out.println("Cannot find or read from file!");
-                                    }
+                                    importMessage(messageClass, userList, userName, index, ifileName, importMessages);
 
                                     break;
 
                                 case 7:
 
-                                    try{
-                                        System.out.println("What is the name of the file which you would like your exported contents to be placed in?");
-                                        String expFileName = scan.nextLine();
-
-                                        File exportFile = new File(expFileName + ".csv");
-
-                                        if(!exportFile.exists()){
-                                            exportFile.createNewFile();
-                                        }
-
-                                        FileWriter fw = new FileWriter(exportFile, false);
-                                        BufferedWriter bfw = new BufferedWriter(fw);
-
-                                        ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
-                                        ArrayList<String> unEditPastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
-
-                                        for(int i = 0; i < pastMessages.size(); i++){
-                                            System.out.printf("[%d]: %s", i+1, unEditPastMessages.get(i));
-                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
-                                        }
-
-                                        bfw.flush();
-                                        System.out.println("Conversation exported successfully!");
-                                    } catch (IOException e){
-                                        System.out.println("Unable to export file");
-                                    }
-
+                                    export(scan, messageClass, userList, userName, index);
                                     break;
 
                             }
@@ -473,17 +413,7 @@ public class Main {
 
 
                                 try {
-                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-
-                                    for (int i = 0; i < userList.size(); i++) {
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
-                                        }
-                                    }
-
-                                    pw.flush();
+                                    updateFile(userList, f);
                                     System.out.println("Password has been successfully changed\n");
                                 } catch (IOException e) {
                                     System.out.println("Can't write to the file!");
@@ -514,17 +444,7 @@ public class Main {
                                 }
 
                                 try {
-                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-
-                                    for (int i = 0; i < userList.size(); i++) {
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
-                                        }
-                                    }
-
-                                    pw.flush();
+                                    updateFile(userList, f);
 
                                     System.out.println("Username has been successfully changed\n");
                                 } catch (IOException e) {
@@ -556,17 +476,7 @@ public class Main {
 
 
                                 try {
-                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-
-                                    for (int i = 0; i < userList.size(); i++) {
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
-                                        }
-                                    }
-
-                                    pw.flush();
+                                    updateFile(userList, f);
 
                                     System.out.println("Email has been successfully changed\n");
                                 } catch (IOException e) {
@@ -593,17 +503,7 @@ public class Main {
 
                                 // Rewriting the file again...
                                 try {
-                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-
-                                    for (int i = 0; i < userList.size(); i++) {
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
-                                        }
-                                    }
-
-                                    pw.flush();
+                                    updateFile(userList, f);
 
                                     System.out.println("Account has been deleted");
 
@@ -651,34 +551,12 @@ public class Main {
                                         String[] words = scan.nextLine().split(",");
                                         ArrayList<String> pastWords = ((Student) user).getFilterWordList();
 
-                                        for (String word : words) {
-                                            pastWords.add(word);
-                                        }
+                                        Collections.addAll(pastWords, words);
 
                                         ((Student) user).setFilterWordList(pastWords);
                                         System.out.println("Added Successfully");
 
-                                        try {
-                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
-                                            ArrayList<String> lines = new ArrayList<>();
-                                            String line;
-                                            while ((line = bfr.readLine()) != null) {
-                                                String[] newLine = line.split(",");
-                                                if (newLine[0].equals(user.getAccountUsername())) {
-                                                    newLine[4] = String.join(";", pastWords);
-                                                    line = String.join(",", newLine);
-                                                }
-                                                lines.add(line);
-                                            }
-
-                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
-                                            for (String det : lines) {
-                                                pw.write(det + "\n");
-                                                pw.flush();
-                                            }
-                                        } catch (IOException e) {
-                                            System.out.println("Unable to write file");
-                                        }
+                                        updateCensoredWords(user, pastWords);
 
                                         break;
                                     case "2":
@@ -697,27 +575,7 @@ public class Main {
 
                                         ((Student) user).setFilterWordList(filterWordList);
 
-                                        try {
-                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
-                                            ArrayList<String> lines = new ArrayList<>();
-                                            String line;
-                                            while ((line = bfr.readLine()) != null) {
-                                                String[] newLine = line.split(",");
-                                                if (newLine[0].equals(user.getAccountUsername())) {
-                                                    newLine[4] = String.join(";", filterWordList);
-                                                    line = String.join(",", newLine);
-                                                }
-                                                lines.add(line);
-                                            }
-
-                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
-                                            for (String det : lines) {
-                                                pw.write(det + "\n");
-                                                pw.flush();
-                                            }
-                                        } catch (IOException e) {
-                                            System.out.println("Unable to write file");
-                                        }
+                                        updateCensoredWords(user, filterWordList);
                                 }
                         }
 
@@ -766,23 +624,7 @@ public class Main {
                             }
                         }
 
-                        try {
-                            File blockedUsers = new File("BlockedUsers.txt");
-                            if(!blockedUsers.exists()){
-                                blockedUsers.createNewFile();
-                            }
-
-                            FileWriter fr = new FileWriter(blockedUsers, false);
-                            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
-
-                            System.out.println(blockedUserList.size());
-
-                            for(int l = 0; l < blockedUserList.size(); l++){
-                                pw.println(user + "," + user.getAccountUsername() + ";" + blockedUserList.get(l));
-                            }
-                        } catch (IOException e){
-                            System.out.println("User to unblock not found");
-                        }
+                        unblockUser(blockedUserList, user);
 
                         break;
                     case 7:
@@ -794,21 +636,7 @@ public class Main {
                             }
                         }
 
-                        try {
-                            File invisibleUsers = new File("InvisibleUsers.txt");
-                            if(!invisibleUsers.exists()){
-                                invisibleUsers.createNewFile();
-                                System.out.println("Invisible Users file has been created");
-                            }
-
-                            FileWriter fr = new FileWriter(invisibleUsers, true);
-                            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
-
-                            pw.println(user + "," + user.getAccountUsername() + ";" + invisiblePerson);
-                            pw.flush();
-                        } catch (IOException e){
-                            System.out.println("There are no invisible users");
-                        }
+                        setInvisible(user, invisiblePerson);
 
                         break;
                 }
@@ -837,17 +665,13 @@ public class Main {
                             }
                         }
 
-                        for (int i = 0; i < availableStudents.size(); i++) {
-                            if (i != availableStudents.size() - 1) {
-                                System.out.print(availableStudents.get(i).getAccountUsername() + ",");
-                            } else {
-                                System.out.print(availableStudents.get(i).getAccountUsername() + "\n");
-                            }
-                        }
-
                         if(availableStudents.size() == 0){
                             System.out.println("There are no students available to message");
+                        } else {
+                            availability(availableStudents);
                         }
+
+                        
 
                         break;
 
@@ -916,12 +740,7 @@ public class Main {
                                     }
 
                                     int count = 1;
-                                    for (String message : messages) {
-                                        for (String filterWord : ((Tutor) user).getFilterWordList()) {
-                                            message = message.replaceAll(String.format("(?i)%s", filterWord), ((Tutor) user).getFilter());
-                                        }
-                                        System.out.printf("[%d]: %s\n", count++, message);
-                                    }
+                                    printMsg(messages, count, user);
                                     break;
                                 case 2:
                                     System.out.println("Message Body:");
@@ -1011,61 +830,11 @@ public class Main {
 
                                     ArrayList<String> importMessages = new ArrayList<>();
 
-                                    try{
-                                        File importFile = new File(ifileName);
-                                        FileReader fr = new FileReader(importFile);
-                                        BufferedReader bfr = new BufferedReader(fr);
-
-                                        String line = bfr.readLine();
-                                        while(line != null){
-                                            importMessages.add(line);
-                                            line = bfr.readLine();
-                                        }
-
-                                        BufferedWriter bfw = new BufferedWriter(new FileWriter(userName + "_" + userList.get(index).getAccountUsername(), true));
-                                        for(int i = 0; i < importMessages.size(); i++){
-                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + importMessages.get(i) + "\n");
-                                        }
-
-                                        bfr.close();
-                                        bfw.flush();
-
-                                        messageClass.export(userName, userList.get(index).getAccountUsername());
-
-                                        System.out.println("Imported conversation successfully!");
-
-                                    } catch (IOException e){
-                                        System.out.println("Cannot find or read from file!");
-                                    }
+                                    importMessage(messageClass, userList, userName, index, ifileName, importMessages);
 
                                     break;
                                 case 7:
-                                    try{
-                                        System.out.println("What is the name of the file which you would like your exported contents to be placed in?");
-                                        String exportFileName = scan.nextLine();
-
-                                        File exportFile = new File(exportFileName + ".csv");
-
-                                        if(!exportFile.exists()){
-                                            exportFile.createNewFile();
-                                        }
-
-                                        FileWriter fw = new FileWriter(exportFile, false);
-                                        BufferedWriter bfw = new BufferedWriter(fw);
-
-                                        ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
-                                        ArrayList<String> unEditPastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
-
-                                        for(int i = 0; i < pastMessages.size(); i++){
-                                            System.out.printf("[%d]: %s", i+1, unEditPastMessages.get(i));
-                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
-                                        }
-
-                                        bfw.flush();
-                                        System.out.println("Conversation exported successfully!");
-                                    } catch (IOException e){
-                                        System.out.println("Unable to export file");
-                                    }
+                                    export(scan, messageClass, userList, userName, index);
 
                                     break;
                             }
@@ -1086,17 +855,7 @@ public class Main {
                                 user.setPassword(newPassword);
 
                                 try {
-                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-
-                                    for (int i = 0; i < userList.size(); i++) {
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
-                                        }
-                                    }
-
-                                    pw.flush();
+                                    updateFile(userList, f);
 
                                     System.out.println("Password has been changed successfully");
                                 } catch (IOException e) {
@@ -1129,19 +888,7 @@ public class Main {
                                 }
 
                                 try {
-                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-
-                                    for (int i = 0; i < userList.size(); i++) {
-
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
-                                        }
-
-                                    }
-
-                                    pw.flush();
+                                    updateFile(userList, f);
                                     System.out.println("Username has been changed successfully!");
                                 } catch (IOException e) {
                                     System.out.println("Can't write to the file!");
@@ -1172,18 +919,7 @@ public class Main {
 
 
                                 try {
-                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-
-                                    for (int i = 0; i < userList.size(); i++) {
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
-                                        }
-
-                                    }
-
-                                    pw.flush();
+                                    updateFile(userList, f);
 
                                     System.out.println("Email has been successfully changed!");
                                 } catch (IOException e) {
@@ -1206,17 +942,7 @@ public class Main {
 
                                 // Rewriting the file again...
                                 try {
-                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-
-                                    for (int i = 0; i < userList.size(); i++) {
-                                        if (userList.get(i) instanceof Student) {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + "Student\n");
-                                        } else {
-                                            pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," + userList.get(i).getEmail() + "," + Arrays.toString(((Tutor) userList.get(i)).getSubjects()).replace(",", ";").replace(" ", "").replace("[", "").replace("]", "") + "," + ((Tutor) userList.get(i)).price() + "," + "Tutor\n");
-                                        }
-                                    }
-
-                                    pw.flush();
+                                    updateFile(userList, f);
                                     System.out.println("Account has been deleted");
                                 } catch (IOException e) {
                                     System.out.println("Can't write to the file!");
@@ -1267,27 +993,7 @@ public class Main {
                                         ((Tutor) user).setFilterWordList(pastWords);
                                         System.out.println("Added Successfully");
 
-                                        try {
-                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
-                                            ArrayList<String> lines = new ArrayList<>();
-                                            String line;
-                                            while ((line = bfr.readLine()) != null) {
-                                                String[] newLine = line.split(",");
-                                                if (newLine[0].equals(user.getAccountUsername())) {
-                                                    newLine[6] = String.join(";", pastWords);
-                                                    line = String.join(",", newLine);
-                                                }
-                                                lines.add(line);
-                                            }
-
-                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
-                                            for (String det : lines) {
-                                                pw.write(det + "\n");
-                                                pw.flush();
-                                            }
-                                        } catch (IOException e) {
-                                            System.out.println("Unable to write file");
-                                        }
+                                        updateCensorWords(user, pastWords);
 
                                         break;
                                     case "2":
@@ -1306,27 +1012,7 @@ public class Main {
 
                                         ((Tutor) user).setFilterWordList(filterWordList);
 
-                                        try {
-                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
-                                            ArrayList<String> lines = new ArrayList<>();
-                                            String line;
-                                            while ((line = bfr.readLine()) != null) {
-                                                String[] newLine = line.split(",");
-                                                if (newLine[0].equals(user.getAccountUsername())) {
-                                                    newLine[6] = String.join(";", filterWordList);
-                                                    line = String.join(",", newLine);
-                                                }
-                                                lines.add(line);
-                                            }
-
-                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
-                                            for (String det : lines) {
-                                                pw.write(det + "\n");
-                                                pw.flush();
-                                            }
-                                        } catch (IOException e) {
-                                            System.out.println("Unable to write file");
-                                        }
+                                        updateCensorWords(user, filterWordList);
                                 }
                         }
 
@@ -1376,23 +1062,7 @@ public class Main {
                             }
                         }
 
-                        try {
-                            File blockedUsers = new File("BlockedUsers.txt");
-                            if(!blockedUsers.exists()){
-                                blockedUsers.createNewFile();
-                            }
-
-                            FileWriter fr = new FileWriter(blockedUsers, false);
-                            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
-
-                            System.out.println(blockedUserList.size());
-
-                            for(int l = 0; l < blockedUserList.size(); l++){
-                                pw.println(user + "," + user.getAccountUsername() + ";" + blockedUserList.get(l));
-                            }
-                        } catch (IOException e){
-                            System.out.println("User to unblock not found");
-                        }
+                        unblockUser(blockedUserList, user);
 
                         break;
                     case 7:
@@ -1404,25 +1074,214 @@ public class Main {
                             }
                         }
 
-                        try {
-                            File invisibleUsers = new File("InvisibleUsers.txt");
-                            if(!invisibleUsers.exists()){
-                                invisibleUsers.createNewFile();
-                                System.out.println("Invisible Users file has been created");
-                            }
-
-                            FileWriter fr = new FileWriter(invisibleUsers, true);
-                            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
-
-                            pw.println(user + "," + user.getAccountUsername() + ";" + invisiblePerson);
-                            pw.flush();
-                        } catch (IOException e){
-                            System.out.println("There are no invisible users");
-                        }
+                        setInvisible(user, invisiblePerson);
 
                         break;
 
                 }
+            }
+        }
+    }
+
+    public static void printMsg(ArrayList<String> messages, int count, User user) {
+        if (user instanceof Student) {
+            for (String message : messages) {
+                if (!((Student) user).getFilterWordList().get(0).equals("")) {
+                    for (String filterWord : ((Student) user).getFilterWordList()) {
+                        message = message.replaceAll(String.format("(?i)%s", filterWord), ((Student) user).getFilter());
+                    }
+                }
+                System.out.printf("[%d]: %s\n", count++, message);
+            }
+        } else {
+            for (String message : messages) {
+                if (!((Tutor) user).getFilterWordList().get(0).equals("")) {
+                    for (String filterWord : ((Tutor) user).getFilterWordList()) {
+                        message = message.replaceAll(String.format("(?i)%s", filterWord), ((Tutor) user).getFilter());
+                    }
+                }
+                System.out.printf("[%d]: %s\n", count++, message);
+            }
+        }
+    }
+
+    public static void updateFile(ArrayList<User> userList, File f) throws IOException {
+        BufferedReader bfr = new BufferedReader(new FileReader(f));
+        String line;
+        int count = 0;
+        ArrayList<String[]> lines = new ArrayList<>();
+        while((line = bfr.readLine()) != null) {
+            if (line.contains(userList.get(count).getAccountUsername()) ||
+            line.contains(userList.get(count).getEmail())) {
+                lines.add(line.split(","));
+                count++;
+            }
+        }
+        bfr.close();
+
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f)));
+
+        for (int i = 0; i < userList.size(); i++) {
+            if (userList.get(i) instanceof Student) {
+                pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," +
+                        userList.get(i).getEmail() + "," + lines.get(i)[3] + "," + lines.get(i)[4] + "," + "Student\n");
+            } else {
+                pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() +
+                        "," + userList.get(i).getEmail() + "," +
+                        String.join(";", ((Tutor) userList.get(i)).getSubjects()) +
+                        "," + ((Tutor) userList.get(i)).price() + "," + lines.get(i)[5] + "," + lines.get(i)[6] + "," + "Tutor\n");
+            }
+        }
+
+        pw.flush();
+    }
+
+    public static void updateCensorWords(User user, ArrayList<String> pastWords) {
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+            ArrayList<String> lines = new ArrayList<>();
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                String[] newLine = line.split(",");
+                if (newLine[0].equals(user.getAccountUsername())) {
+                    newLine[6] = String.join(";", pastWords);
+                    line = String.join(",", newLine);
+                }
+                lines.add(line);
+            }
+
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+            for (String det : lines) {
+                pw.write(det + "\n");
+                pw.flush();
+            }
+        } catch (IOException e) {
+            System.out.println("Unable to write file");
+        }
+    }
+
+    public static void setInvisible(User user, String invisiblePerson) {
+        try {
+            File invisibleUsers = new File("InvisibleUsers.txt");
+            if(!invisibleUsers.exists()){
+                invisibleUsers.createNewFile();
+                System.out.println("Invisible Users file has been created");
+            }
+
+            FileWriter fr = new FileWriter(invisibleUsers, true);
+            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
+
+            pw.println(user + "," + user.getAccountUsername() + ";" + invisiblePerson);
+            pw.flush();
+        } catch (IOException e){
+            System.out.println("There are no invisible users");
+        }
+    }
+
+    public static void unblockUser(ArrayList<String> blockedUserList, User user) {
+        try {
+            File blockedUsers = new File("BlockedUsers.txt");
+            if(!blockedUsers.exists()){
+                blockedUsers.createNewFile();
+            }
+
+            FileWriter fr = new FileWriter(blockedUsers, false);
+            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
+            
+            for(int l = 0; l < blockedUserList.size(); l++){
+                pw.println(user + "," + user.getAccountUsername() + ";" + blockedUserList.get(l));
+            }
+        } catch (IOException e){
+            System.out.println("User to unblock not found");
+        }
+    }
+
+    public static void updateCensoredWords(User user, ArrayList<String> pastWords) {
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+            ArrayList<String> lines = new ArrayList<>();
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                String[] newLine = line.split(",");
+                if (newLine[0].equals(user.getAccountUsername())) {
+                    newLine[4] = String.join(";", pastWords);
+                    line = String.join(",", newLine);
+                }
+                lines.add(line);
+            }
+
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+            for (String det : lines) {
+                pw.write(det + "\n");
+                pw.flush();
+            }
+        } catch (IOException e) {
+            System.out.println("Unable to write file");
+        }
+    }
+
+    public static void export(Scanner scan, Message messageClass, ArrayList<User> userList, String userName, int index) {
+        try {
+            System.out.println("What is the name of the file which you would like your exported contents to be placed in?");
+            String expFileName = scan.nextLine();
+
+            File exportFile = new File(expFileName + ".csv");
+
+            if(!exportFile.exists()){
+                exportFile.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(exportFile, false);
+            BufferedWriter bfw = new BufferedWriter(fw);
+
+            ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
+            ArrayList<String> unEditPastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+
+            for(int i = 0; i < pastMessages.size(); i++){
+                System.out.printf("[%d]: %s", i+1, unEditPastMessages.get(i));
+                bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
+            }
+
+            bfw.flush();
+            System.out.println("Conversation exported successfully!");
+        } catch (IOException e){
+            System.out.println("Unable to export file");
+        }
+    }
+
+    public static void importMessage(Message messageClass, ArrayList<User> userList, String userName, int index, String ifileName, ArrayList<String> importMessages) {
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(ifileName));
+
+            String line = bfr.readLine();
+            while(line != null){
+                importMessages.add(line);
+                line = bfr.readLine();
+            }
+
+            BufferedWriter bfw = new BufferedWriter(new FileWriter(userName + "_" + userList.get(index).getAccountUsername(), true));
+            for(int i = 0; i < importMessages.size(); i++){
+                bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + importMessages.get(i) + "\n");
+            }
+
+            bfr.close();
+            bfw.flush();
+
+            messageClass.export(userName, userList.get(index).getAccountUsername());
+
+            System.out.println("Imported conversation successfully!");
+
+        } catch (IOException e){
+            System.out.println("Cannot find or read from file!");
+        }
+    }
+
+    public static void availability(ArrayList<User> userList) {
+        for (int i = 0; i < userList.size(); i++) {
+            if (i != userList.size() - 1) {
+                System.out.print(userList.get(i).getAccountUsername() + ",");
+            } else {
+                System.out.print(userList.get(i).getAccountUsername() + "\n");
             }
         }
     }
