@@ -4,16 +4,20 @@ public class Tutor extends User {
     private String[] subjects;
     double price;
 
-    String filter = "****";
+    String filter;
 
-    ArrayList<String> filterWordList = new ArrayList<>();
+    ArrayList<String> filterWordList;
     ArrayList<Store> stores = new ArrayList<Store>();
 
     // add as a parameter ArrayList<Store> stores
-    public Tutor(String accountUsername, String password, String email, ArrayList<String> blockedList, ArrayList<String> invisibleList, String[] subjects, double price) {
+    public Tutor(String accountUsername, String password, String email,
+                 ArrayList<String> blockedList, ArrayList<String> invisibleList,
+                 String[] subjects, double price, String filter, ArrayList<String> filterWordList) {
         super(accountUsername, password, email, blockedList, invisibleList);
         this.subjects = subjects;
         this.price = price;
+        this.filter = filter;
+        this.filterWordList = filterWordList;
         // this.stores = stores;
     }
 

@@ -14,6 +14,7 @@ public class Main {
         // not used
         ArrayList<String> blockedUserList = new ArrayList<>();
         ArrayList<String> invisibleList = new ArrayList<>();
+        ArrayList<String> filterList = new ArrayList<>();
 
         System.out.println("Welcome to Tutoring Center!");
 
@@ -30,14 +31,17 @@ public class Main {
 
             String userLine = bfr.readLine();
             while (userLine != null) {
+                filterList = new ArrayList<>();
                 String[] splitLines = userLine.split(",");
 
                 User user;
 
-                if (splitLines[3].equals("Student")) {
-                    user = new Student(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList);
+                if (splitLines[5].equals("Student")) {
+                    Collections.addAll(filterList, splitLines[4].split(";"));
+                    user = new Student(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList, splitLines[3], filterList);
                 } else {
-                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList, splitLines[3].split(";"), Double.parseDouble(splitLines[4]));
+                    Collections.addAll(filterList, splitLines[6].split(";"));
+                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList, splitLines[3].split(";"), Double.parseDouble(splitLines[4]), splitLines[5], filterList);
                 }
 
                 userList.add(user);
@@ -93,10 +97,10 @@ public class Main {
 
                     if (option == 1) {
                         if (!accountSimilarity) {
-                            user = new Student(userName, password, email, blockedUserList, invisibleList);
+                            user = new Student(userName, password, email, blockedUserList, invisibleList, "****", filterList);
 
                             try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                                pw.write(userName + "," + password + "," + email + "," + user + "\n");
+                                pw.write(userName + "," + password + "," + email + "," + "****,," + user + "\n");
                                 pw.flush();
                             } catch (IOException e) {
                                 System.out.println("Unable to write file");
@@ -117,10 +121,10 @@ public class Main {
                             System.out.println("What is the price you charge?");
                             double price = scan.nextDouble();
                             scan.nextLine();
-                            user = new Tutor(userName, password, email, blockedUserList, invisibleList, newSubjects, price);
+                            user = new Tutor(userName, password, email, blockedUserList, invisibleList, newSubjects, price, "****", filterList);
 
                             try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                                pw.write(userName + "," + password + "," + email + "," + subjects + "," + price + "," + user +"\n");
+                                pw.write(userName + "," + password + "," + email + "," + subjects + "," + price + "," + "****,," + user +"\n");
                                 pw.flush();
                             } catch (IOException e) {
                                 System.out.println("Unable to write file");
@@ -294,7 +298,7 @@ public class Main {
                                     int count = 1;
                                     for (String message : messages) {
                                         for (String filterWord : ((Student) user).getFilterWordList()) {
-                                            message = message.replace(filterWord, ((Student) user).getFilter());
+                                            message = message.replaceAll(String.format("(?i)%s", filterWord), ((Student) user).getFilter());
                                         }
                                         System.out.printf("[%d]: %s\n", count++, message);
                                     }
@@ -304,7 +308,6 @@ public class Main {
                                     String content = scan.nextLine();
                                     messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
                                     messageClass.export(userName, userList.get(index).getAccountUsername());
-                                    System.out.println(userList.get(index).getAccountUsername());
                                     System.out.println("Written Successfully");
 
                                     break;
@@ -615,6 +618,28 @@ public class Main {
                                 String filter = scan.nextLine();
                                 ((Student) user).setFilter(filter);
                                 System.out.println("Changed Successfully");
+
+                                try {
+                                    BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+                                    ArrayList<String> lines = new ArrayList<>();
+                                    String line;
+                                    while ((line = bfr.readLine()) != null) {
+                                        String[] newLine = line.split(",");
+                                        if (newLine[0].equals(user.getAccountUsername())) {
+                                            newLine[3] = filter;
+                                            line = String.join(",", newLine);
+                                        }
+                                        lines.add(line);
+                                    }
+
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+                                    for (String det : lines) {
+                                        pw.write(det + "\n");
+                                        pw.flush();
+                                    }
+                                } catch (IOException e) {
+                                    System.out.println("Unable to write file");
+                                }
                                 break;
                             case 6:
                                 System.out.println("1. Add words\n" +
@@ -632,6 +657,29 @@ public class Main {
 
                                         ((Student) user).setFilterWordList(pastWords);
                                         System.out.println("Added Successfully");
+
+                                        try {
+                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+                                            ArrayList<String> lines = new ArrayList<>();
+                                            String line;
+                                            while ((line = bfr.readLine()) != null) {
+                                                String[] newLine = line.split(",");
+                                                if (newLine[0].equals(user.getAccountUsername())) {
+                                                    newLine[4] = String.join(";", pastWords);
+                                                    line = String.join(",", newLine);
+                                                }
+                                                lines.add(line);
+                                            }
+
+                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+                                            for (String det : lines) {
+                                                pw.write(det + "\n");
+                                                pw.flush();
+                                            }
+                                        } catch (IOException e) {
+                                            System.out.println("Unable to write file");
+                                        }
+
                                         break;
                                     case "2":
                                         ArrayList<String> filterWordList = ((Student) user).getFilterWordList();
@@ -648,6 +696,28 @@ public class Main {
                                         System.out.println("Deleted Successfully");
 
                                         ((Student) user).setFilterWordList(filterWordList);
+
+                                        try {
+                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+                                            ArrayList<String> lines = new ArrayList<>();
+                                            String line;
+                                            while ((line = bfr.readLine()) != null) {
+                                                String[] newLine = line.split(",");
+                                                if (newLine[0].equals(user.getAccountUsername())) {
+                                                    newLine[4] = String.join(";", filterWordList);
+                                                    line = String.join(",", newLine);
+                                                }
+                                                lines.add(line);
+                                            }
+
+                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+                                            for (String det : lines) {
+                                                pw.write(det + "\n");
+                                                pw.flush();
+                                            }
+                                        } catch (IOException e) {
+                                            System.out.println("Unable to write file");
+                                        }
                                 }
                         }
 
@@ -848,8 +918,8 @@ public class Main {
 
                                     int count = 1;
                                     for (String message : messages) {
-                                        for (String filterWord : ((Student) user).getFilterWordList()) {
-                                            message = message.replace(filterWord, ((Student) user).getFilter());
+                                        for (String filterWord : ((Tutor) user).getFilterWordList()) {
+                                            message = message.replaceAll(String.format("(?i)%s", filterWord), ((Tutor) user).getFilter());
                                         }
                                         System.out.printf("[%d]: %s\n", count++, message);
                                     }
@@ -1159,6 +1229,29 @@ public class Main {
                                 String filter = scan.nextLine();
                                 ((Tutor) user).setFilter(filter);
                                 System.out.println("Changed Successfully");
+
+                                try {
+                                    BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+                                    ArrayList<String> lines = new ArrayList<>();
+                                    String line;
+                                    while ((line = bfr.readLine()) != null) {
+                                        String[] newLine = line.split(",");
+                                        if (newLine[0].equals(user.getAccountUsername())) {
+                                            newLine[5] = filter;
+                                            line = String.join(",", newLine);
+                                        }
+                                        lines.add(line);
+                                    }
+
+                                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+                                    for (String det : lines) {
+                                        pw.write(det + "\n");
+                                        pw.flush();
+                                    }
+                                } catch (IOException e) {
+                                    System.out.println("Unable to write file");
+                                }
+
                                 break;
                             case 6:
                                 System.out.println("1. Add words\n" +
@@ -1174,6 +1267,29 @@ public class Main {
 
                                         ((Tutor) user).setFilterWordList(pastWords);
                                         System.out.println("Added Successfully");
+
+                                        try {
+                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+                                            ArrayList<String> lines = new ArrayList<>();
+                                            String line;
+                                            while ((line = bfr.readLine()) != null) {
+                                                String[] newLine = line.split(",");
+                                                if (newLine[0].equals(user.getAccountUsername())) {
+                                                    newLine[6] = String.join(";", pastWords);
+                                                    line = String.join(",", newLine);
+                                                }
+                                                lines.add(line);
+                                            }
+
+                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+                                            for (String det : lines) {
+                                                pw.write(det + "\n");
+                                                pw.flush();
+                                            }
+                                        } catch (IOException e) {
+                                            System.out.println("Unable to write file");
+                                        }
+
                                         break;
                                     case "2":
                                         ArrayList<String> filterWordList = ((Tutor) user).getFilterWordList();
@@ -1190,6 +1306,28 @@ public class Main {
                                         System.out.println("Deleted Successfully");
 
                                         ((Tutor) user).setFilterWordList(filterWordList);
+
+                                        try {
+                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+                                            ArrayList<String> lines = new ArrayList<>();
+                                            String line;
+                                            while ((line = bfr.readLine()) != null) {
+                                                String[] newLine = line.split(",");
+                                                if (newLine[0].equals(user.getAccountUsername())) {
+                                                    newLine[6] = String.join(";", filterWordList);
+                                                    line = String.join(",", newLine);
+                                                }
+                                                lines.add(line);
+                                            }
+
+                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+                                            for (String det : lines) {
+                                                pw.write(det + "\n");
+                                                pw.flush();
+                                            }
+                                        } catch (IOException e) {
+                                            System.out.println("Unable to write file");
+                                        }
                                 }
                         }
 

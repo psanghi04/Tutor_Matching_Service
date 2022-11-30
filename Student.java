@@ -2,11 +2,15 @@ import java.util.ArrayList;
 
 public class Student extends User {
 
-    String filter = "****";
-    ArrayList<String> filterWordList = new ArrayList<>();
+    String filter;
+    ArrayList<String> filterWordList;
 
-    public Student(String message, String accountUsername, String email, ArrayList<String> blockedList, ArrayList<String> invisibleList) {
+    public Student(String message, String accountUsername, String email,
+                   ArrayList<String> blockedList, ArrayList<String> invisibleList,
+                   String filter, ArrayList<String> filterWordList) {
         super(message, accountUsername, email, blockedList, invisibleList);
+        this.filter = filter;
+        this.filterWordList = filterWordList;
     }
 
     @Override
