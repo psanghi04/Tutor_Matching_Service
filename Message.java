@@ -40,7 +40,7 @@ public class Message {
         return false;
     }
     public void edit(User user, String otherPerson, String message, String edit) {
-        ArrayList<String> conversation = new ArrayList<String>();
+        ArrayList<String> conversation = new ArrayList<>();
         try {
             File f = new File(user.getAccountUsername() + "_" + otherPerson);
             if(!f.exists()){
@@ -73,7 +73,7 @@ public class Message {
     }
 
     public void delete(User user, String otherPerson, String messageDeleted) {
-        ArrayList<String> conversation = new ArrayList<String>();
+        ArrayList<String> conversation = new ArrayList<>();
         try {
             File f = new File(user.getAccountUsername() + "_" + otherPerson);
 

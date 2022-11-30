@@ -7,7 +7,7 @@ public class Tutor extends User {
     String filter;
 
     ArrayList<String> filterWordList;
-    ArrayList<Store> stores = new ArrayList<Store>();
+    ArrayList<Store> stores = new ArrayList<>();
 
     // add as a parameter ArrayList<Store> stores
     public Tutor(String accountUsername, String password, String email,
@@ -42,7 +42,7 @@ public class Tutor extends User {
     }
 
     public void setStores(ArrayList<Store> stores) {
-        this.stores = new ArrayList<Store>();
+        this.stores = new ArrayList<>();
     }
 
     public void addStore(Store store) {

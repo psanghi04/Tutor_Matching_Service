@@ -823,7 +823,7 @@ public class Main {
 
                 switch (option) {
                     case 1:
-                        ArrayList<User> availableStudents = new ArrayList<User>();
+                        ArrayList<User> availableStudents = new ArrayList<>();
 
                         for (int i = 0; i < userList.size(); i++) {
                             if (userList.get(i) instanceof Student) {
@@ -855,7 +855,6 @@ public class Main {
 
                         int index = -1;
                         boolean unableToMessage = false;
-                        int optionSignIn = 0;
 
                         System.out.println("Who would you like to message?");
                         String person = scan.nextLine();
@@ -879,7 +878,7 @@ public class Main {
                             if (userList.get(i).getAccountUsername().equals(person)) {
                                 index = i;
 
-                                if ((userList.get(i) instanceof Student) && (user instanceof Tutor)) {
+                                if ((userList.get(i) instanceof Student)) {
                                     System.out.println("Person Found");
                                     unableToMessage = false;
                                     break;
@@ -1010,7 +1009,7 @@ public class Main {
                                     System.out.println("Please list the filename.");
                                     String ifileName = scan.nextLine();
 
-                                    ArrayList<String> importMessages = new ArrayList<String>();
+                                    ArrayList<String> importMessages = new ArrayList<>();
 
                                     try{
                                         File importFile = new File(ifileName);
@@ -1143,7 +1142,7 @@ public class Main {
                                     }
 
                                     pw.flush();
-                                    System.out.println("Username has been changed succesfully!");
+                                    System.out.println("Username has been changed successfully!");
                                 } catch (IOException e) {
                                     System.out.println("Can't write to the file!");
                                 }
@@ -1350,7 +1349,7 @@ public class Main {
                         try {
                             File blockedUsers = new File("BlockedUsers.txt");
                             if(!blockedUsers.exists()){
-                                boolean blockedFile = blockedUsers.createNewFile();
+                                blockedUsers.createNewFile();
                                 System.out.println("Blocked Users file has been created");
                             }
 
