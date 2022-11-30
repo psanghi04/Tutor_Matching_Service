@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class MyRunnable implements Runnable{
+public class MyRunnable implements Runnable {
     private JFrame frame1;
     private Container content;
     private JButton loginButton;
@@ -17,7 +17,7 @@ public class MyRunnable implements Runnable{
     private JLabel passwordPrompt;
     private JTextField passwordField;
     private int successfulLogin;
-    public void createJFrame(){
+    public void createJFrame() {
         frame1 = new JFrame("Tutoring Service");
         frame1.setSize(600, 400);
         frame1.setLocationRelativeTo(null);
@@ -26,7 +26,7 @@ public class MyRunnable implements Runnable{
     }
     @Override
     public void run() {
-        try{
+        try {
             Socket socket = new Socket("localhost", 9648);
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter pw = new PrintWriter(socket.getOutputStream());
@@ -63,11 +63,11 @@ public class MyRunnable implements Runnable{
                         System.out.println(successfulLogin);
                         //frame1.dispose();
                     } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(null,"Unsuccessful Login","Error",JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null,"Unsuccessful Login", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             });
-        } catch(Exception e){
+        } catch(Exception e) {
             JOptionPane.showMessageDialog(null,"Error","Error",JOptionPane.ERROR_MESSAGE);
         }
     }
