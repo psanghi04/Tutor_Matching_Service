@@ -201,13 +201,12 @@ public class Main {
                     case 1:
                         ArrayList<User> availableTutors = new ArrayList<>();
 
-                        for (int i = 0; i < userList.size(); i++) {
-                            if (userList.get(i) instanceof Tutor) {
+                        for (User userEl : userList) {
+                            if (userEl instanceof Tutor) {
 
-                                User person = userList.get(i);
-                                if(!messageClass.isBlocked(user, person.getAccountUsername()) &&
-                                        !messageClass.isInvisible(user, person.getAccountUsername())) {
-                                    availableTutors.add(userList.get(i));
+                                if (!messageClass.isBlocked(user, userEl.getAccountUsername()) &&
+                                        !messageClass.isInvisible(user, userEl.getAccountUsername())) {
+                                    availableTutors.add(userEl);
                                 }
 
 
@@ -227,7 +226,6 @@ public class Main {
 
                         int index = -1;
                         boolean unableToMessage = false;
-                        int optionSignIn = 0;
 
                         System.out.println("Who would you like to message?");
                         String person = scan.nextLine();
@@ -309,9 +307,10 @@ public class Main {
                                     ArrayList<String> messagesDelete = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
 
                                     boolean dMessageExists = false;
-                                    for(int i = 0; i < messagesDelete.size(); i++){
-                                        if(messagesDelete.get(i).substring(messagesDelete.get(i).lastIndexOf(",") + 1).equals(message)){
+                                    for (String s : messagesDelete) {
+                                        if (s.substring(s.lastIndexOf(",") + 1).equals(message)) {
                                             dMessageExists = true;
+                                            break;
                                         }
                                     }
 
@@ -338,9 +337,10 @@ public class Main {
 
                                     boolean messageExists = false;
 
-                                    for(int i = 0; i < allMessages.size(); i++){
-                                        if(allMessages.get(i).substring(allMessages.get(i).lastIndexOf(",") + 1).equals(oldMessage)){
+                                    for (String messageEl : allMessages) {
+                                        if (messageEl.substring(messageEl.lastIndexOf(",") + 1).equals(oldMessage)) {
                                             messageExists = true;
+                                            break;
                                         }
                                     }
 
@@ -366,9 +366,9 @@ public class Main {
 
                                     boolean foundMessage = false;
 
-                                    for(int i = 0; i < searchableMessages.size(); i++){
-                                        if(searchableMessages.get(i).contains(keyword)) {
-                                            System.out.println(searchableMessages.get(i));
+                                    for (String searchableMessage : searchableMessages) {
+                                        if (searchableMessage.contains(keyword)) {
+                                            System.out.println(searchableMessage);
                                             foundMessage = true;
                                         }
                                     }
@@ -427,9 +427,9 @@ public class Main {
                                 String newUsername = scan.nextLine();
 
                                 boolean sameUsername = false;
-                                for(int i = 0; i < userList.size(); i++){
-                                    if(userList.get(i) instanceof Student){
-                                        if(userList.get(i).getAccountUsername().equals(newUsername)){
+                                for (User users : userList) {
+                                    if (users instanceof Student) {
+                                        if (users.getAccountUsername().equals(newUsername)) {
                                             sameUsername = true;
                                             break;
                                         }
@@ -458,9 +458,9 @@ public class Main {
                                 String newEmail = scan.nextLine();
 
                                 boolean sameEmail = false;
-                                for(int i = 0; i < userList.size(); i++){
-                                    if(userList.get(i) instanceof Student){
-                                        if(userList.get(i).getEmail().equals(newEmail)){
+                                for (User users : userList) {
+                                    if (users instanceof Student) {
+                                        if (users.getEmail().equals(newEmail)) {
                                             sameEmail = true;
                                             break;
                                         }
@@ -589,9 +589,9 @@ public class Main {
                         System.out.println("Which user would you like to block?");
                         String blockUsername = scan.nextLine();
 
-                        for(int i = 0; i < userList.size(); i++){
-                            if (userList.get(i).getAccountUsername().equals(blockUsername)){
-                                blockedUserList.add(userList.get(i).getAccountUsername());
+                        for (User users : userList) {
+                            if (users.getAccountUsername().equals(blockUsername)) {
+                                blockedUserList.add(users.getAccountUsername());
                             }
                         }
 
@@ -630,9 +630,9 @@ public class Main {
                     case 7:
                         System.out.println("Which user would you like to make invisible?");
                         String invisiblePerson = scan.nextLine();
-                        for (int i = 0; i < userList.size(); i++) {
-                            if (userList.get(i).getAccountUsername().equals(invisiblePerson)) {
-                                invisibleList.add(userList.get(i).getAccountUsername());
+                        for (User users : userList) {
+                            if (users.getAccountUsername().equals(invisiblePerson)) {
+                                invisibleList.add(users.getAccountUsername());
                             }
                         }
 
@@ -653,13 +653,11 @@ public class Main {
                     case 1:
                         ArrayList<User> availableStudents = new ArrayList<>();
 
-                        for (int i = 0; i < userList.size(); i++) {
-                            if (userList.get(i) instanceof Student) {
-
-                                User person = userList.get(i);
-                                if(!messageClass.isBlocked(user, person.getAccountUsername()) &&
+                        for (User person : userList) {
+                            if (person instanceof Student) {
+                                if (!messageClass.isBlocked(user, person.getAccountUsername()) &&
                                         !messageClass.isInvisible(user, person.getAccountUsername())) {
-                                    availableStudents.add(userList.get(i));
+                                    availableStudents.add(person);
                                 }
 
                             }
@@ -757,9 +755,10 @@ public class Main {
                                     ArrayList<String> allDMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
 
                                     boolean DMessageExists = false;
-                                    for(int i = 0; i < allDMessages.size(); i++){
-                                        if(allDMessages.get(i).substring(allDMessages.get(i).lastIndexOf(",") + 1).equals(message)){
+                                    for (String allDMessage : allDMessages) {
+                                        if (allDMessage.substring(allDMessage.lastIndexOf(",") + 1).equals(message)) {
                                             DMessageExists = true;
+                                            break;
                                         }
                                     }
 
@@ -785,9 +784,10 @@ public class Main {
                                     }
 
                                     boolean messageEExists = false;
-                                    for(int i = 0; i < allEMessages.size(); i++){
-                                        if(allEMessages.get(i).substring(allEMessages.get(i).lastIndexOf(",") + 1).equals(oldMessage)){
+                                    for (String allEMessage : allEMessages) {
+                                        if (allEMessage.substring(allEMessage.lastIndexOf(",") + 1).equals(oldMessage)) {
                                             messageEExists = true;
+                                            break;
                                         }
                                     }
 
@@ -812,9 +812,9 @@ public class Main {
                                     ArrayList<String> searchMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
                                     boolean messageFound = false;
-                                    for(int i = 0; i < searchMessages.size(); i++){
-                                        if(searchMessages.get(i).contains(keyword)) {
-                                            System.out.println(searchMessages.get(i));
+                                    for (String searchMessage : searchMessages) {
+                                        if (searchMessage.contains(keyword)) {
+                                            System.out.println(searchMessage);
                                             messageFound = true;
                                         }
                                     }
@@ -871,9 +871,9 @@ public class Main {
                                 String newUsername = scan.nextLine();
 
                                 boolean similarUsername = false;
-                                for(int i = 0; i < userList.size(); i++){
-                                    if(userList.get(i) instanceof Tutor){
-                                        if(userList.get(i).getAccountUsername().equals(newUsername)){
+                                for (User users : userList) {
+                                    if (users instanceof Tutor) {
+                                        if (users.getAccountUsername().equals(newUsername)) {
                                             similarUsername = true;
                                             break;
                                         }
@@ -901,9 +901,9 @@ public class Main {
                                 String newEmail = scan.nextLine();
 
                                 boolean similarEmail = false;
-                                for(int i = 0; i < userList.size(); i++){
-                                    if(userList.get(i) instanceof Tutor){
-                                        if(userList.get(i).getEmail().equals(newEmail)){
+                                for (User users : userList) {
+                                    if (users instanceof Tutor) {
+                                        if (users.getEmail().equals(newEmail)) {
                                             similarEmail = true;
                                             break;
                                         }
@@ -1026,9 +1026,9 @@ public class Main {
                         System.out.println("Which user would you like to block?");
                         String blockUsername = scan.nextLine();
 
-                        for(int i = 0; i < userList.size(); i++){
-                            if (userList.get(i).getAccountUsername().equals(blockUsername)){
-                                blockedUserList.add(userList.get(i).getAccountUsername());
+                        for (User users : userList) {
+                            if (users.getAccountUsername().equals(blockUsername)) {
+                                blockedUserList.add(users.getAccountUsername());
                             }
                         }
 
@@ -1068,9 +1068,9 @@ public class Main {
                     case 7:
                         System.out.println("Which user would you like to make invisible?");
                         String invisiblePerson = scan.nextLine();
-                        for (int i = 0; i < userList.size(); i++) {
-                            if (userList.get(i).getAccountUsername().equals(invisiblePerson)) {
-                                invisibleList.add(userList.get(i).getAccountUsername());
+                        for (User users : userList) {
+                            if (users.getAccountUsername().equals(invisiblePerson)) {
+                                invisibleList.add(users.getAccountUsername());
                             }
                         }
 
@@ -1187,9 +1187,9 @@ public class Main {
 
             FileWriter fr = new FileWriter(blockedUsers, false);
             PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
-            
-            for(int l = 0; l < blockedUserList.size(); l++){
-                pw.println(user + "," + user.getAccountUsername() + ";" + blockedUserList.get(l));
+
+            for (String s : blockedUserList) {
+                pw.println(user + "," + user.getAccountUsername() + ";" + s);
             }
         } catch (IOException e){
             System.out.println("User to unblock not found");
@@ -1260,8 +1260,8 @@ public class Main {
             }
 
             BufferedWriter bfw = new BufferedWriter(new FileWriter(userName + "_" + userList.get(index).getAccountUsername(), true));
-            for(int i = 0; i < importMessages.size(); i++){
-                bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + importMessages.get(i) + "\n");
+            for (String importMessage : importMessages) {
+                bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + importMessage + "\n");
             }
 
             bfr.close();
