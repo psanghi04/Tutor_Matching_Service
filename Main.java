@@ -185,7 +185,7 @@ public class Main {
         while (signedIn) {
 
             if (user instanceof Student) {
-                System.out.println("Student Interface\n\n1. View tutors\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. Become Invisible");
+                System.out.println("Student Interface\n\n1. View tutors\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. unblock a user\n7. Become Invisible");
                 int option = scan.nextInt();
                 scan.nextLine();
 
@@ -204,7 +204,7 @@ public class Main {
                                         !messageClass.isInvisible(user, person.getAccountUsername())) {
                                     availableTutors.add(userList.get(i));
                                 }
-                                
+
 
                             }
                         }
@@ -235,7 +235,7 @@ public class Main {
                         if(userList.size() == 0){
                             System.out.println("There are no students available");
                         }
-                        
+
                         if(messageClass.isBlocked(user, person)){
                             System.out.printf("Unable to message %s\n", person);
                             break;
@@ -354,7 +354,7 @@ public class Main {
 
                                     System.out.println("What would you like your edited message to look like?");
                                     String newMessage = scan.nextLine();
-                                    
+
 
                                     messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage + "\n");
                                     messageClass.export(userName, userList.get(index).getAccountUsername());
@@ -634,7 +634,7 @@ public class Main {
 
                             FileWriter fr = new FileWriter(blockedUsers, true);
                             PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
-                            
+
                             pw.println(user + "," + user.getAccountUsername() + ";" + blockUsername);
                             pw.flush();
                         } catch (IOException e){
@@ -644,6 +644,37 @@ public class Main {
 
                         break;
                     case 6:
+                        System.out.println("Which user would you like to unblock?");
+                        String unblockUsername = scan.nextLine();
+                        System.out.println(unblockUsername);
+
+                        for(int i = 0; i < blockedUserList.size(); i++){
+                            if (blockedUserList.get(i).equals(unblockUsername)){
+                                System.out.println(blockedUserList.get(i));
+                                blockedUserList.remove(i);
+                            }
+                        }
+
+                        try {
+                            File blockedUsers = new File("BlockedUsers.txt");
+                            if(!blockedUsers.exists()){
+                                blockedUsers.createNewFile();
+                            }
+
+                            FileWriter fr = new FileWriter(blockedUsers, false);
+                            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
+
+                            System.out.println(blockedUserList.size());
+
+                            for(int l = 0; l < blockedUserList.size(); l++){
+                                pw.println(user + "," + user.getAccountUsername() + ";" + blockedUserList.get(l));
+                            }
+                        } catch (IOException e){
+                            System.out.println("User to unblock not found");
+                        }
+
+                        break;
+                    case 7:
                         System.out.println("Which user would you like to make invisible?");
                         String invisiblePerson = scan.nextLine();
                         for (int i = 0; i < userList.size(); i++) {
@@ -675,7 +706,7 @@ public class Main {
                     break;
                 }
             } else {
-                System.out.println("Tutor Interface\n\n1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. Become Invisible");
+                System.out.println("Tutor Interface\n\n1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. unblock a user\n7. Become Invisible");
                 int option = scan.nextInt();
                 scan.nextLine();
 
@@ -721,7 +752,7 @@ public class Main {
                         if(userList.size() == 0){
                             System.out.println("There are no students available");
                         }
-                        
+
                         if(messageClass.isBlocked(user, person)){
                             System.out.printf("Unable to message %s\n", person);
                             break;
@@ -1106,7 +1137,7 @@ public class Main {
 
                             FileWriter fr = new FileWriter(blockedUsers, true);
                             PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
-                            
+
                             pw.println(user + "," + user.getAccountUsername() + ";" + blockUsername);
                             pw.flush();
                         } catch (IOException e){
@@ -1116,6 +1147,37 @@ public class Main {
 
                         break;
                     case 6:
+                        System.out.println("Which user would you like to unblock?");
+                        String unblockUsername = scan.nextLine();
+                        System.out.println(unblockUsername);
+
+                        for(int i = 0; i < blockedUserList.size(); i++){
+                            if (blockedUserList.get(i).equals(unblockUsername)){
+                                System.out.println(blockedUserList.get(i));
+                                blockedUserList.remove(i);
+                            }
+                        }
+
+                        try {
+                            File blockedUsers = new File("BlockedUsers.txt");
+                            if(!blockedUsers.exists()){
+                                blockedUsers.createNewFile();
+                            }
+
+                            FileWriter fr = new FileWriter(blockedUsers, false);
+                            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
+
+                            System.out.println(blockedUserList.size());
+
+                            for(int l = 0; l < blockedUserList.size(); l++){
+                                pw.println(user + "," + user.getAccountUsername() + ";" + blockedUserList.get(l));
+                            }
+                        } catch (IOException e){
+                            System.out.println("User to unblock not found");
+                        }
+
+                        break;
+                    case 7:
                         System.out.println("Which user would you like to make invisible?");
                         String invisiblePerson = scan.nextLine();
                         for (int i = 0; i < userList.size(); i++) {
@@ -1139,6 +1201,8 @@ public class Main {
                         } catch (IOException e){
                             System.out.println("There are no invisible users");
                         }
+
+                        break;
 
                 }
             }
