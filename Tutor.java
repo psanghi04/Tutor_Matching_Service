@@ -3,6 +3,10 @@ import java.util.ArrayList;
 public class Tutor extends User {
     private String[] subjects;
     double price;
+
+    String filter = "****";
+
+    ArrayList<String> filterWordList = new ArrayList<>();
     ArrayList<Store> stores = new ArrayList<Store>();
 
     // add as a parameter ArrayList<Store> stores
@@ -39,6 +43,22 @@ public class Tutor extends User {
 
     public void addStore(Store store) {
         stores.add(store);
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public ArrayList<String> getFilterWordList() {
+        return filterWordList;
+    }
+
+    public void setFilterWordList(ArrayList<String> filterWordList) {
+        this.filterWordList = filterWordList;
     }
 
     @Override

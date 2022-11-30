@@ -293,6 +293,9 @@ public class Main {
 
                                     int count = 1;
                                     for (String message : messages) {
+                                        for (String filterWord : ((Student) user).getFilterWordList()) {
+                                            message = message.replace(filterWord, ((Student) user).getFilter());
+                                        }
                                         System.out.printf("[%d]: %s\n", count++, message);
                                     }
                                     break;
@@ -309,7 +312,7 @@ public class Main {
                                     System.out.println("What is the message that you would like to delete?");
                                     String message = scan.nextLine();
 
-                                    ArrayList<String> messagesDelete = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> messagesDelete = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
 
                                     boolean dMessageExists = false;
                                     for(int i = 0; i < messagesDelete.size(); i++){
@@ -332,7 +335,7 @@ public class Main {
                                     System.out.println("What is the message you would like to edit?");
                                     String oldMessage = scan.nextLine();
 
-                                    ArrayList<String> allMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> allMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
 
                                     if(allMessages.size() == 0){
                                         System.out.println("There are no messages!");
@@ -455,7 +458,7 @@ public class Main {
                         break;
 
                     case 3:
-                        System.out.println("1. change password\n2. change username\n3. change email\n4. delete account");
+                        System.out.println("1. change password\n2. change username\n3. change email\n4. delete account\n5. change filter\n6. change filter words");
                         int optionProfile = scan.nextInt();
                         scan.nextLine();
 
@@ -607,7 +610,45 @@ public class Main {
 
 
                                 break;
+                            case 5:
+                                System.out.println("Enter new filter: ");
+                                String filter = scan.nextLine();
+                                ((Student) user).setFilter(filter);
+                                System.out.println("Changed Successfully");
+                                break;
+                            case 6:
+                                System.out.println("1. Add words\n" +
+                                                   "2. Delete words");
+                                String answer = scan.nextLine();
+                                switch (answer) {
+                                    case "1":
+                                        System.out.println("Enter words to be added [Comma separated]");
+                                        String[] words = scan.nextLine().split(",");
+                                        ArrayList<String> pastWords = ((Student) user).getFilterWordList();
 
+                                        for (String word : words) {
+                                            pastWords.add(word);
+                                        }
+
+                                        ((Student) user).setFilterWordList(pastWords);
+                                        System.out.println("Added Successfully");
+                                        break;
+                                    case "2":
+                                        ArrayList<String> filterWordList = ((Student) user).getFilterWordList();
+
+                                        System.out.println("Current Filtered Words: ");
+                                        for (String word : filterWordList) {
+                                            System.out.println(word);
+                                        }
+
+                                        System.out.println("Enter words to be deleted [Comma separated]");
+                                        String[] wordList = scan.nextLine().split(",");
+
+                                        filterWordList.removeAll(List.of(wordList));
+                                        System.out.println("Deleted Successfully");
+
+                                        ((Student) user).setFilterWordList(filterWordList);
+                                }
                         }
 
                         break;
@@ -776,6 +817,9 @@ public class Main {
 
                                     int count = 1;
                                     for (String message : messages) {
+                                        for (String filterWord : ((Student) user).getFilterWordList()) {
+                                            message = message.replace(filterWord, ((Student) user).getFilter());
+                                        }
                                         System.out.printf("[%d]: %s\n", count++, message);
                                     }
                                     break;
@@ -791,7 +835,7 @@ public class Main {
                                     System.out.println("What is the message that you would like to delete?");
                                     String message = scan.nextLine();
 
-                                    ArrayList<String> allDMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> allDMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
 
                                     boolean DMessageExists = false;
                                     for(int i = 0; i < allDMessages.size(); i++){
@@ -814,7 +858,7 @@ public class Main {
                                     System.out.println("What is the message you would like to edit?");
                                     String oldMessage = scan.nextLine();
 
-                                    ArrayList<String> allEMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> allEMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
 
                                     if(allEMessages.size() == 0){
                                         System.out.println("There are no messages!");
@@ -909,11 +953,12 @@ public class Main {
                                         FileWriter fw = new FileWriter(exportFile, false);
                                         BufferedWriter bfw = new BufferedWriter(fw);
 
-                                        ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                        ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
+                                        ArrayList<String> unEditPastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
 
                                         for(int i = 0; i < pastMessages.size(); i++){
-                                            System.out.println(pastMessages.get(i));
-                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + pastMessages.get(i) + "\n");
+                                            System.out.printf("[%d]: %s", i+1, unEditPastMessages.get(i));
+                                            bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
                                         }
 
                                         bfw.flush();
@@ -930,7 +975,7 @@ public class Main {
                         break;
 
                     case 3:
-                        System.out.println("1. change password\n2. change username\n3. change email\n4. delete account");
+                        System.out.println("1. change password\n2. change username\n3. change email\n4. delete account\n5. change filter\n6. change filter words");
                         int optionProfile = scan.nextInt();
                         scan.nextLine();
 
@@ -1078,7 +1123,43 @@ public class Main {
                                 }
 
                                 break;
+                            case 5:
+                                System.out.println("Enter new filter: ");
+                                String filter = scan.nextLine();
+                                ((Tutor) user).setFilter(filter);
+                                System.out.println("Changed Successfully");
+                                break;
+                            case 6:
+                                System.out.println("1. Add words\n" +
+                                        "2. Delete words");
+                                String answer = scan.nextLine();
+                                switch (answer) {
+                                    case "1":
+                                        System.out.println("Enter words to be added [Comma separated]");
+                                        String[] words = scan.nextLine().split(",");
+                                        ArrayList<String> pastWords = ((Tutor) user).getFilterWordList();
 
+                                        pastWords.addAll(Arrays.asList(words));
+
+                                        ((Tutor) user).setFilterWordList(pastWords);
+                                        System.out.println("Added Successfully");
+                                        break;
+                                    case "2":
+                                        ArrayList<String> filterWordList = ((Tutor) user).getFilterWordList();
+
+                                        System.out.println("Current Filtered Words: ");
+                                        for (String word : filterWordList) {
+                                            System.out.println(word);
+                                        }
+
+                                        System.out.println("Enter words to be deleted [Comma separated]");
+                                        String[] wordList = scan.nextLine().split(",");
+
+                                        filterWordList.removeAll(List.of(wordList));
+                                        System.out.println("Deleted Successfully");
+
+                                        ((Tutor) user).setFilterWordList(filterWordList);
+                                }
                         }
 
                         break;

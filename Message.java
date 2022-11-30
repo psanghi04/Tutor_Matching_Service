@@ -194,8 +194,6 @@ public class Message {
         } catch (IOException e){
             System.out.println("Error!");
         }
-
-
     }
 
 }
