@@ -353,20 +353,32 @@ public class Main {
                         boolean unableToMessage = false;
                         int optionSignIn = 0;
 
-                        System.out.println("Who would you like to message?");
-                        String person = scan.nextLine();
+                        // System.out.println("Who would you like to message?");
+                        // String person = scan.nextLine();
+
+                        // GUI
+                        String person = (String) (JOptionPane.showInputDialog(null, "Who would you like to message?", "User to Message", JOptionPane.INFORMATION_MESSAGE));
 
                         if(userList.size() == 0){
-                            System.out.println("There are no students available");
+                            // System.out.println("There are no students available");
+
+                            // GUI
+                            JOptionPane.showMessageDialog(null, "There are no students available", "No Students Available", JOptionPane.ERROR_MESSAGE);
                         }
 
                         if(messageClass.isBlocked(user, person)){
-                            System.out.printf("Unable to message %s\n", person);
+                            // System.out.printf("Unable to message %s\n", person);
+
+                            // GUI
+                            JOptionPane.showMessageDialog(null, "Unable to message \n" +  person, "Unable to Message User", JOptionPane.ERROR_MESSAGE);
                             break;
                         }
 
                         if (messageClass.isInvisible(user, person)) {
-                            System.out.printf("Unable to find %s\n", person);
+                            // System.out.printf("Unable to find %s\n", person);
+
+                            // GUI
+                            JOptionPane.showMessageDialog(null, "Unable to find %s\n" + person, "Unable to Find User", JOptionPane.INFORMATION_MESSAGE);
                             break;
                         }
 
@@ -376,11 +388,17 @@ public class Main {
                                 index = i;
 
                                 if (userList.get(i) instanceof Tutor) {
-                                    System.out.println("Person Found");
+                                    // System.out.println("Person Found");
+
+                                    // GUI
+                                    JOptionPane.showMessageDialog(null, "Person Found", "Person Found", JOptionPane.INFORMATION_MESSAGE);
                                     unableToMessage = false;
                                     break;
                                 } else {
-                                    System.out.println("You cannot message this person");
+                                    // System.out.println("You cannot message this person");
+
+                                    // GUI
+                                    JOptionPane.showMessageDialog(null, "You cannot message this person", "Cannot Message User", JOptionPane.ERROR_MESSAGE);
                                     unableToMessage = true;
                                 }
                             }
@@ -778,12 +796,18 @@ public class Main {
                         break;
 
                     case 4:
-                        System.out.println("Have a nice day!");
+                        // System.out.println("Have a nice day!");
+
+                        // GUI
+                        JOptionPane.showMessageDialog(null, "Have a nice day!", "Goodbye Response", JOptionPane.INFORMATION_MESSAGE);
                         signedIn = false;
                         break;
                     case 5:
-                        System.out.println("Which user would you like to block?");
-                        String blockUsername = scan.nextLine();
+                        // System.out.println("Which user would you like to block?");
+                        // String blockUsername = scan.nextLine();
+
+                        // GUI
+                        String blockUsername = (String) (JOptionPane.showInputDialog(null, "Which user would you like to block?", "Block User Request", JOptionPane.QUESTION_MESSAGE));
 
                         for(int i = 0; i < userList.size(); i++){
                             if (userList.get(i).getAccountUsername().equals(blockUsername)){
@@ -802,8 +826,15 @@ public class Main {
 
                             pw.println(user + "," + user.getAccountUsername() + ";" + blockUsername);
                             pw.flush();
+
+                            // GUI
+                            JOptionPane.showMessageDialog(null, "User successfully blocked!", "User Blocked", JOptionPane.INFORMATION_MESSAGE);
+
                         } catch (IOException e){
-                            System.out.println("There are no blocked users");
+                            // System.out.println("There are no blocked users");
+
+                            // GUI
+                            JOptionPane.showMessageDialog(null, "There are no blocked users", "No Blocked Users", JOptionPane.ERROR_MESSAGE);
                         }
 
 
