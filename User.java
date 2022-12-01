@@ -8,7 +8,7 @@ public class User {
     private ArrayList<String> blockedList; // list of all blocked users
     private ArrayList<String> invisibleList;
 
-    private UUID ID;
+    private final UUID ID;
 
     public User(String accountUsername, String password, String email, ArrayList<String> blockedList, ArrayList<String> invisibleList) {
         this.accountUsername = accountUsername; // sets the current instance of accountUsername to the parameter accountUsername
@@ -47,11 +47,6 @@ public class User {
         return email;
     }
 
-    // get isBlocked
-    public ArrayList<String> getBlockedList() {
-        return blockedList;
-    }
-
     // set accountUsername
     public void setAccountUsername(String accountUsername) {
         this.accountUsername = accountUsername;
@@ -65,19 +60,6 @@ public class User {
     // set email
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    // set blocked status
-    public void setBlockedList(ArrayList<String> blockedList) {
-        this.blockedList = blockedList;
-    }
-
-    public ArrayList<String> getInvisibleList() {
-        return invisibleList;
-    }
-
-    public void setInvisibleList(ArrayList<String> invisibleList) {
-        this.invisibleList = invisibleList;
     }
 
 }
