@@ -17,14 +17,13 @@ public class Main {
 
         ArrayList<String> filterList = new ArrayList<>();
 
-        System.out.println("Welcome to Tutoring Center!");
+        System.out.println("Welcome to Tutoring Center!\n");
 
         File f = new File("UserDetails.txt");
 
         try {
             if (!f.exists()) {
                 f.createNewFile();
-                System.out.println("File has been created..");
             }
 
             FileReader fr = new FileReader(f);
@@ -55,28 +54,34 @@ public class Main {
         }
 
         User user = null; // currentUser logged in
+        boolean signedIn = false;
 
         while (!login) {
-
-            System.out.println("Do you want to log in or create a account?");
-            System.out.println("1. Create New Account\n" +
-                    "2. Login");
+            System.out.println("Log In or Sign Up");
+            System.out.println(
+                    "1. Sign Up\n" +
+                    "2. Login\n" +
+                    "3. Exit\n\n" +
+                    "Enter Option Number:");
             int optionNum = scan.nextInt();
             scan.nextLine();
+            System.out.println();
 
             switch (optionNum) {
                 case 1:
-                    System.out.println("Are you a student or a tutor?");
-                    System.out.println("1. Student\n" +
-                            "2. Tutor");
+                    System.out.println(
+                            "Select a role:\n" +
+                            "1. Student\n" +
+                            "2. Tutor\n\n" +
+                            "Enter Option Number:");
                     int option = scan.nextInt();
-
                     scan.nextLine();
+                    System.out.println();
 
-                    System.out.println("Enter your username: ");
+                    System.out.println("Enter your username:");
                     userName = scan.nextLine();
 
-                    System.out.println("Enter your email: ");
+                    System.out.println("Enter your email:");
                     String email = scan.nextLine();
 
                     System.out.println("Enter password: ");
@@ -110,9 +115,8 @@ public class Main {
                             System.out.println("Sorry, you have the same username or email as another account\n");
                             continue;
                         }
-                    }
-                    else {
-                        if(!accountSimilarity){
+                    } else {
+                        if (!accountSimilarity) {
                             // Use commas
                             System.out.println("What subjects are you planning to teach");
 
@@ -122,6 +126,7 @@ public class Main {
                             System.out.println("What is the price you charge?");
                             double price = scan.nextDouble();
                             scan.nextLine();
+
                             user = new Tutor(userName, password, email, blockedUserList, invisibleList, newSubjects, price, "****", filterList);
 
                             try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
@@ -139,6 +144,7 @@ public class Main {
                     userList.add(user);
 
                     login = true;
+                    signedIn = true;
 
                     System.out.println("Congratulations on creating a new account!!\n");
 
@@ -146,10 +152,10 @@ public class Main {
 
                 case 2:
                     while (!login) {
-                        System.out.println("Username: ");
+                        System.out.println("Username:");
                         userName = scan.nextLine();
 
-                        System.out.println("Password: ");
+                        System.out.println("Password:");
                         password = scan.nextLine();
 
                         for (User acc : userList) {
@@ -164,19 +170,30 @@ public class Main {
                         }
 
                         if (login) {
-                            System.out.println("Welcome Back");
+                            System.out.println("Welcome Back!\n");
                         } else {
                             System.out.println("Invalid Username or Password");
-                            System.out.println("Do you want to go back? [Y/N]");
+                            System.out.println("Do you want to go back?");
+                            System.out.println(
+                                    "1. Yes\n" +
+                                    "2. No\n\n" +
+                                    "Enter Option Number:");
                             String answer = scan.nextLine();
-                            if (answer.equals("Y")) {
+                            if (answer.equals("1")) {
                                 break;
                             }
                             System.out.println("Try Again");
+                            System.out.println();
                         }
-
                     }
 
+                    signedIn = true;
+                    break;
+
+                case 3:
+                    System.out.println("Have a nice day!");
+                    login = true;
+                    signedIn = false;
                     break;
 
                 default:
@@ -185,14 +202,22 @@ public class Main {
             }
         }
 
-        boolean signedIn = true;
-
         while (signedIn) {
-
             if (user instanceof Student) {
-                System.out.println("Student Interface\n\n1. View tutors\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. unblock a user\n7. Become Invisible");
+                // Student Interface
+                System.out.println(
+                        "Menu\n\n" +
+                        "1. View tutors\n" +
+                        "2. Message a tutor\n" +
+                        "3. Edit profile\n" +
+                        "4. Sign out\n" +
+                        "5. Block a tutor\n" +
+                        "6. Unblock a tutor\n" +
+                        "7. Become invisible to a tutor\n\n" +
+                        "Enter Option Number:");
                 int option = scan.nextInt();
                 scan.nextLine();
+                System.out.println();
 
                 boolean deletedAccount = false;
 
@@ -214,7 +239,7 @@ public class Main {
                         }
 
 
-                        if(availableTutors.size() == 0){
+                        if (availableTutors.size() == 0) {
                             System.out.println("There are no tutors available to message");
                         } else {
                             availability(availableTutors);
@@ -230,11 +255,11 @@ public class Main {
                         System.out.println("Who would you like to message?");
                         String person = scan.nextLine();
 
-                        if(userList.size() == 0){
+                        if (userList.size() == 0) {
                             System.out.println("There are no students available");
                         }
 
-                        if(messageClass.isBlocked(user, person)){
+                        if (messageClass.isBlocked(user, person)) {
                             System.out.printf("Unable to message %s\n", person);
                             break;
                         }
@@ -272,7 +297,7 @@ public class Main {
 
                         boolean quit = true;
 
-                        while(quit){
+                        while (quit) {
                             System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message\n6. import to a conversation\n7. export a conversation");
                             int optionMessage = scan.nextInt();
                             scan.nextLine();
@@ -284,7 +309,7 @@ public class Main {
                                 case 1:
                                     ArrayList<String> messages = messageClass.readMsg(user, userList.get(index));
 
-                                    if(messages.size() == 0){
+                                    if (messages.size() == 0) {
                                         System.out.println("No Messages Available");
                                         continue;
                                     }
@@ -314,7 +339,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(!dMessageExists){
+                                    if (!dMessageExists) {
                                         System.out.println("Message not found!");
                                         break;
                                     }
@@ -330,7 +355,7 @@ public class Main {
 
                                     ArrayList<String> allMessages = messageClass.readMsg(user, userList.get(index), true);
 
-                                    if(allMessages.size() == 0){
+                                    if (allMessages.size() == 0) {
                                         System.out.println("There are no messages!");
                                         break;
                                     }
@@ -344,7 +369,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(!messageExists){
+                                    if (!messageExists) {
                                         System.out.println("Message not found!");
                                         break;
                                     }
@@ -374,7 +399,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(!foundMessage){
+                                    if (!foundMessage) {
                                         System.out.println("Message not found!");
                                     }
 
@@ -437,7 +462,7 @@ public class Main {
                                     }
                                 }
 
-                                if(!sameUsername){
+                                if (!sameUsername) {
                                     user.setAccountUsername(newUsername);
                                 } else {
                                     System.out.println("Username exists.");
@@ -468,7 +493,7 @@ public class Main {
                                     }
                                 }
 
-                                if(!sameEmail){
+                                if (!sameEmail) {
                                     user.setEmail(newEmail);
                                 } else {
                                     System.out.println("Email exists.");
@@ -544,7 +569,7 @@ public class Main {
                                 break;
                             case 6:
                                 System.out.println("1. Add words\n" +
-                                                   "2. Delete words");
+                                        "2. Delete words");
                                 String answer = scan.nextLine();
                                 switch (answer) {
                                     case "1":
@@ -590,6 +615,11 @@ public class Main {
                         System.out.println("Which user would you like to block?");
                         String blockUsername = scan.nextLine();
 
+                        if (blockUsername.equals(user.getAccountUsername())) {
+                            System.out.println("Cannot block yourself");
+                            break;
+                        }
+
                         for (User users : userList) {
                             if (users.getAccountUsername().equals(blockUsername)) {
                                 blockedUserList.add(users.getAccountUsername());
@@ -598,7 +628,7 @@ public class Main {
 
                         try {
                             File blockedUsers = new File("BlockedUsers.txt");
-                            if(!blockedUsers.exists()){
+                            if (!blockedUsers.exists()) {
                                 blockedUsers.createNewFile();
                             }
 
@@ -607,7 +637,7 @@ public class Main {
 
                             pw.println(user + "," + user.getAccountUsername() + ";" + blockUsername);
                             pw.flush();
-                        } catch (IOException e){
+                        } catch (IOException e) {
                             System.out.println("There are no blocked users");
                         }
 
@@ -616,10 +646,14 @@ public class Main {
                     case 6:
                         System.out.println("Which user would you like to unblock?");
                         String unblockUsername = scan.nextLine();
-                        System.out.println(unblockUsername);
 
-                        for(int i = 0; i < blockedUserList.size(); i++){
-                            if (blockedUserList.get(i).equals(unblockUsername)){
+                        if (unblockUsername.equals(user.getAccountUsername())) {
+                            System.out.println("Cannot unblock yourself");
+                            break;
+                        }
+
+                        for (int i = 0; i < blockedUserList.size(); i++) {
+                            if (blockedUserList.get(i).equals(unblockUsername)) {
                                 System.out.println(blockedUserList.get(i));
                                 blockedUserList.remove(i);
                             }
@@ -642,13 +676,24 @@ public class Main {
                         break;
                 }
 
-                if(deletedAccount){
+                if (deletedAccount) {
                     break;
                 }
             } else {
-                System.out.println("Tutor Interface\n\n1. View students\n2. message a user\n3. edit profile\n4. sign out\n5. block a user\n6. unblock a user\n7. Become Invisible");
+                // Tutor Interface
+                System.out.println(
+                        "Menu\n\n" +
+                        "1. View students\n" +
+                        "2. Message a student\n" +
+                        "3. Edit profile\n" +
+                        "4. Sign out\n" +
+                        "5. Block a student\n" +
+                        "6. Unblock a student\n" +
+                        "7. Become invisible to a student\n\n" +
+                        "Enter Option Number:");
                 int option = scan.nextInt();
                 scan.nextLine();
+                System.out.println();
 
                 switch (option) {
                     case 1:
@@ -664,13 +709,12 @@ public class Main {
                             }
                         }
 
-                        if(availableStudents.size() == 0){
+                        if (availableStudents.size() == 0) {
                             System.out.println("There are no students available to message");
                         } else {
                             availability(availableStudents);
                         }
 
-                        
 
                         break;
 
@@ -682,11 +726,11 @@ public class Main {
                         System.out.println("Who would you like to message?");
                         String person = scan.nextLine();
 
-                        if(userList.size() == 0){
+                        if (userList.size() == 0) {
                             System.out.println("There are no students available");
                         }
 
-                        if(messageClass.isBlocked(user, person)){
+                        if (messageClass.isBlocked(user, person)) {
                             System.out.printf("Unable to message %s\n", person);
                             break;
                         }
@@ -721,7 +765,7 @@ public class Main {
                         }
 
                         boolean quit = true;
-                        while(quit){
+                        while (quit) {
                             System.out.println("0. Quit\n1. read message\n2. write a message\n3. delete a message\n4. edit a message\n5. search for a specific message\n6. import to a conversation\n7. export a conversation");
                             int optionMessage = scan.nextInt();
                             scan.nextLine();
@@ -733,7 +777,7 @@ public class Main {
                                 case 1:
                                     ArrayList<String> messages = messageClass.readMsg(user, userList.get(index));
 
-                                    if(messages.size() == 0){
+                                    if (messages.size() == 0) {
                                         System.out.println("No Messages Available");
                                         continue;
                                     }
@@ -763,7 +807,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(!DMessageExists){
+                                    if (!DMessageExists) {
                                         System.out.println("Message not found!");
                                         break;
                                     }
@@ -779,7 +823,7 @@ public class Main {
 
                                     ArrayList<String> allEMessages = messageClass.readMsg(user, userList.get(index), true);
 
-                                    if(allEMessages.size() == 0){
+                                    if (allEMessages.size() == 0) {
                                         System.out.println("There are no messages!");
                                         break;
                                     }
@@ -792,7 +836,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(!messageEExists){
+                                    if (!messageEExists) {
                                         System.out.println("Message not found!");
                                         break;
                                     }
@@ -820,7 +864,7 @@ public class Main {
                                         }
                                     }
 
-                                    if(!messageFound){
+                                    if (!messageFound) {
                                         System.out.println("Message not found!");
                                     }
 
@@ -881,7 +925,7 @@ public class Main {
                                     }
                                 }
 
-                                if(!similarUsername){
+                                if (!similarUsername) {
                                     user.setAccountUsername(newUsername);
                                 } else {
                                     System.out.println("Username exists.");
@@ -911,7 +955,7 @@ public class Main {
                                     }
                                 }
 
-                                if(!similarEmail){
+                                if (!similarEmail) {
                                     user.setEmail(newEmail);
                                 } else {
                                     System.out.println("Email exists.");
@@ -1027,6 +1071,11 @@ public class Main {
                         System.out.println("Which user would you like to block?");
                         String blockUsername = scan.nextLine();
 
+                        if (blockUsername.equals(user.getAccountUsername())) {
+                            System.out.println("Cannot block yourself");
+                            break;
+                        }
+
                         for (User users : userList) {
                             if (users.getAccountUsername().equals(blockUsername)) {
                                 blockedUserList.add(users.getAccountUsername());
@@ -1035,7 +1084,7 @@ public class Main {
 
                         try {
                             File blockedUsers = new File("BlockedUsers.txt");
-                            if(!blockedUsers.exists()){
+                            if (!blockedUsers.exists()) {
                                 blockedUsers.createNewFile();
                                 System.out.println("Blocked Users file has been created");
                             }
@@ -1045,7 +1094,7 @@ public class Main {
 
                             pw.println(user + "," + user.getAccountUsername() + ";" + blockUsername);
                             pw.flush();
-                        } catch (IOException e){
+                        } catch (IOException e) {
                             System.out.println("There are no blocked users");
                         }
 
@@ -1054,10 +1103,14 @@ public class Main {
                     case 6:
                         System.out.println("Which user would you like to unblock?");
                         String unblockUsername = scan.nextLine();
-                        System.out.println(unblockUsername);
 
-                        for(int i = 0; i < blockedUserList.size(); i++){
-                            if (blockedUserList.get(i).equals(unblockUsername)){
+                        if (unblockUsername.equals(user.getAccountUsername())) {
+                            System.out.println("Cannot unblock yourself");
+                            break;
+                        }
+
+                        for (int i = 0; i < blockedUserList.size(); i++) {
+                            if (blockedUserList.get(i).equals(unblockUsername)) {
                                 System.out.println(blockedUserList.get(i));
                                 blockedUserList.remove(i);
                             }
@@ -1111,9 +1164,9 @@ public class Main {
         String line;
         int count = 0;
         ArrayList<String[]> lines = new ArrayList<>();
-        while((line = bfr.readLine()) != null) {
+        while ((line = bfr.readLine()) != null) {
             if (line.contains(userList.get(count).getAccountUsername()) ||
-            line.contains(userList.get(count).getEmail())) {
+                    line.contains(userList.get(count).getEmail())) {
                 lines.add(line.split(","));
                 count++;
             }
@@ -1164,7 +1217,7 @@ public class Main {
     public static void setInvisible(User user, String invisiblePerson) {
         try {
             File invisibleUsers = new File("InvisibleUsers.txt");
-            if(!invisibleUsers.exists()){
+            if (!invisibleUsers.exists()) {
                 invisibleUsers.createNewFile();
                 System.out.println("Invisible Users file has been created");
             }
@@ -1174,7 +1227,7 @@ public class Main {
 
             pw.println(user + "," + user.getAccountUsername() + ";" + invisiblePerson);
             pw.flush();
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("There are no invisible users");
         }
     }
@@ -1182,7 +1235,7 @@ public class Main {
     public static void unblockUser(ArrayList<String> blockedUserList, User user) {
         try {
             File blockedUsers = new File("BlockedUsers.txt");
-            if(!blockedUsers.exists()){
+            if (!blockedUsers.exists()) {
                 blockedUsers.createNewFile();
             }
 
@@ -1192,7 +1245,7 @@ public class Main {
             for (String s : blockedUserList) {
                 pw.println(user + "," + user.getAccountUsername() + ";" + s);
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("User to unblock not found");
         }
     }
@@ -1228,7 +1281,7 @@ public class Main {
 
             File exportFile = new File(expFileName + ".csv");
 
-            if(!exportFile.exists()){
+            if (!exportFile.exists()) {
                 exportFile.createNewFile();
             }
 
@@ -1238,14 +1291,14 @@ public class Main {
             ArrayList<String> pastMessages = messageClass.readMsg(user, userList.get(index), true);
             ArrayList<String> unEditPastMessages = messageClass.readMsg(user, userList.get(index));
 
-            for(int i = 0; i < pastMessages.size(); i++){
-                System.out.printf("[%d]: %s", i+1, unEditPastMessages.get(i));
+            for (int i = 0; i < pastMessages.size(); i++) {
+                System.out.printf("[%d]: %s", i + 1, unEditPastMessages.get(i));
                 bfw.write(user.getAccountUsername() + ";" + userList.get(index).getAccountUsername() + "," + user.getAccountUsername() + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
             }
 
             bfw.flush();
             System.out.println("Conversation exported successfully!");
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Unable to export file");
         }
     }
@@ -1255,7 +1308,7 @@ public class Main {
             BufferedReader bfr = new BufferedReader(new FileReader(ifileName));
 
             String line = bfr.readLine();
-            while(line != null){
+            while (line != null) {
                 importMessages.add(line);
                 line = bfr.readLine();
             }
@@ -1272,7 +1325,7 @@ public class Main {
 
             System.out.println("Imported conversation successfully!");
 
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Cannot find or read from file!");
         }
     }
