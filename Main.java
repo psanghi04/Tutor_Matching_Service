@@ -8,7 +8,7 @@ public class Main {
 
         boolean login = false;
         ArrayList<User> userList = new ArrayList<>();
-        String userName = "";
+        String userName;
         String password;
 
         // not used
@@ -39,10 +39,10 @@ public class Main {
 
                 if (splitLines[5].equals("Student")) {
                     Collections.addAll(filterList, splitLines[4].split(";"));
-                    user = new Student(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList, splitLines[3], filterList);
+                    user = new Student(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList, splitLines[3], filterList, UUID.fromString(splitLines[6]));
                 } else {
                     Collections.addAll(filterList, splitLines[6].split(";"));
-                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList, splitLines[3].split(";"), Double.parseDouble(splitLines[4]), splitLines[5], filterList);
+                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], blockedUserList, invisibleList, splitLines[3].split(";"), Double.parseDouble(splitLines[4]), splitLines[5], filterList, UUID.fromString(splitLines[8]));
                 }
 
                 userList.add(user);
@@ -101,7 +101,7 @@ public class Main {
                             user = new Student(userName, password, email, blockedUserList, invisibleList, "****", filterList);
 
                             try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                                pw.write(userName + "," + password + "," + email + "," + "****,," + user + "\n");
+                                pw.write(userName + "," + password + "," + email + "," + "****,," + user + "," + user.getID() + "\n");
                                 pw.flush();
                             } catch (IOException e) {
                                 System.out.println("Unable to write file");
@@ -125,7 +125,7 @@ public class Main {
                             user = new Tutor(userName, password, email, blockedUserList, invisibleList, newSubjects, price, "****", filterList);
 
                             try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
-                                pw.write(userName + "," + password + "," + email + "," + String.join(";", newSubjects) + "," + price + "," + "****,," + user +"\n");
+                                pw.write(userName + "," + password + "," + email + "," + String.join(";", newSubjects) + "," + price + "," + "****,," + user + "," + user.getID() + "\n");
                                 pw.flush();
                             } catch (IOException e) {
                                 System.out.println("Unable to write file");
@@ -282,7 +282,7 @@ public class Main {
                                     quit = false;
                                     break;
                                 case 1:
-                                    ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> messages = messageClass.readMsg(user, userList.get(index));
 
                                     if(messages.size() == 0){
                                         System.out.println("No Messages Available");
@@ -295,8 +295,8 @@ public class Main {
                                 case 2:
                                     System.out.println("Message Body:");
                                     String content = scan.nextLine();
-                                    messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
-                                    messageClass.export(userName, userList.get(index).getAccountUsername());
+                                    messageClass.writeMsg(user, userList.get(index), content);
+                                    messageClass.export(user, userList.get(index));
                                     System.out.println("Written Successfully");
 
                                     break;
@@ -304,7 +304,7 @@ public class Main {
                                     System.out.println("What is the message that you would like to delete?");
                                     String message = scan.nextLine();
 
-                                    ArrayList<String> messagesDelete = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
+                                    ArrayList<String> messagesDelete = messageClass.readMsg(user, userList.get(index), true);
 
                                     boolean dMessageExists = false;
                                     for (String s : messagesDelete) {
@@ -319,7 +319,7 @@ public class Main {
                                         break;
                                     }
 
-                                    messageClass.delete(user, userList.get(index).getAccountUsername(), message);
+                                    messageClass.delete(user, userList.get(index), message);
                                     System.out.println("Message Deleted Successfully");
 
                                     break;
@@ -328,7 +328,7 @@ public class Main {
                                     System.out.println("What is the message you would like to edit?");
                                     String oldMessage = scan.nextLine();
 
-                                    ArrayList<String> allMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
+                                    ArrayList<String> allMessages = messageClass.readMsg(user, userList.get(index), true);
 
                                     if(allMessages.size() == 0){
                                         System.out.println("There are no messages!");
@@ -353,8 +353,8 @@ public class Main {
                                     String newMessage = scan.nextLine();
 
 
-                                    messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage + "\n");
-                                    messageClass.export(userName, userList.get(index).getAccountUsername());
+                                    messageClass.edit(user, userList.get(index), oldMessage, newMessage + "\n");
+                                    messageClass.export(user, userList.get(index));
 
                                     break;
 
@@ -362,12 +362,13 @@ public class Main {
                                     System.out.println("Enter a keyword to search for a message: ");
                                     String keyword = scan.nextLine();
 
-                                    ArrayList<String> searchableMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> searchableMessages = messageClass.readMsg(user, userList.get(index));
 
                                     boolean foundMessage = false;
 
                                     for (String searchableMessage : searchableMessages) {
                                         if (searchableMessage.contains(keyword)) {
+                                            System.out.println("Found Message: ");
                                             System.out.println(searchableMessage);
                                             foundMessage = true;
                                         }
@@ -385,13 +386,13 @@ public class Main {
 
                                     ArrayList<String> importMessages = new ArrayList<>();
 
-                                    importMessage(messageClass, userList, userName, index, ifileName, importMessages);
+                                    importMessage(messageClass, userList, user, index, ifileName, importMessages);
 
                                     break;
 
                                 case 7:
 
-                                    export(scan, messageClass, userList, userName, index);
+                                    export(scan, messageClass, userList, user, index);
                                     break;
 
                             }
@@ -730,7 +731,7 @@ public class Main {
                                     quit = false;
                                     break;
                                 case 1:
-                                    ArrayList<String> messages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> messages = messageClass.readMsg(user, userList.get(index));
 
                                     if(messages.size() == 0){
                                         System.out.println("No Messages Available");
@@ -743,8 +744,8 @@ public class Main {
                                 case 2:
                                     System.out.println("Message Body:");
                                     String content = scan.nextLine();
-                                    messageClass.writeMsg(userName, userList.get(index).getAccountUsername(), content);
-                                    messageClass.export(userName, userList.get(index).getAccountUsername());
+                                    messageClass.writeMsg(user, userList.get(index), content);
+                                    messageClass.export(user, userList.get(index));
                                     System.out.println("Written Successfully\n");
 
                                     break;
@@ -752,7 +753,7 @@ public class Main {
                                     System.out.println("What is the message that you would like to delete?");
                                     String message = scan.nextLine();
 
-                                    ArrayList<String> allDMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
+                                    ArrayList<String> allDMessages = messageClass.readMsg(user, userList.get(index), true);
 
                                     boolean DMessageExists = false;
                                     for (String allDMessage : allDMessages) {
@@ -767,7 +768,7 @@ public class Main {
                                         break;
                                     }
 
-                                    messageClass.delete(user, userList.get(index).getAccountUsername(), message);
+                                    messageClass.delete(user, userList.get(index), message);
                                     System.out.println("Message Deleted Successfully\n");
 
                                     break;
@@ -776,7 +777,7 @@ public class Main {
                                     System.out.println("What is the message you would like to edit?");
                                     String oldMessage = scan.nextLine();
 
-                                    ArrayList<String> allEMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
+                                    ArrayList<String> allEMessages = messageClass.readMsg(user, userList.get(index), true);
 
                                     if(allEMessages.size() == 0){
                                         System.out.println("There are no messages!");
@@ -799,8 +800,8 @@ public class Main {
                                     System.out.println("What would you like your edited message to look like?");
                                     String newMessage = scan.nextLine();
 
-                                    messageClass.edit(user, userList.get(index).getAccountUsername(), oldMessage, newMessage + "\n");
-                                    messageClass.export(userName, userList.get(index).getAccountUsername());
+                                    messageClass.edit(user, userList.get(index), oldMessage, newMessage + "\n");
+                                    messageClass.export(user, userList.get(index));
                                     System.out.println("Edit Successful\n");
 
                                     break;
@@ -809,7 +810,7 @@ public class Main {
                                     System.out.println("Enter a keyword to search for a message: ");
                                     String keyword = scan.nextLine();
 
-                                    ArrayList<String> searchMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+                                    ArrayList<String> searchMessages = messageClass.readMsg(user, userList.get(index));
 
                                     boolean messageFound = false;
                                     for (String searchMessage : searchMessages) {
@@ -830,11 +831,11 @@ public class Main {
 
                                     ArrayList<String> importMessages = new ArrayList<>();
 
-                                    importMessage(messageClass, userList, userName, index, ifileName, importMessages);
+                                    importMessage(messageClass, userList, user, index, ifileName, importMessages);
 
                                     break;
                                 case 7:
-                                    export(scan, messageClass, userList, userName, index);
+                                    export(scan, messageClass, userList, user, index);
 
                                     break;
                             }
@@ -1124,12 +1125,12 @@ public class Main {
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i) instanceof Student) {
                 pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() + "," +
-                        userList.get(i).getEmail() + "," + lines.get(i)[3] + "," + lines.get(i)[4] + "," + "Student\n");
+                        userList.get(i).getEmail() + "," + lines.get(i)[3] + "," + lines.get(i)[4] + "," + "Student," + userList.get(i).getID() + "\n");
             } else {
                 pw.write(userList.get(i).getAccountUsername() + "," + userList.get(i).getPassword() +
                         "," + userList.get(i).getEmail() + "," +
                         String.join(";", ((Tutor) userList.get(i)).getSubjects()) +
-                        "," + ((Tutor) userList.get(i)).price() + "," + lines.get(i)[5] + "," + lines.get(i)[6] + "," + "Tutor\n");
+                        "," + ((Tutor) userList.get(i)).price() + "," + lines.get(i)[5] + "," + lines.get(i)[6] + "," + "Tutor," + userList.get(i).getID() + "\n");
             }
         }
 
@@ -1220,7 +1221,7 @@ public class Main {
         }
     }
 
-    public static void export(Scanner scan, Message messageClass, ArrayList<User> userList, String userName, int index) {
+    public static void export(Scanner scan, Message messageClass, ArrayList<User> userList, User user, int index) {
         try {
             System.out.println("What is the name of the file which you would like your exported contents to be placed in?");
             String expFileName = scan.nextLine();
@@ -1234,12 +1235,12 @@ public class Main {
             FileWriter fw = new FileWriter(exportFile, false);
             BufferedWriter bfw = new BufferedWriter(fw);
 
-            ArrayList<String> pastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername(), true);
-            ArrayList<String> unEditPastMessages = messageClass.readMsg(userName, userList.get(index).getAccountUsername());
+            ArrayList<String> pastMessages = messageClass.readMsg(user, userList.get(index), true);
+            ArrayList<String> unEditPastMessages = messageClass.readMsg(user, userList.get(index));
 
             for(int i = 0; i < pastMessages.size(); i++){
                 System.out.printf("[%d]: %s", i+1, unEditPastMessages.get(i));
-                bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
+                bfw.write(user.getAccountUsername() + ";" + userList.get(index).getAccountUsername() + "," + user.getAccountUsername() + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
             }
 
             bfw.flush();
@@ -1249,7 +1250,7 @@ public class Main {
         }
     }
 
-    public static void importMessage(Message messageClass, ArrayList<User> userList, String userName, int index, String ifileName, ArrayList<String> importMessages) {
+    public static void importMessage(Message messageClass, ArrayList<User> userList, User user, int index, String ifileName, ArrayList<String> importMessages) {
         try {
             BufferedReader bfr = new BufferedReader(new FileReader(ifileName));
 
@@ -1259,15 +1260,15 @@ public class Main {
                 line = bfr.readLine();
             }
 
-            BufferedWriter bfw = new BufferedWriter(new FileWriter(userName + "_" + userList.get(index).getAccountUsername(), true));
+            BufferedWriter bfw = new BufferedWriter(new FileWriter(user.getID() + "_" + userList.get(index).getID(), true));
             for (String importMessage : importMessages) {
-                bfw.write(userName + ";" + userList.get(index).getAccountUsername() + "," + userName + "," + messageClass.getTime() + "," + importMessage + "\n");
+                bfw.write(user.getAccountUsername() + ";" + userList.get(index).getAccountUsername() + "," + user.getAccountUsername() + "," + messageClass.getTime() + "," + importMessage + "\n");
             }
 
             bfr.close();
             bfw.flush();
 
-            messageClass.export(userName, userList.get(index).getAccountUsername());
+            messageClass.export(user, userList.get(index));
 
             System.out.println("Imported conversation successfully!");
 

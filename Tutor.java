@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Tutor extends User {
     private String[] subjects;
@@ -14,6 +15,17 @@ public class Tutor extends User {
                  ArrayList<String> blockedList, ArrayList<String> invisibleList,
                  String[] subjects, double price, String filter, ArrayList<String> filterWordList) {
         super(accountUsername, password, email, blockedList, invisibleList);
+        this.subjects = subjects;
+        this.price = price;
+        this.filter = filter;
+        this.filterWordList = filterWordList;
+        // this.stores = stores;
+    }
+
+    public Tutor(String accountUsername, String password, String email,
+                 ArrayList<String> blockedList, ArrayList<String> invisibleList,
+                 String[] subjects, double price, String filter, ArrayList<String> filterWordList, UUID ID) {
+        super(accountUsername, password, email, blockedList, invisibleList, ID);
         this.subjects = subjects;
         this.price = price;
         this.filter = filter;

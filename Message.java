@@ -39,10 +39,10 @@ public class Message {
         }
         return false;
     }
-    public void edit(User user, String otherPerson, String message, String edit) {
+    public void edit(User user, User otherPerson, String message, String edit) {
         ArrayList<String> conversation = new ArrayList<>();
         try {
-            File f = new File(user.getAccountUsername() + "_" + otherPerson);
+            File f = new File(user.getID() + "_" + otherPerson.getID());
             if(!f.exists()){
                 f.createNewFile();
             }
@@ -72,10 +72,10 @@ public class Message {
         }
     }
 
-    public void delete(User user, String otherPerson, String messageDeleted) {
+    public void delete(User user, User otherPerson, String messageDeleted) {
         ArrayList<String> conversation = new ArrayList<>();
         try {
-            File f = new File(user.getAccountUsername() + "_" + otherPerson);
+            File f = new File(user.getID() + "_" + otherPerson.getID());
 
             if(f.exists()){
                 f.createNewFile();
@@ -108,10 +108,32 @@ public class Message {
         return currentTime.toString().substring(0, 19); // returns time with precision as seconds
     }
 
-    public ArrayList<String> readMsg(String sender, String receiver) {
+    // remove
+//    public ArrayList<String> readMsg(String sender, String receiver) {
+//        ArrayList<String> messages = new ArrayList<>();
+//
+//        try (BufferedReader bfr = new BufferedReader(new FileReader(sender + "_" + receiver))) {
+//            String line = bfr.readLine();
+//            while (line != null) {
+//                String message = line.split(",")[1] + ": " + line.split(",")[3];
+//                messages.add(message);
+//                line = bfr.readLine();
+//            }
+//        } catch (FileNotFoundException e) {
+//            System.out.println("Conversation does not exist!");
+//        } catch (IOException e) {
+//            System.out.println("Reading suspended. I/O Exception caught.");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("There was an error. Exception caught.");
+//        }
+//        return messages;
+//    }
+
+    public ArrayList<String> readMsg(User sender, User receiver) {
         ArrayList<String> messages = new ArrayList<>();
 
-        try (BufferedReader bfr = new BufferedReader(new FileReader(sender + "_" + receiver))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(sender.getID() + "_" + receiver.getID()))) {
             String line = bfr.readLine();
             while (line != null) {
                 String message = line.split(",")[1] + ": " + line.split(",")[3];
@@ -129,10 +151,10 @@ public class Message {
         return messages;
     }
 
-    public ArrayList<String> readMsg(String sender, String receiver, boolean ex) {
+    public ArrayList<String> readMsg(User sender, User receiver, boolean ex) {
         ArrayList<String> messages = new ArrayList<>();
 
-        try (BufferedReader bfr = new BufferedReader(new FileReader(sender + "_" + receiver))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader(sender.getID() + "_" + receiver.getID()))) {
             String line = bfr.readLine();
             while (line != null) {
                 messages.add(line);
@@ -149,10 +171,57 @@ public class Message {
         return messages;
     }
 
-    public void writeMsg(String sender, String receiver, String content) {
+    // remove
+//    public ArrayList<String> readMsg(String sender, String receiver, boolean ex) {
+//        ArrayList<String> messages = new ArrayList<>();
+//
+//        try (BufferedReader bfr = new BufferedReader(new FileReader(sender + "_" + receiver))) {
+//            String line = bfr.readLine();
+//            while (line != null) {
+//                messages.add(line);
+//                line = bfr.readLine();
+//            }
+//        } catch (FileNotFoundException e) {
+//            System.out.println("Conversation does not exist!");
+//        } catch (IOException e) {
+//            System.out.println("Reading suspended. I/O Exception caught.");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("There was an error. Exception caught.");
+//        }
+//        return messages;
+//    }
+
+    // remove
+//    public void writeMsg(String sender, String receiver, String content) {
+//
+//        try {
+//            File f = new File(sender + "_" + receiver);
+//            if(f.exists()){
+//                f.createNewFile();
+//            }
+//
+//            BufferedWriter bfw = new BufferedWriter(new FileWriter(f, true));
+//
+//            String line = "%s;%s,%s,%s,%s";
+//            bfw.write(String.format(
+//                    line,
+//                    sender,
+//                    receiver,
+//                    sender,
+//                    this.getTime(),
+//                    content));
+//            bfw.newLine();
+//            bfw.flush();
+//        } catch (Exception e) {
+//            System.out.println("Writing suspended. Exception caught");
+//        }
+//    }
+
+    public void writeMsg(User sender, User receiver, String content) {
 
         try {
-            File f = new File(sender + "_" + receiver);
+            File f = new File(sender.getID() + "_" + receiver.getID());
             if(f.exists()){
                 f.createNewFile();
             }
@@ -162,9 +231,9 @@ public class Message {
             String line = "%s;%s,%s,%s,%s";
             bfw.write(String.format(
                     line,
-                    sender,
-                    receiver,
-                    sender,
+                    sender.getAccountUsername(),
+                    receiver.getAccountUsername(),
+                    sender.getAccountUsername(),
                     this.getTime(),
                     content));
             bfw.newLine();
@@ -174,9 +243,32 @@ public class Message {
         }
     }
 
-    public void export(String sender, String receiver) {
+    // remove
+//    public void export(String sender, String receiver) {
+//        ArrayList<String> messages = readMsg(sender, receiver, true);
+//        String fileName = receiver + "_" + sender;
+//        File f = new File(fileName);
+//
+//        try{
+//            if(!f.exists()){
+//                f.createNewFile();
+//            }
+//
+//            BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
+//
+//            for (String msg : messages) {
+//                bfw.write(msg);
+//                bfw.newLine();
+//                bfw.flush();
+//            }
+//        } catch (IOException e){
+//            System.out.println("Error!");
+//        }
+//    }
+
+    public void export(User sender, User receiver) {
         ArrayList<String> messages = readMsg(sender, receiver, true);
-        String fileName = receiver + "_" + sender;
+        String fileName = receiver.getID() + "_" + sender.getID();
         File f = new File(fileName);
 
         try{

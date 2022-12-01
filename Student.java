@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Student extends User {
 
@@ -9,6 +10,14 @@ public class Student extends User {
                    ArrayList<String> blockedList, ArrayList<String> invisibleList,
                    String filter, ArrayList<String> filterWordList) {
         super(message, accountUsername, email, blockedList, invisibleList);
+        this.filter = filter;
+        this.filterWordList = filterWordList;
+    }
+
+    public Student(String message, String accountUsername, String email,
+                   ArrayList<String> blockedList, ArrayList<String> invisibleList,
+                   String filter, ArrayList<String> filterWordList, UUID ID) {
+        super(message, accountUsername, email, blockedList, invisibleList, ID);
         this.filter = filter;
         this.filterWordList = filterWordList;
     }
