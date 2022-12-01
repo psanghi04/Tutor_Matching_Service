@@ -54,21 +54,36 @@ public class MyRunnable implements Runnable {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     System.out.println(successfulLogin);
-                    pw.write(1);
-                    pw.write(usernameField.getText());
-                    pw.write(passwordField.getText());
+
+                    pw.println(1);
+
                     pw.flush();
+
+                    pw.println(usernameField.getText());
+
+                    pw.flush();
+
+                    pw.println(passwordField.getText());
+
+                    pw.flush();
+
                     try {
                         successfulLogin = Integer.parseInt(bfr.readLine()); //bfr is not reading from the server
                         System.out.println(successfulLogin);
                         //frame1.dispose();
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(null,"Unsuccessful Login", "Error", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
                     }
                 }
             });
         } catch(Exception e) {
             JOptionPane.showMessageDialog(null,"Error","Error",JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args){
+        SwingUtilities.invokeLater(new MyRunnable());
     }
 }
