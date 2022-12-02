@@ -466,7 +466,8 @@ public class Main {
                                 "4. Delete account\n" +
                                 "5. Change filter\n" +
                                 "6. Change filter words\n" +
-                                "7. Exit\n\n" +
+                                "7. Display Filter Words\n" +
+                                "8. Exit\n\n" +
                                 "Enter Option Number:");
                         int optionProfile = scan.nextInt();
                         scan.nextLine();
@@ -650,6 +651,13 @@ public class Main {
                                         break;
                                 }
                             case 7:
+                                System.out.println("Words currently being censored:");
+                                for (String word : ((Student) user).getFilterWordList()) {
+                                    System.out.println(word);
+                                }
+                                System.out.println();
+                                break;
+                            case 8:
                                 break;
                             default:
                                 System.out.println("Invalid Option Number");
@@ -980,7 +988,8 @@ public class Main {
                                 "4. Delete account\n" +
                                 "5. Change filter\n" +
                                 "6. Change filter words\n" +
-                                "7. Exit\n\n" +
+                                "7. Display filter words\n" +
+                                "8. Exit\n\n" +
                                 "Enter Option Number:");
                         int optionProfile = scan.nextInt();
                         scan.nextLine();
@@ -1157,7 +1166,15 @@ public class Main {
                                     case "3":
                                         break;
                                 }
+
                             case 7:
+                                System.out.println("Words currently being censored:");
+                                for (String word : ((Tutor) user).getFilterWordList()) {
+                                    System.out.println(word);
+                                }
+                                System.out.println();
+                                break;
+                            case 8:
                                 break;
                             default:
                                 System.out.println("Invalid Option Number");
