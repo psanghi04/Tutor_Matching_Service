@@ -12,9 +12,9 @@ public class Tutor extends User {
 
     // add as a parameter ArrayList<Store> stores
     public Tutor(String accountUsername, String password, String email,
-                 ArrayList<String> blockedList, ArrayList<String> invisibleList,
-                 String[] subjects, double price, String filter, ArrayList<String> filterWordList) {
-        super(accountUsername, password, email, blockedList, invisibleList);
+                 String[] subjects, double price, String filter,
+                 ArrayList<String> filterWordList) {
+        super(accountUsername, password, email);
         this.subjects = subjects;
         this.price = price;
         this.filter = filter;
@@ -23,9 +23,8 @@ public class Tutor extends User {
     }
 
     public Tutor(String accountUsername, String password, String email,
-                 ArrayList<String> blockedList, ArrayList<String> invisibleList,
                  String[] subjects, double price, String filter, ArrayList<String> filterWordList, UUID ID) {
-        super(accountUsername, password, email, blockedList, invisibleList, ID);
+        super(accountUsername, password, email, ID);
         this.subjects = subjects;
         this.price = price;
         this.filter = filter;

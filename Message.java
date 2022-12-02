@@ -2,16 +2,18 @@ import java.io.*;
 import java.sql.*;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Message {
-    public boolean isBlocked(User user, String personBlocked){
+    public boolean isBlocked(User user, User personBlocked){
         
         String[] lineArr;
-        try (BufferedReader bfr = new BufferedReader(new FileReader("BlockedUsers.txt"))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader("InvisibleUsers.txt"))) {
             String line = bfr.readLine();
             while (line != null) {
                 lineArr = line.split(";");
-                if (lineArr[0].contains(personBlocked) && lineArr[1].equals(user.getAccountUsername())) {
+                if (UUID.fromString(lineArr[0].split(",")[1]).compareTo(personBlocked.getID()) == 0 &&
+                        UUID.fromString(lineArr[1]).compareTo(user.getID()) == 0) {
                     return true;
                 }
                 line = bfr.readLine();
@@ -22,14 +24,15 @@ public class Message {
         return false;
     } // if he is blocked/invisible and correct user
 
-    public boolean isInvisible(User user, String personInvisible){
+    public boolean isInvisible(User user, User personInvisible){
 
         String[] lineArr;
         try (BufferedReader bfr = new BufferedReader(new FileReader("InvisibleUsers.txt"))) {
             String line = bfr.readLine();
             while (line != null) {
                 lineArr = line.split(";");
-                if (lineArr[0].contains(personInvisible) && lineArr[1].equals(user.getAccountUsername())) {
+                if (UUID.fromString(lineArr[0].split(",")[1]).compareTo(personInvisible.getID()) == 0 &&
+                        UUID.fromString(lineArr[1]).compareTo(user.getID()) == 0) {
                     return true;
                 }
                 line = bfr.readLine();

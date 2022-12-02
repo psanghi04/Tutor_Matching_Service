@@ -7,17 +7,15 @@ public class Student extends User {
     ArrayList<String> filterWordList;
 
     public Student(String message, String accountUsername, String email,
-                   ArrayList<String> blockedList, ArrayList<String> invisibleList,
                    String filter, ArrayList<String> filterWordList) {
-        super(message, accountUsername, email, blockedList, invisibleList);
+        super(message, accountUsername, email);
         this.filter = filter;
         this.filterWordList = filterWordList;
     }
 
     public Student(String message, String accountUsername, String email,
-                   ArrayList<String> blockedList, ArrayList<String> invisibleList,
                    String filter, ArrayList<String> filterWordList, UUID ID) {
-        super(message, accountUsername, email, blockedList, invisibleList, ID);
+        super(message, accountUsername, email, ID);
         this.filter = filter;
         this.filterWordList = filterWordList;
     }
