@@ -1,15 +1,34 @@
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Tutor extends User {
     private String[] subjects;
     double price;
-    ArrayList<Store> stores = new ArrayList<Store>();
+
+    String filter;
+
+    ArrayList<String> filterWordList;
+    ArrayList<Store> stores = new ArrayList<>();
 
     // add as a parameter ArrayList<Store> stores
-    public Tutor(String accountUsername, String password, String email, ArrayList<String> blockedList, ArrayList<String> invisibleList, String[] subjects, double price) {
-        super(accountUsername, password, email, blockedList, invisibleList);
+    public Tutor(String accountUsername, String password, String email,
+                 String[] subjects, double price, String filter,
+                 ArrayList<String> filterWordList) {
+        super(accountUsername, password, email);
         this.subjects = subjects;
         this.price = price;
+        this.filter = filter;
+        this.filterWordList = filterWordList;
+        // this.stores = stores;
+    }
+
+    public Tutor(String accountUsername, String password, String email,
+                 String[] subjects, double price, String filter, ArrayList<String> filterWordList, UUID ID) {
+        super(accountUsername, password, email, ID);
+        this.subjects = subjects;
+        this.price = price;
+        this.filter = filter;
+        this.filterWordList = filterWordList;
         // this.stores = stores;
     }
 
@@ -34,11 +53,27 @@ public class Tutor extends User {
     }
 
     public void setStores(ArrayList<Store> stores) {
-        this.stores = new ArrayList<Store>();
+        this.stores = new ArrayList<>();
     }
 
     public void addStore(Store store) {
         stores.add(store);
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public ArrayList<String> getFilterWordList() {
+        return filterWordList;
+    }
+
+    public void setFilterWordList(ArrayList<String> filterWordList) {
+        this.filterWordList = filterWordList;
     }
 
     @Override
