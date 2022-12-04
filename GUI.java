@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.MenuKeyEvent;
+import javax.swing.event.MenuKeyListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -289,7 +291,166 @@ public class GUI {
                 } catch (IOException ex) {
                     System.out.println("error");
                 }
+
+                if (role == 'T') {
+                    tutorMenu();
+                } else {
+                    studentMenu();
+                }
             }
         });
     }
+
+    public void studentMenu() {
+//        "Menu\n\n" +
+//                "1. View tutors\n" +
+//                "2. Message a tutor\n" +
+//                "3. Edit profile\n" +
+//                "4. Block a tutor\n" +
+//                "5. Unblock a tutor\n" +
+//                "6. Become invisible to a tutor\n" +
+//                "7. Sign out\n\n" +
+//                "Enter Option Number:");
+
+        JMenuItem view = new JMenuItem("View Tutors");
+        JMenuItem msg = new JMenuItem("Message a Tutor");
+        JMenuItem edit = new JMenuItem("Edit Profile");
+        JMenuItem blk = new JMenuItem("Block a Tutor");
+        JMenuItem ublk = new JMenuItem("Unblock a Tutor");
+        JMenuItem inv = new JMenuItem("Become Invisible to a Tutor");
+        JMenuItem exit = new JMenuItem("Sign Out");
+        JPanel menu = new JPanel();
+        menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
+
+        menu.add(view);
+        menu.add(msg);
+        menu.add(edit);
+        menu.add(blk);
+        menu.add(ublk);
+        menu.add(inv);
+        menu.add(exit);
+        content.add("Student Menu", menu);
+        cl.show(content, "Student Menu");
+        frame.setSize(317, 262);
+
+        view.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        msg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        blk.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        ublk.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        inv.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+    }
+
+    public void tutorMenu() {
+//        "Menu\n\n" +
+//                "1. View students\n" +
+//                "2. Message a student\n" +
+//                "3. Edit profile\n" +
+//                "4. Block a student\n" +
+//                "5. Unblock a student\n" +
+//                "6. Become invisible to a student\n" +
+//                "7. Sign out\n\n" +
+//                "Enter Option Number:");
+
+        JMenuItem view = new JMenuItem("View Students");
+        JMenuItem msg = new JMenuItem("Message a Student");
+        JMenuItem edit = new JMenuItem("Edit Profile");
+        JMenuItem blk = new JMenuItem("Block a Student");
+        JMenuItem ublk = new JMenuItem("Unblock a Student");
+        JMenuItem inv = new JMenuItem("Become Invisible to a Student");
+        JMenuItem exit = new JMenuItem("Sign Out");
+        JPanel menu = new JPanel();
+        menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
+
+        menu.add(view);
+        menu.add(msg);
+        menu.add(edit);
+        menu.add(blk);
+        menu.add(ublk);
+        menu.add(inv);
+        menu.add(exit);
+        content.add("Tutor Menu", menu);
+        cl.show(content, "Tutor Menu");
+        frame.setSize(317, 262);
+
+        view.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        msg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        blk.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        ublk.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        inv.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+    }
+
 }
