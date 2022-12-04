@@ -175,6 +175,14 @@ public class GUI {
                         try {
                             writer.writeUTF(username);
                             writer.writeUTF(passwd);
+
+                            if(reader.readUTF().equals("Successfully Logged In")){
+                                if(reader.readUTF().equals("S")){
+                                    studentMenu();
+                                } else {
+                                    tutorMenu();
+                                }
+                            }
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
@@ -281,6 +289,8 @@ public class GUI {
                     writer.writeUTF(username);
                     writer.writeUTF(email);
                     writer.writeUTF(passwd);
+
+                    writer.flush();
 
                     if (role == 'T') {
                         String subjects = subField.getText();
