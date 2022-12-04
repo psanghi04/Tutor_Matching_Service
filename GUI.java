@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -13,15 +12,6 @@ public class GUI {
     CardLayout cl = new CardLayout();
     DataInputStream reader;
     DataOutputStream writer;
-
-    // temp
-    public GUI() {
-        frame = new JFrame("Welcome Page");
-        frame.setSize(400, 200);
-        frame.setLocationRelativeTo(null);
-        content = frame.getContentPane();
-        content.setLayout(cl);
-    }
 
     public GUI(DataInputStream reader, DataOutputStream writer) {
         frame = new JFrame("Welcome Page");
@@ -33,7 +23,7 @@ public class GUI {
         this.writer = writer;
     }
 
-    public void createMainPage() throws Exception {
+    public void createMainPage() {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel welcomePanel = new JPanel();
@@ -105,73 +95,7 @@ public class GUI {
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
-                        JPanel usernamePanel = new JPanel();
-                        JPanel emailPanel = new JPanel();
-                        JPanel pwdPanel = new JPanel();
-                        JPanel holder = new JPanel(new GridLayout(4,1));
-                        JPanel buttonPanel = new JPanel();
-
-                        JButton createButton = new JButton("Create");
-                        JButton backButton = new JButton("Back");
-                        createButton.setPreferredSize(new Dimension(151, 29));
-                        backButton.setPreferredSize(new Dimension(151, 29));
-
-                        JLabel usernamePrompt = new JLabel("Username:");
-                        JTextField usernameField = new JTextField(10);
-                        usernameField.setText("");
-
-                        JLabel emailPrompt = new JLabel("Email:");
-                        JTextField emailField = new JTextField(10);
-                        emailField.setText("");
-
-                        JLabel passwordPrompt = new JLabel("Password:");
-                        JTextField passwordField = new JTextField(10);
-                        passwordField.setText("");
-
-                        usernamePanel.add(usernamePrompt);
-                        usernamePanel.add(usernameField);
-
-                        emailPanel.add(emailPrompt);
-                        emailPanel.add(emailField);
-
-                        pwdPanel.add(passwordPrompt);
-                        pwdPanel.add(passwordField);
-
-                        buttonPanel.add(backButton);
-                        buttonPanel.add(createButton);
-
-                        holder.add(usernamePanel);
-                        holder.add(emailPanel);
-                        holder.add(pwdPanel);
-
-                        holder.add(buttonPanel);
-
-                        content.add("Student Create Page", holder);
-                        cl.show(content, "Student Create Page");
-                        frame.pack();
-
-                        backButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                cl.show(content, "Welcome");
-                            }
-                        });
-
-                        createButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                String username = usernameField.getText();
-                                String email = emailField.getText();
-                                String passwd = passwordField.getText();
-                                try {
-                                    writer.writeUTF(username);
-                                    writer.writeUTF(email);
-                                    writer.writeUTF(passwd);
-                                } catch (IOException ex) {
-                                    System.out.println("error");
-                                }
-                            }
-                        });
+                        createPage('S');
                     }
                 });
 
@@ -182,95 +106,7 @@ public class GUI {
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
-                        JPanel usernamePanel = new JPanel();
-                        JPanel emailPanel = new JPanel();
-                        JPanel pwdPanel = new JPanel();
-                        JPanel subPanel = new JPanel();
-                        JPanel pricePanel = new JPanel();
-                        JPanel holder = new JPanel(new GridLayout(6,1));
-                        JPanel buttonPanel = new JPanel();
-
-                        JButton createButton = new JButton("Create");
-                        JButton backButton = new JButton("Back");
-                        createButton.setPreferredSize(new Dimension(151, 29));
-                        backButton.setPreferredSize(new Dimension(151, 29));
-
-                        JLabel usernamePrompt = new JLabel("Username:");
-                        JTextField usernameField = new JTextField(10);
-                        usernameField.setText("");
-
-                        JLabel emailPrompt = new JLabel("Email:");
-                        JTextField emailField = new JTextField(10);
-                        emailField.setText("");
-
-                        JLabel passwordPrompt = new JLabel("Password:");
-                        JTextField passwordField = new JTextField(10);
-                        passwordField.setText("Password");
-
-                        JLabel subPrompt = new JLabel("Subjects Taught:");
-                        JTextField subField = new JTextField(10);
-                        subField.setText("");
-
-                        JLabel pricePrompt = new JLabel("Price Charged:");
-                        JTextField priceField = new JTextField(10);
-                        priceField.setText("");
-
-                        usernamePanel.add(usernamePrompt);
-                        usernamePanel.add(usernameField);
-
-                        emailPanel.add(emailPrompt);
-                        emailPanel.add(emailField);
-
-                        pwdPanel.add(passwordPrompt);
-                        pwdPanel.add(passwordField);
-
-                        subPanel.add(subPrompt);
-                        subPanel.add(subField);
-
-                        pricePanel.add(pricePrompt);
-                        pricePanel.add(priceField);
-
-                        buttonPanel.add(backButton);
-                        buttonPanel.add(createButton);
-
-                        holder.add(usernamePanel);
-                        holder.add(emailPanel);
-                        holder.add(pwdPanel);
-                        holder.add(subPanel);
-                        holder.add(pricePanel);
-
-                        holder.add(buttonPanel);
-
-                        content.add("Tutor Create Page", holder);
-                        cl.show(content, "Tutor Create Page");
-                        frame.pack();
-
-                        backButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                cl.show(content, "Welcome");
-                            }
-                        });
-
-                        createButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                String username = usernameField.getText();
-                                String email = emailField.getText();
-                                String passwd = passwordField.getText();
-                                String subjects = subField.getText();
-                                String price = priceField.getText();
-                                try {
-                                    writer.writeUTF(username);
-                                    writer.writeUTF(email);
-                                    writer.writeUTF(passwd);
-                                    writer.writeUTF(subjects);
-                                    writer.writeUTF(price);
-                                } catch (IOException ex) {
-                                    System.out.println("error");
-                                }
-                            }
-                        });
+                        createPage('T');
                     }
                 });
             }
@@ -342,6 +178,117 @@ public class GUI {
                         }
                     }
                 });
+            }
+        });
+    }
+
+    public void createPage(char role) {
+        JPanel usernamePanel = new JPanel();
+        JPanel emailPanel = new JPanel();
+        JPanel pwdPanel = new JPanel();
+        JPanel subPanel = new JPanel();
+        JPanel pricePanel = new JPanel();
+        JPanel holder;
+        if (role == 'T') {
+            holder = new JPanel(new GridLayout(6, 1));
+        } else {
+            holder = new JPanel(new GridLayout(4, 1));
+        }
+
+        JPanel buttonPanel = new JPanel();
+
+        JButton createButton = new JButton("Create");
+        JButton backButton = new JButton("Back");
+        createButton.setPreferredSize(new Dimension(151, 29));
+        backButton.setPreferredSize(new Dimension(151, 29));
+
+        JLabel usernamePrompt = new JLabel("Username:");
+        JTextField usernameField = new JTextField(10);
+        usernameField.setText("");
+
+        JLabel emailPrompt = new JLabel("Email:");
+        JTextField emailField = new JTextField(10);
+        emailField.setText("");
+
+        JLabel passwordPrompt = new JLabel("Password:");
+        JTextField passwordField = new JTextField(10);
+        passwordField.setText("");
+
+        JTextField subField = new JTextField(10);
+        JTextField priceField = new JTextField(10);
+        if (role == 'T') {
+            JLabel subPrompt = new JLabel("Subjects Taught:");
+            subField.setText("");
+
+            JLabel pricePrompt = new JLabel("Price Charged:");
+            priceField.setText("");
+
+            subPanel.add(subPrompt);
+            subPanel.add(subField);
+
+            pricePanel.add(pricePrompt);
+            pricePanel.add(priceField);
+        }
+
+        usernamePanel.add(usernamePrompt);
+        usernamePanel.add(usernameField);
+
+        emailPanel.add(emailPrompt);
+        emailPanel.add(emailField);
+
+        pwdPanel.add(passwordPrompt);
+        pwdPanel.add(passwordField);
+
+        buttonPanel.add(backButton);
+        buttonPanel.add(createButton);
+
+        holder.add(usernamePanel);
+        holder.add(emailPanel);
+        holder.add(pwdPanel);
+        if (role == 'T') {
+            holder.add(subPanel);
+            holder.add(pricePanel);
+        }
+
+        holder.add(buttonPanel);
+
+        if (role == 'T') {
+            content.add("Tutor Create Page", holder);
+            cl.show(content, "Tutor Create Page");
+        } else {
+            content.add("Student Create Page", holder);
+            cl.show(content, "Student Create Page");
+        }
+        frame.pack();
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cl.show(content, "Welcome");
+            }
+        });
+
+        createButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                String email = emailField.getText();
+                String passwd = passwordField.getText();
+
+                try {
+                    writer.writeUTF(username);
+                    writer.writeUTF(email);
+                    writer.writeUTF(passwd);
+
+                    if (role == 'T') {
+                        String subjects = subField.getText();
+                        String price = priceField.getText();
+                        writer.writeUTF(subjects);
+                        writer.writeUTF(price);
+                    }
+                } catch (IOException ex) {
+                    System.out.println("error");
+                }
             }
         });
     }
