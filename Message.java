@@ -8,7 +8,7 @@ public class Message {
     public boolean isBlocked(User user, User personBlocked){
         
         String[] lineArr;
-        try (BufferedReader bfr = new BufferedReader(new FileReader("InvisibleUsers.txt"))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader("BlockedUsers.txt"))) {
             String line = bfr.readLine();
             while (line != null) {
                 lineArr = line.split(";");

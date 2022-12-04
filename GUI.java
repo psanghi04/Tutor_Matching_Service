@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GUI {
     JFrame frame;
@@ -61,6 +63,7 @@ public class GUI {
                 System.out.println("Create Account Selected successfully");
                 try {
                     writer.writeUTF("1");
+                    writer.flush();
                 } catch (Exception ex) {
                     System.out.println("error");
                 }
@@ -94,6 +97,7 @@ public class GUI {
                     public void actionPerformed(ActionEvent e) {
                         try {
                             writer.writeUTF("1");
+                            writer.flush();
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
@@ -105,6 +109,7 @@ public class GUI {
                     public void actionPerformed(ActionEvent e) {
                         try {
                             writer.writeUTF("2");
+                            writer.flush();
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
@@ -119,6 +124,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("2");
+                    writer.flush();
                 } catch (IOException ex) {
                     System.out.println("error");
                 }
@@ -175,14 +181,7 @@ public class GUI {
                         try {
                             writer.writeUTF(username);
                             writer.writeUTF(passwd);
-
-                            if(reader.readUTF().equals("Successfully Logged In")){
-                                if(reader.readUTF().equals("S")){
-                                    studentMenu();
-                                } else {
-                                    tutorMenu();
-                                }
-                            }
+                            writer.flush();
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
@@ -290,14 +289,14 @@ public class GUI {
                     writer.writeUTF(email);
                     writer.writeUTF(passwd);
 
-                    writer.flush();
-
                     if (role == 'T') {
                         String subjects = subField.getText();
                         String price = priceField.getText();
                         writer.writeUTF(subjects);
                         writer.writeUTF(price);
                     }
+
+                    writer.flush();
                 } catch (IOException ex) {
                     System.out.println("error");
                 }
@@ -346,43 +345,113 @@ public class GUI {
         view.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("1");
+                    writer.flush();
 
+                    // read from server
+                    int size = Integer.parseInt(reader.readUTF());
+                    JPanel tutorListPanel = new JPanel(new GridLayout(0, 1));
+                    ;
+                    if (size != 0) {
+                        for (int i = 0; i < size; i++) {
+                            String response = reader.readUTF();
+
+                            JLabel tutorLabel = new JLabel(response);
+                            tutorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                            tutorListPanel.add(tutorLabel);
+                        }
+                        content.add("View Tutors", tutorListPanel);
+                        cl.show(content, "View Tutors");
+                    }
+                    else {
+                        JLabel noTutors = new JLabel("No Tutors Available to Message");
+                        noTutors.setHorizontalAlignment(SwingConstants.CENTER);
+                        JButton okButton = new JButton("OK");
+                        okButton.setPreferredSize(new Dimension(151, 29));
+                        JPanel buttonPanel = new JPanel();
+                        buttonPanel.add(okButton);
+                        tutorListPanel.add(noTutors);
+                        tutorListPanel.add(buttonPanel);
+                        content.add("View Tutors Error", tutorListPanel);
+                        cl.show(content, "View Tutors Error");
+
+                        okButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                cl.show(content, "Student Menu");
+                            }
+                        });
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         msg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("2");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("3");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         blk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("4");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         ublk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("5");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         inv.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("6");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("7");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }
@@ -422,43 +491,113 @@ public class GUI {
         view.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("1");
+                    writer.flush();
 
+                    // read from server
+                    int size = Integer.parseInt(reader.readUTF());
+                    JPanel studentListPanel = new JPanel(new GridLayout(0, 1));
+                    ;
+                    if (size != 0) {
+                        for (int i = 0; i < size; i++) {
+                            String response = reader.readUTF();
+
+                            JLabel tutorLabel = new JLabel(response);
+                            tutorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                            studentListPanel.add(tutorLabel);
+                        }
+                        content.add("View Students", studentListPanel);
+                        cl.show(content, "View Students");
+                    }
+                    else {
+                        JLabel noStudents = new JLabel("No Students Available to Message");
+                        noStudents.setHorizontalAlignment(SwingConstants.CENTER);
+                        JButton okButton = new JButton("OK");
+                        okButton.setPreferredSize(new Dimension(151, 29));
+                        JPanel buttonPanel = new JPanel();
+                        buttonPanel.add(okButton);
+                        studentListPanel.add(noStudents);
+                        studentListPanel.add(buttonPanel);
+                        content.add("View Students Error", studentListPanel);
+                        cl.show(content, "View Students Error");
+
+                        okButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                cl.show(content, "Student Menu");
+                            }
+                        });
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         msg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("2");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("3");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         blk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("4");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         ublk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("5");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         inv.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("6");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("7");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }

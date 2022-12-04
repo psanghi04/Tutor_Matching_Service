@@ -12,9 +12,8 @@ public class ServerMain {
 
     void run() {
         try (DataOutputStream writer = new DataOutputStream(this.client.getOutputStream());
-             DataInputStream reader = new DataInputStream(this.client.getInputStream());
-        )
-        {
+            DataInputStream reader = new DataInputStream(this.client.getInputStream());
+            ) {
 //        Scanner scan = new Scanner(System.in);
             Message messageClass = new Message();
 
@@ -94,17 +93,14 @@ public class ServerMain {
                         System.out.println("Enter your username:");
 //                    userName = scan.nextLine();
                         userName = reader.readUTF();
-                        System.out.println(userName);
 
                         System.out.println("Enter your email:");
 //                    String email = scan.nextLine();
                         String email = reader.readUTF();
-                        System.out.println(email);
 
                         System.out.println("Enter password: ");
 //                    password = scan.nextLine();
                         password = reader.readUTF();
-                        System.out.println(password);
 
                         boolean accountSimilarity = false;
 
@@ -176,27 +172,15 @@ public class ServerMain {
                             System.out.println("Username:");
 //                        userName = scan.nextLine();
                             userName = reader.readUTF();
-                            System.out.println(userName);
 
                             System.out.println("Password:");
 //                        password = scan.nextLine();
                             password = reader.readUTF();
-                            System.out.println(password);
-
-                            System.out.println(userList.size());
-
 
                             for (User acc : userList) {
                                 if (acc.getAccountUsername().equals(userName)) {
                                     if (acc.getPassword().equals(password)) {
-                                        writer.writeUTF("Successfully Logged In");
-
-                                        if(acc instanceof Student){
-                                            writer.writeUTF("S");
-                                        }else{
-                                            writer.writeUTF("T");
-                                        }
-
+                                        System.out.println("Successfully Signed In!\n");
                                         user = acc;
                                         login = true;
                                         break;
@@ -279,8 +263,10 @@ public class ServerMain {
 
                             if (availableTutors.size() == 0) {
                                 System.out.println("There are no tutors available to message");
+                                writer.writeUTF("0");
                             } else {
-                                availability(availableTutors);
+//                            availability(availableTutors);
+                                availability(availableTutors, writer);
                             }
 
                             break;
@@ -820,8 +806,10 @@ public class ServerMain {
 
                             if (availableStudents.size() == 0) {
                                 System.out.println("There are no students available to message");
+                                writer.writeUTF("0");
                             } else {
-                                availability(availableStudents);
+//                            availability(availableStudents);
+                                availability(availableStudents, writer);
                             }
 
 
@@ -1329,7 +1317,7 @@ public class ServerMain {
     }
 
     public static void block(ArrayList<String> blockList) throws IOException {
-        File blockedUsers = new File("InvisibleUsers.txt");
+        File blockedUsers = new File("BlockedUsers.txt");
         if (!blockedUsers.exists()) {
             blockedUsers.createNewFile();
         }
@@ -1361,6 +1349,28 @@ public class ServerMain {
                     }
                 }
                 System.out.printf("[%d]: %s\n", count++, message);
+            }
+        }
+    }
+
+    public static void printMsg(ArrayList<String> messages, int count, User user, DataOutputStream writer) throws IOException {
+        if (user instanceof Student) {
+            for (String message : messages) {
+                if (!((Student) user).getFilterWordList().get(0).equals("")) {
+                    for (String filterWord : ((Student) user).getFilterWordList()) {
+                        message = message.replaceAll(String.format("(?i)%s", filterWord), ((Student) user).getFilter());
+                    }
+                }
+                writer.writeUTF(message);
+            }
+        } else {
+            for (String message : messages) {
+                if (!((Tutor) user).getFilterWordList().get(0).equals("")) {
+                    for (String filterWord : ((Tutor) user).getFilterWordList()) {
+                        message = message.replaceAll(String.format("(?i)%s", filterWord), ((Tutor) user).getFilter());
+                    }
+                }
+                writer.writeUTF(message);
             }
         }
     }
@@ -1442,7 +1452,7 @@ public class ServerMain {
 
     public static void unblockUser(ArrayList<String> blockedUserList) {
         try {
-            File blockedUsers = new File("InvisibleUsers.txt");
+            File blockedUsers = new File("BlockedUsers.txt");
             if (!blockedUsers.exists()) {
                 blockedUsers.createNewFile();
             }
@@ -1545,6 +1555,15 @@ public class ServerMain {
         for (int i = 0; i < userList.size(); i++) {
             System.out.printf("[%d]: %s\n", i+1, userList.get(i).getAccountUsername());
         }
+        System.out.println();
+    }
+
+    public static void availability(ArrayList<User> userList, DataOutputStream writer) throws IOException {
+        writer.writeUTF(String.valueOf(userList.size()));
+        for (int i = 0; i < userList.size(); i++) {
+            writer.writeUTF(userList.get(i).getAccountUsername());
+        }
+        writer.flush();
         System.out.println();
     }
 
