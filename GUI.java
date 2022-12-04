@@ -2,12 +2,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class GUI {
     JFrame frame;
     Container content;
     CardLayout cl = new CardLayout();
+    DataInputStream reader;
+    DataOutputStream writer;
 
+    // temp
     public GUI() {
         frame = new JFrame("Welcome Page");
         frame.setSize(400, 200);
@@ -16,7 +23,17 @@ public class GUI {
         content.setLayout(cl);
     }
 
-    public void createMainPage() {
+    public GUI(DataInputStream reader, DataOutputStream writer) {
+        frame = new JFrame("Welcome Page");
+        frame.setSize(400, 200);
+        frame.setLocationRelativeTo(null);
+        content = frame.getContentPane();
+        content.setLayout(cl);
+        this.reader =  reader;
+        this.writer = writer;
+    }
+
+    public void createMainPage() throws Exception {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel welcomePanel = new JPanel();
@@ -32,8 +49,7 @@ public class GUI {
         Dimension size = welcomeField.getPreferredSize();
         welcomeField.setBounds(0, 0, size.width, size.height);
 
-
-        JButton createAcc = new JButton("Create a Account");
+        JButton createAcc = new JButton("Create an Account");
         JButton signIn = new JButton("Log In");
 
         welcomePanel.add(welcomeField, BorderLayout.CENTER);
@@ -51,6 +67,11 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Create Account Selected successfully");
+                try {
+                    writer.writeUTF("1");
+                } catch (Exception ex) {
+                    System.out.println("error");
+                }
 
                 frame.setTitle("Messenger");
                 JPanel buttonPanel = new JPanel();
@@ -59,11 +80,9 @@ public class GUI {
 
                 JButton studentButton = new JButton("Student");
                 JButton tutorButton = new JButton("Tutor");
-                JButton backButton = new JButton("Back");
 
                 buttonPanel.add(studentButton);
                 buttonPanel.add(tutorButton);
-                buttonPanel.add(backButton);
 
                 JLabel rolePrompt = new JLabel("Choose a Role");
                 rolePrompt.setHorizontalAlignment(SwingConstants.CENTER);
@@ -81,6 +100,11 @@ public class GUI {
 
                 studentButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
+                        try {
+                            writer.writeUTF("1");
+                        } catch (IOException ex) {
+                            System.out.println("error");
+                        }
                         JPanel usernamePanel = new JPanel();
                         JPanel emailPanel = new JPanel();
                         JPanel pwdPanel = new JPanel();
@@ -94,15 +118,15 @@ public class GUI {
 
                         JLabel usernamePrompt = new JLabel("Username:");
                         JTextField usernameField = new JTextField(10);
-                        usernameField.setText("Username");
+                        usernameField.setText("");
 
                         JLabel emailPrompt = new JLabel("Email:");
                         JTextField emailField = new JTextField(10);
-                        emailField.setText("Email");
+                        emailField.setText("");
 
                         JLabel passwordPrompt = new JLabel("Password:");
                         JTextField passwordField = new JTextField(10);
-                        passwordField.setText("Password");
+                        passwordField.setText("");
 
                         usernamePanel.add(usernamePrompt);
                         usernamePanel.add(usernameField);
@@ -132,11 +156,32 @@ public class GUI {
                                 cl.show(content, "Welcome");
                             }
                         });
+
+                        createButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                String username = usernameField.getText();
+                                String email = emailField.getText();
+                                String passwd = passwordField.getText();
+                                try {
+                                    writer.writeUTF(username);
+                                    writer.writeUTF(email);
+                                    writer.writeUTF(passwd);
+                                } catch (IOException ex) {
+                                    System.out.println("error");
+                                }
+                            }
+                        });
                     }
                 });
 
                 tutorButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
+                        try {
+                            writer.writeUTF("2");
+                        } catch (IOException ex) {
+                            System.out.println("error");
+                        }
                         JPanel usernamePanel = new JPanel();
                         JPanel emailPanel = new JPanel();
                         JPanel pwdPanel = new JPanel();
@@ -152,11 +197,11 @@ public class GUI {
 
                         JLabel usernamePrompt = new JLabel("Username:");
                         JTextField usernameField = new JTextField(10);
-                        usernameField.setText("Username");
+                        usernameField.setText("");
 
                         JLabel emailPrompt = new JLabel("Email:");
                         JTextField emailField = new JTextField(10);
-                        emailField.setText("Email");
+                        emailField.setText("");
 
                         JLabel passwordPrompt = new JLabel("Password:");
                         JTextField passwordField = new JTextField(10);
@@ -206,13 +251,26 @@ public class GUI {
                                 cl.show(content, "Welcome");
                             }
                         });
-                    }
-                });
 
-                backButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        cl.show(content, "Welcome");
+                        createButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                String username = usernameField.getText();
+                                String email = emailField.getText();
+                                String passwd = passwordField.getText();
+                                String subjects = subField.getText();
+                                String price = priceField.getText();
+                                try {
+                                    writer.writeUTF(username);
+                                    writer.writeUTF(email);
+                                    writer.writeUTF(passwd);
+                                    writer.writeUTF(subjects);
+                                    writer.writeUTF(price);
+                                } catch (IOException ex) {
+                                    System.out.println("error");
+                                }
+                            }
+                        });
                     }
                 });
             }
@@ -221,6 +279,11 @@ public class GUI {
         signIn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("2");
+                } catch (IOException ex) {
+                    System.out.println("error");
+                }
                 System.out.println("Log In Selected successfully");
                 JPanel usernamePanel = new JPanel();
                 JPanel pwdPanel = new JPanel();
@@ -234,11 +297,11 @@ public class GUI {
 
                 JLabel usernamePrompt = new JLabel("Username:");
                 JTextField usernameField = new JTextField(10);
-                usernameField.setText("Username");
+                usernameField.setText("");
 
                 JLabel passwordPrompt = new JLabel("Password:");
                 JTextField passwordField = new JTextField(10);
-                passwordField.setText("Password");
+                passwordField.setText("");
 
                 usernamePanel.add(usernamePrompt);
                 usernamePanel.add(usernameField);
@@ -263,6 +326,20 @@ public class GUI {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         cl.show(content, "Welcome");
+                    }
+                });
+
+                loginButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String username = usernameField.getText();
+                        String passwd = passwordField.getText();
+                        try {
+                            writer.writeUTF(username);
+                            writer.writeUTF(passwd);
+                        } catch (IOException ex) {
+                            System.out.println("error");
+                        }
                     }
                 });
             }

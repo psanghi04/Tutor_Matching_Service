@@ -10,8 +10,12 @@ public class ServerMain {
         this.client = client;
     }
 
-    public static void run() {
-        Scanner scan = new Scanner(System.in);
+    void run() {
+        try (DataOutputStream writer = new DataOutputStream(this.client.getOutputStream());
+            DataInputStream reader = new DataInputStream(this.client.getInputStream());
+            )
+            {
+//        Scanner scan = new Scanner(System.in);
         Message messageClass = new Message();
 
         boolean login = false;
@@ -70,8 +74,9 @@ public class ServerMain {
                             "2. Login\n" +
                             "3. Exit\n\n" +
                             "Enter Option Number:");
-            int optionNum = scan.nextInt();
-            scan.nextLine();
+//            int optionNum = scan.nextInt();
+//            scan.nextLine();
+            int optionNum = Integer.parseInt(reader.readUTF());
             System.out.println();
 
             switch (optionNum) {
@@ -81,18 +86,22 @@ public class ServerMain {
                                     "1. Student\n" +
                                     "2. Tutor\n\n" +
                                     "Enter Option Number:");
-                    int option = scan.nextInt();
-                    scan.nextLine();
+//                    int option = scan.nextInt();
+//                    scan.nextLine();
+                    int option = Integer.parseInt(reader.readUTF());
                     System.out.println();
 
                     System.out.println("Enter your username:");
-                    userName = scan.nextLine();
+//                    userName = scan.nextLine();
+                    userName = reader.readUTF();
 
                     System.out.println("Enter your email:");
-                    String email = scan.nextLine();
+//                    String email = scan.nextLine();
+                    String email = reader.readUTF();
 
                     System.out.println("Enter password: ");
-                    password = scan.nextLine();
+//                    password = scan.nextLine();
+                    password = reader.readUTF();
 
                     boolean accountSimilarity = false;
 
@@ -127,12 +136,14 @@ public class ServerMain {
                             // Use commas
                             System.out.println("What subjects are you planning to teach");
 
-                            String subjects = scan.nextLine();
+//                            String subjects = scan.nextLine();
+                            String subjects = reader.readUTF();
                             String[] newSubjects = subjects.split(",");
 
                             System.out.println("What is the price you charge?");
-                            double price = scan.nextDouble();
-                            scan.nextLine();
+//                            double price = scan.nextDouble();
+//                            scan.nextLine();
+                            double price = Double.parseDouble(reader.readUTF());
 
                             user = new Tutor(userName, password, email, newSubjects, price, "****", filterList);
 
@@ -160,10 +171,12 @@ public class ServerMain {
                 case 2:
                     while (!login) {
                         System.out.println("Username:");
-                        userName = scan.nextLine();
+//                        userName = scan.nextLine();
+                        userName = reader.readUTF();
 
                         System.out.println("Password:");
-                        password = scan.nextLine();
+//                        password = scan.nextLine();
+                        password = reader.readUTF();
 
                         for (User acc : userList) {
                             if (acc.getAccountUsername().equals(userName)) {
@@ -186,7 +199,8 @@ public class ServerMain {
                                     "1. Yes\n" +
                                             "2. No\n\n" +
                                             "Enter Option Number:");
-                            String answer = scan.nextLine();
+//                            String answer = scan.nextLine();
+                            String answer = reader.readUTF();
                             if (answer.equals("1")) {
                                 break;
                             }
@@ -223,8 +237,9 @@ public class ServerMain {
                                 "6. Become invisible to a tutor\n" +
                                 "7. Sign out\n\n" +
                                 "Enter Option Number:");
-                int option = scan.nextInt();
-                scan.nextLine();
+//                int option = scan.nextInt();
+//                scan.nextLine();
+                int option = Integer.parseInt(reader.readUTF());
                 System.out.println();
 
                 boolean deletedAccount = false;
@@ -261,7 +276,8 @@ public class ServerMain {
                         boolean unableToMessage = false;
 
                         System.out.println("Who would you like to message?");
-                        String person = scan.nextLine();
+//                        String person = scan.nextLine();
+                        String person = reader.readUTF();
 
                         if (userList.size() == 0) {
                             System.out.println("There are no tutors available\n");
@@ -316,8 +332,9 @@ public class ServerMain {
                                             "7. Export conversation\n" +
                                             "8. Quit\n\n" +
                                             "Enter Option Number:");
-                            int optionMessage = scan.nextInt();
-                            scan.nextLine();
+//                            int optionMessage = scan.nextInt();
+//                            scan.nextLine();
+                            int optionMessage = Integer.parseInt(reader.readUTF());
 
                             switch (optionMessage) {
                                 case 1:
@@ -334,7 +351,8 @@ public class ServerMain {
                                     break;
                                 case 2:
                                     System.out.println("Message Body:");
-                                    String content = scan.nextLine();
+//                                    String content = scan.nextLine();
+                                    String content = reader.readUTF();
                                     messageClass.writeMsg(user, userList.get(index), content);
                                     messageClass.export(user, userList.get(index));
                                     System.out.println("Written Successfully");
@@ -343,7 +361,8 @@ public class ServerMain {
                                     break;
                                 case 3:
                                     System.out.println("Which message would you like to delete?");
-                                    String answer = scan.nextLine();
+//                                    String answer = scan.nextLine();
+                                    String answer = reader.readUTF();
 
                                     ArrayList<String> messagesDelete;
                                     String message = null;
@@ -377,7 +396,8 @@ public class ServerMain {
 
                                 case 4:
                                     System.out.println("Which message would you like to edit?");
-                                    String editMessage = scan.nextLine();
+//                                    String editMessage = scan.nextLine();
+                                    String editMessage = reader.readUTF();
 
                                     ArrayList<String> allMessages = messageClass.readMsg(user, userList.get(index), true);
 
@@ -411,8 +431,8 @@ public class ServerMain {
                                     }
 
                                     System.out.println("What would you like your edited message to look like?");
-                                    String newMessage = scan.nextLine();
-
+//                                    String newMessage = scan.nextLine();
+                                    String newMessage = reader.readUTF();
 
                                     messageClass.edit(user, userList.get(index), editedMessage, newMessage + "\n");
                                     messageClass.export(user, userList.get(index));
@@ -421,7 +441,8 @@ public class ServerMain {
 
                                 case 5:
                                     System.out.println("Enter a keyword to search for a message: ");
-                                    String keyword = scan.nextLine();
+//                                    String keyword = scan.nextLine();
+                                    String keyword = reader.readUTF();
 
                                     ArrayList<String> searchableMessages = messageClass.readMsg(user, userList.get(index));
 
@@ -443,7 +464,8 @@ public class ServerMain {
 
                                 case 6:
                                     System.out.println("Please enter the filename");
-                                    String ifileName = scan.nextLine();
+//                                    String ifileName = scan.nextLine();
+                                    String ifileName = reader.readUTF();
 
                                     ArrayList<String> importMessages = new ArrayList<>();
 
@@ -451,7 +473,7 @@ public class ServerMain {
 
                                     break;
                                 case 7:
-                                    export(scan, messageClass, userList, user, index);
+                                    export(reader, messageClass, userList, user, index);
                                     break;
                                 case 8:
                                     quit = false;
@@ -477,15 +499,16 @@ public class ServerMain {
                                         "7. Display Filter Words\n" +
                                         "8. Exit\n\n" +
                                         "Enter Option Number:");
-                        int optionProfile = scan.nextInt();
-                        scan.nextLine();
+//                        int optionProfile = scan.nextInt();
+//                        scan.nextLine();
+                        int optionProfile = Integer.parseInt(reader.readUTF());
 
                         switch (optionProfile) {
                             case 1:
                                 System.out.println("Enter new password:");
-                                String newPassword = scan.nextLine();
+//                                String newPassword = scan.nextLine();
+                                String newPassword = reader.readUTF();
                                 user.setPassword(newPassword);
-
 
                                 try {
                                     updateFile(userList, f);
@@ -499,7 +522,8 @@ public class ServerMain {
                             case 2:
 
                                 System.out.println("Enter new username:");
-                                String newUsername = scan.nextLine();
+//                                String newUsername = scan.nextLine();
+                                String newUsername = reader.readUTF();
 
                                 boolean sameUsername = false;
                                 for (User users : userList) {
@@ -530,7 +554,8 @@ public class ServerMain {
 
                             case 3:
                                 System.out.println("Enter new email:");
-                                String newEmail = scan.nextLine();
+//                                String newEmail = scan.nextLine();
+                                String newEmail = reader.readUTF();
 
                                 boolean sameEmail = false;
                                 for (User users : userList) {
@@ -590,7 +615,8 @@ public class ServerMain {
                                 break;
                             case 5:
                                 System.out.println("Enter new filter:");
-                                String filter = scan.nextLine();
+//                                String filter = scan.nextLine();
+                                String filter = reader.readUTF();
                                 ((Student) user).setFilter(filter);
                                 System.out.println("Changed Successfully");
 
@@ -622,11 +648,13 @@ public class ServerMain {
                                                 "2. Delete words\n" +
                                                 "3. Exit\n\n" +
                                                 "Enter Option Number:");
-                                String answer = scan.nextLine();
+//                                String answer = scan.nextLine();
+                                String answer = reader.readUTF();
                                 switch (answer) {
                                     case "1":
                                         System.out.println("Enter words to be added [Comma separated]");
-                                        String[] words = scan.nextLine().split(",");
+//                                        String[] words = scan.nextLine().split(",");
+                                        String[] words = reader.readUTF().split(",");
                                         ArrayList<String> pastWords = ((Student) user).getFilterWordList();
 
                                         Collections.addAll(pastWords, words);
@@ -646,7 +674,8 @@ public class ServerMain {
                                         }
 
                                         System.out.println("Enter words to be deleted [Comma separated]");
-                                        String[] wordList = scan.nextLine().split(",");
+//                                        String[] wordList = scan.nextLine().split(",");
+                                        String[] wordList = reader.readUTF().split(",");
 
                                         filterWordList.removeAll(List.of(wordList));
                                         System.out.println("Deleted Successfully");
@@ -677,7 +706,8 @@ public class ServerMain {
 
                     case 4:
                         System.out.println("Which user would you like to block?");
-                        String blockUsername = scan.nextLine();
+//                        String blockUsername = scan.nextLine();
+                        String blockUsername = reader.readUTF();
 
                         if (blockUsername.equals(user.getAccountUsername())) {
                             System.out.println("Cannot block yourself");
@@ -701,7 +731,8 @@ public class ServerMain {
                         break;
                     case 5:
                         System.out.println("Which user would you like to unblock?");
-                        String unblockUsername = scan.nextLine();
+//                        String unblockUsername = scan.nextLine();
+                        String unblockUsername = reader.readUTF();
 
                         if (unblockUsername.equals(user.getAccountUsername())) {
                             System.out.println("Cannot unblock yourself");
@@ -721,7 +752,8 @@ public class ServerMain {
                         break;
                     case 6:
                         System.out.println("Which user do you want to become invisible to:");
-                        String invisiblePerson = scan.nextLine();
+//                        String invisiblePerson = scan.nextLine();
+                        String invisiblePerson = reader.readUTF();
                         for (User users : userList) {
                             if (users.getAccountUsername().equals(invisiblePerson)) {
                                 invisibleList.add(user + "," + user.getID() + ";" + users.getID());
@@ -752,8 +784,9 @@ public class ServerMain {
                                 "6. Become invisible to a student\n" +
                                 "7. Sign out\n\n" +
                                 "Enter Option Number:");
-                int option = scan.nextInt();
-                scan.nextLine();
+//                int option = scan.nextInt();
+//                scan.nextLine();
+                int option = Integer.parseInt(reader.readUTF());
                 System.out.println();
 
                 switch (option) {
@@ -785,7 +818,8 @@ public class ServerMain {
                         boolean unableToMessage = false;
 
                         System.out.println("Who would you like to message?");
-                        String person = scan.nextLine();
+//                        String person = scan.nextLine();
+                        String person = reader.readUTF();
 
                         if (userList.size() == 0) {
                             System.out.println("There are no students available");
@@ -837,8 +871,9 @@ public class ServerMain {
                                             "7. Export conversation\n" +
                                             "8. Quit\n\n" +
                                             "Enter Option Number:");
-                            int optionMessage = scan.nextInt();
-                            scan.nextLine();
+//                            int optionMessage = scan.nextInt();
+//                            scan.nextLine();
+                            int optionMessage = Integer.parseInt(reader.readUTF());
 
                             switch (optionMessage) {
                                 case 1:
@@ -855,7 +890,8 @@ public class ServerMain {
                                     break;
                                 case 2:
                                     System.out.println("Message Body:");
-                                    String content = scan.nextLine();
+//                                    String content = scan.nextLine();
+                                    String content = reader.readUTF();
                                     messageClass.writeMsg(user, userList.get(index), content);
                                     messageClass.export(user, userList.get(index));
                                     System.out.println("Written Successfully\n");
@@ -863,7 +899,8 @@ public class ServerMain {
                                     break;
                                 case 3:
                                     System.out.println("What is the message that you would like to delete?");
-                                    String answer = scan.nextLine();
+//                                    String answer = scan.nextLine();
+                                    String answer = reader.readUTF();
 
                                     ArrayList<String> messagesDelete;
                                     String message = null;
@@ -897,7 +934,8 @@ public class ServerMain {
 
                                 case 4:
                                     System.out.println("Which message would you like to edit?");
-                                    String editMessage = scan.nextLine();
+//                                    String editMessage = scan.nextLine();
+                                    String editMessage = reader.readUTF();
 
                                     ArrayList<String> allMessages = messageClass.readMsg(user, userList.get(index), true);
 
@@ -933,7 +971,8 @@ public class ServerMain {
                                     }
 
                                     System.out.println("What would you like your edited message to look like?");
-                                    String newMessage = scan.nextLine();
+//                                    String newMessage = scan.nextLine();
+                                    String newMessage = reader.readUTF();
 
 
                                     messageClass.edit(user, userList.get(index), editedMessage, newMessage + "\n");
@@ -943,7 +982,8 @@ public class ServerMain {
 
                                 case 5:
                                     System.out.println("Enter a keyword to search for a message: ");
-                                    String keyword = scan.nextLine();
+//                                    String keyword = scan.nextLine();
+                                    String keyword = reader.readUTF();
 
                                     ArrayList<String> searchableMessages = messageClass.readMsg(user, userList.get(index));
 
@@ -965,7 +1005,8 @@ public class ServerMain {
 
                                 case 6:
                                     System.out.println("Please enter the filename");
-                                    String ifileName = scan.nextLine();
+//                                    String ifileName = scan.nextLine();
+                                    String ifileName = reader.readUTF();
 
                                     ArrayList<String> importMessages = new ArrayList<>();
 
@@ -973,7 +1014,7 @@ public class ServerMain {
 
                                     break;
                                 case 7:
-                                    export(scan, messageClass, userList, user, index);
+                                    export(reader, messageClass, userList, user, index);
                                     break;
                                 case 8:
                                     quit = false;
@@ -999,13 +1040,15 @@ public class ServerMain {
                                         "7. Display filter words\n" +
                                         "8. Exit\n\n" +
                                         "Enter Option Number:");
-                        int optionProfile = scan.nextInt();
-                        scan.nextLine();
+//                        int optionProfile = scan.nextInt();
+//                        scan.nextLine();
+                        int optionProfile = Integer.parseInt(reader.readUTF());
 
                         switch (optionProfile) {
                             case 1:
                                 System.out.println("Enter new password:");
-                                String newPassword = scan.nextLine();
+//                                String newPassword = scan.nextLine();
+                                String newPassword = reader.readUTF();
                                 user.setPassword(newPassword);
 
                                 try {
@@ -1022,7 +1065,8 @@ public class ServerMain {
                             case 2:
 
                                 System.out.println("Enter new username");
-                                String newUsername = scan.nextLine();
+//                                String newUsername = scan.nextLine();
+                                String newUsername = reader.readUTF();
 
                                 boolean similarUsername = false;
                                 for (User users : userList) {
@@ -1052,7 +1096,8 @@ public class ServerMain {
 
                             case 3:
                                 System.out.println("Enter new email:");
-                                String newEmail = scan.nextLine();
+//                                String newEmail = scan.nextLine();
+                                String newEmail = reader.readUTF();
 
                                 boolean similarEmail = false;
                                 for (User users : userList) {
@@ -1105,7 +1150,8 @@ public class ServerMain {
                                 break;
                             case 5:
                                 System.out.println("Enter new filter: ");
-                                String filter = scan.nextLine();
+//                                String filter = scan.nextLine();
+                                String filter = reader.readUTF();
                                 ((Tutor) user).setFilter(filter);
                                 System.out.println("Changed Successfully");
 
@@ -1138,11 +1184,13 @@ public class ServerMain {
                                                 "2. Delete words\n" +
                                                 "3. Exit\n\n" +
                                                 "Enter Option Number:");
-                                String answer = scan.nextLine();
+//                                String answer = scan.nextLine();
+                                String answer = reader.readUTF();
                                 switch (answer) {
                                     case "1":
                                         System.out.println("Enter words to be added [Comma separated]");
-                                        String[] words = scan.nextLine().split(",");
+//                                        String[] words = scan.nextLine().split(",");
+                                        String[] words = reader.readUTF().split(",");
                                         ArrayList<String> pastWords = ((Tutor) user).getFilterWordList();
 
                                         pastWords.addAll(Arrays.asList(words));
@@ -1162,7 +1210,8 @@ public class ServerMain {
                                         }
 
                                         System.out.println("Enter words to be deleted [Comma separated]");
-                                        String[] wordList = scan.nextLine().split(",");
+//                                        String[] wordList = scan.nextLine().split(",");
+                                        String[] wordList = reader.readUTF().split(",");
 
                                         filterWordList.removeAll(List.of(wordList));
                                         System.out.println("Deleted Successfully");
@@ -1194,7 +1243,8 @@ public class ServerMain {
 
                     case 4:
                         System.out.println("Which user would you like to block?");
-                        String blockUsername = scan.nextLine();
+//                        String blockUsername = scan.nextLine();
+                        String blockUsername = reader.readUTF();
 
                         if (blockUsername.equals(user.getAccountUsername())) {
                             System.out.println("Cannot block yourself");
@@ -1218,7 +1268,8 @@ public class ServerMain {
                         break;
                     case 5:
                         System.out.println("Which user would you like to unblock?");
-                        String unblockUsername = scan.nextLine();
+//                        String unblockUsername = scan.nextLine();
+                        String unblockUsername = reader.readUTF();
 
                         if (unblockUsername.equals(user.getAccountUsername())) {
                             System.out.println("Cannot unblock yourself");
@@ -1238,7 +1289,8 @@ public class ServerMain {
                         break;
                     case 6:
                         System.out.println("Which user do you want to become invisible to:");
-                        String invisiblePerson = scan.nextLine();
+//                        String invisiblePerson = scan.nextLine();
+                        String invisiblePerson = reader.readUTF();
                         for (User users : userList) {
                             if (users.getAccountUsername().equals(invisiblePerson)) {
                                 invisibleList.add(user + "," + user.getID() + ";" + users.getID());
@@ -1255,6 +1307,9 @@ public class ServerMain {
                         break;
                 }
             }
+        }
+            } catch (Exception e) {
+            System.out.println("Error thrown");
         }
     }
 
@@ -1412,10 +1467,11 @@ public class ServerMain {
         }
     }
 
-    public static void export(Scanner scan, Message messageClass, ArrayList<User> userList, User user, int index) {
+    public static void export(DataInputStream reader, Message messageClass, ArrayList<User> userList, User user, int index) {
         try {
             System.out.println("Enter file name to export conversation into:");
-            String expFileName = scan.nextLine();
+//            String expFileName = scan.nextLine();
+            String expFileName = reader.readUTF();
 
             File exportFile = new File(expFileName + ".csv");
 
@@ -1482,9 +1538,7 @@ public class ServerMain {
             while (true) {
                 Socket socket = serverSocket.accept();
                 ServerMain serverMain = new ServerMain(socket);
-                DataOutputStream writer = new DataOutputStream(socket.getOutputStream());
-                DataInputStream reader = new DataInputStream(socket.getInputStream());
-                run();
+                serverMain.run();
             }
         } catch (Exception e) {
             System.out.println("Couldn't Connect");
