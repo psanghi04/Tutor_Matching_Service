@@ -1,13 +1,8 @@
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.MenuKeyEvent;
-import javax.swing.event.MenuKeyListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class GUI {
     JFrame frame;
@@ -62,6 +57,7 @@ public class GUI {
                 System.out.println("Create Account Selected successfully");
                 try {
                     writer.writeUTF("1");
+                    writer.flush();
                 } catch (Exception ex) {
                     System.out.println("error");
                 }
@@ -95,6 +91,7 @@ public class GUI {
                     public void actionPerformed(ActionEvent e) {
                         try {
                             writer.writeUTF("1");
+                            writer.flush();
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
@@ -106,6 +103,7 @@ public class GUI {
                     public void actionPerformed(ActionEvent e) {
                         try {
                             writer.writeUTF("2");
+                            writer.flush();
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
@@ -120,6 +118,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("2");
+                    writer.flush();
                 } catch (IOException ex) {
                     System.out.println("error");
                 }
@@ -176,13 +175,55 @@ public class GUI {
                         try {
                             writer.writeUTF(username);
                             writer.writeUTF(passwd);
+                            writer.flush();
 
-                            if(reader.readUTF().equals("Successfully Logged In")){
-                                if(reader.readUTF().equals("S")){
+                            String response = reader.readUTF();
+                            if (response.equals("Success")) {
+                                String role = reader.readUTF();
+                                if (role.equals("Student")) {
                                     studentMenu();
                                 } else {
                                     tutorMenu();
                                 }
+                            } else {
+                                JPanel buttonPanel = new JPanel();
+                                JLabel errorMsg = new JLabel("Invalid Username or Password");
+                                errorMsg.setHorizontalAlignment(SwingConstants.CENTER);
+                                JButton tryAgain = new JButton("Try Again");
+                                JButton createButton = new JButton("Create Account");
+                                buttonPanel.add(tryAgain);
+                                buttonPanel.add(createButton);
+                                JPanel holder = new JPanel(new GridLayout(0, 1));
+                                holder.add(errorMsg);
+                                holder.add(buttonPanel);
+                                content.add("Invalid Login Page", holder);
+                                cl.show(content, "Invalid Login Page");
+
+                                tryAgain.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        try {
+                                            writer.writeUTF("2");
+                                            writer.flush();
+                                            cl.show(content, "Login Page");
+                                        } catch (IOException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    }
+                                });
+
+                                createButton.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        try {
+                                            writer.writeUTF("1");
+                                            writer.flush();
+                                            cl.show(content, "Welcome");
+                                        } catch (IOException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    }
+                                });
                             }
                         } catch (IOException ex) {
                             System.out.println("error");
@@ -291,14 +332,14 @@ public class GUI {
                     writer.writeUTF(email);
                     writer.writeUTF(passwd);
 
-                    writer.flush();
-
                     if (role == 'T') {
                         String subjects = subField.getText();
                         String price = priceField.getText();
                         writer.writeUTF(subjects);
                         writer.writeUTF(price);
                     }
+
+                    writer.flush();
                 } catch (IOException ex) {
                     System.out.println("error");
                 }
@@ -347,37 +388,7 @@ public class GUI {
         view.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    writer.writeUTF("1");
-
-                    String availableTutors = reader.readUTF();
-
-                    JLabel aT = new JLabel(availableTutors);
-
-                    JButton back = new JButton("Back");
-
-                    JPanel jp = new JPanel();
-
-                    jp.setLayout(new BoxLayout(jp, BoxLayout.Y_AXIS));
-
-                    jp.add(aT);
-
-                    jp.add(back);
-
-                    content.add("Student Option: View", jp);
-                    cl.show(content, "Student Option: View");
-                    frame.setSize(317, 262);
-
-                    back.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            cl.show(content, "Student Menu");
-                        }
-                    });
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                viewUserPage("Tutors");
             }
         });
         msg.addActionListener(new ActionListener() {
@@ -385,247 +396,333 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("2");
+                    writer.flush();
 
-                    JLabel messagePerson = new JLabel("Who would you like to message?");
+                    JLabel prompt = new JLabel("Who would you like to message:");
+                    JTextField username = new JTextField("");
+                    JPanel promptPanel = new JPanel();
 
-                    JTextField mP = new JTextField("User");
+                    promptPanel.add(prompt);
+                    promptPanel.add(username);
 
-                    JButton jb = new JButton("Message");
+                    JButton submitButton = new JButton("Submit");
+                    JPanel buttonPanel = new JPanel();
+                    buttonPanel.add(submitButton);
 
-                    JButton back = new JButton("Back");
+                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                    holder.add(promptPanel);
+                    holder.add(buttonPanel);
 
-                    JPanel jpS = new JPanel();
+                    content.add("Message Prompt", holder);
+                    cl.show(content, "Message Prompt");
 
-//                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
-
-                    jpS.add(messagePerson, BorderLayout.NORTH);
-                    jpS.add(mP, BorderLayout.CENTER);
-                    jpS.add(jb, BorderLayout.SOUTH);
-                    jpS.add(back, BorderLayout.SOUTH);
-
-                    content.add("Tutor Option: Message", jpS);
-                    cl.show(content, "Tutor Option: Message");
-                    frame.setSize(317, 262);
-                    frame.pack();
-
-                    jb.addActionListener(new ActionListener() {
+                    submitButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             try {
-                                writer.writeUTF(mP.getText());
+                                writer.writeUTF(username.getText());
+                                writer.flush();
 
-                                if(reader.readUTF().equals("Person Found")){
-                                    JOptionPane.showMessageDialog(null, "Person Found", "Person Found", JOptionPane.INFORMATION_MESSAGE);
+                                String response = reader.readUTF();
+
+                                if (response.equals("0")) {
+                                    JLabel noUser = new JLabel("There are no tutors available");
+                                    noUser.setHorizontalAlignment(SwingConstants.CENTER);
+                                    JPanel noPanel = new JPanel();
+                                    noPanel.add(noUser);
+
+                                    JButton okButton = new JButton("OK");
+                                    okButton.setPreferredSize(new Dimension(151, 29));
+                                    JPanel buttonPanel = new JPanel();
+                                    buttonPanel.add(okButton);
+
+                                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                                    holder.add(noPanel);
+                                    holder.add(buttonPanel);
+
+                                    content.add("Unavailable", holder);
+                                    cl.show(content, "Unavailable");
+
+                                    okButton.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            cl.show(content, "Student Menu");
+                                        }
+                                    });
+                                } else if(response.equals("Fail")) {
+                                    JLabel noUser = new JLabel("You cannot message this person");
+                                    noUser.setHorizontalAlignment(SwingConstants.CENTER);
+                                    JPanel noPanel = new JPanel();
+                                    noPanel.add(noUser);
+
+                                    JButton okButton = new JButton("OK");
+                                    okButton.setPreferredSize(new Dimension(151, 29));
+                                    JPanel buttonPanel = new JPanel();
+                                    buttonPanel.add(okButton);
+
+                                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                                    holder.add(noPanel);
+                                    holder.add(buttonPanel);
+
+                                    content.add("Cannot Message", holder);
+                                    cl.show(content, "Cannot Message");
+
+                                    okButton.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            cl.show(content, "Student Menu");
+                                        }
+                                    });
+                                } else if(response.contains("Unable")) {
+                                    JLabel noUser = new JLabel(response);
+                                    noUser.setHorizontalAlignment(SwingConstants.CENTER);
+                                    JPanel noPanel = new JPanel();
+                                    noPanel.add(noUser);
+
+                                    JButton okButton = new JButton("OK");
+                                    okButton.setPreferredSize(new Dimension(151, 29));
+                                    JPanel buttonPanel = new JPanel();
+                                    buttonPanel.add(okButton);
+
+                                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                                    holder.add(noPanel);
+                                    holder.add(buttonPanel);
+
+                                    content.add("Unable to find", holder);
+                                    cl.show(content, "Unable to find");
+
+                                    okButton.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            cl.show(content, "Student Menu");
+                                        }
+                                    });
                                 } else {
-                                    JOptionPane.showMessageDialog(null, "You cannot message this person", "Cannot Message User", JOptionPane.ERROR_MESSAGE);
+                                    JMenuItem readMsg = new JMenuItem("Read message");
+                                    JMenuItem writeMsg = new JMenuItem("Write message");
+                                    JMenuItem deleteMsg = new JMenuItem("Delete message");
+                                    JMenuItem editMsg = new JMenuItem("Edit message");
+                                    JMenuItem searchMsg = new JMenuItem("Search message");
+                                    JMenuItem importC = new JMenuItem("Import conversation");
+                                    JMenuItem exportC = new JMenuItem("Export conversation");
+                                    JMenuItem quit = new JMenuItem("Quit");
+                                    JPanel menuMessage = new JPanel();
+                                    menuMessage.setLayout(new BoxLayout(menuMessage, BoxLayout.Y_AXIS));
+
+                                    menuMessage.add(readMsg);
+                                    menuMessage.add(writeMsg);
+                                    menuMessage.add(deleteMsg);
+                                    menuMessage.add(editMsg);
+                                    menuMessage.add(searchMsg);
+                                    menuMessage.add(importC);
+                                    menuMessage.add(exportC);
+                                    menuMessage.add(quit);
+
+                                    readMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("1");
+
+                                                String message = reader.readUTF();
+
+                                                JLabel messagePerson = new JLabel(message);
+
+                                                JButton back = new JButton("Back");
+
+                                                JPanel jpS = new JPanel();
+
+                                                //                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
+
+                                                jpS.add(messagePerson, BorderLayout.NORTH);
+                                                jpS.add(back, BorderLayout.SOUTH);
+
+                                                content.add("Student Option: Read Message", jpS);
+                                                cl.show(content, "Student Option: Read Message");
+                                                frame.setSize(317, 262);
+
+                                                back.addActionListener(new ActionListener() {
+                                                    @Override
+                                                    public void actionPerformed(ActionEvent e) {
+                                                        cl.show(content, "Student Menu");
+                                                    }
+                                                });
+
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    writeMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("2");
+
+                                                //                                            JLabel messagePerson = new JLabel("What message do you want to send?");
+                                                //
+                                                //                                            JTextField m
+                                                //
+                                                //                                            JButton back = new JButton("Back");
+                                                //
+                                                //                                            JPanel jpS = new JPanel();
+                                                //
+                                                ////                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
+                                                //
+                                                //                                            jpS.add(messagePerson, BorderLayout.NORTH);
+                                                //                                            jpS.add(back, BorderLayout.SOUTH);
+                                                //
+                                                //                                            content.add("Student Option: Read Message", jpS);
+                                                //                                            cl.show(content, "Student Option: Read Message");
+                                                //                                            frame.setSize(317, 262);
+
+//                                                back.addActionListener(new ActionListener() {
+//                                                    @Override
+//                                                    public void actionPerformed(ActionEvent e) {
+//                                                        cl.show(content, "Student Menu");
+//                                                    }
+//                                                });
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    deleteMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("3");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    editMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("4");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    searchMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("5");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    importC.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("6");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    exportC.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("7");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    quit.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("8");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    content.add("Student Message Menu", menuMessage);
+                                    cl.show(content, "Student Message Menu");
+                                    frame.setSize(317, 262);
                                 }
 
-                                JMenuItem readMsg = new JMenuItem("Read message");
-                                JMenuItem writeMsg = new JMenuItem("Write message");
-                                JMenuItem deleteMsg = new JMenuItem("Delete message");
-                                JMenuItem editMsg = new JMenuItem("Edit message");
-                                JMenuItem searchMsg = new JMenuItem("Search message");
-                                JMenuItem importC = new JMenuItem("Import conversation");
-                                JMenuItem exportC = new JMenuItem("Export conversation");
-                                JMenuItem quit = new JMenuItem("Quit");
-                                JPanel menuMessage = new JPanel();
-                                menuMessage.setLayout(new BoxLayout(menuMessage, BoxLayout.Y_AXIS));
-
-                                menuMessage.add(readMsg);
-                                menuMessage.add(writeMsg);
-                                menuMessage.add(deleteMsg);
-                                menuMessage.add(editMsg);
-                                menuMessage.add(searchMsg);
-                                menuMessage.add(importC);
-                                menuMessage.add(exportC);
-                                menuMessage.add(quit);
-
-                                readMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            writer.writeUTF("1");
-
-                                            String message = reader.readUTF();
-
-                                            JLabel messagePerson = new JLabel(message);
-
-                                            JButton back = new JButton("Back");
-
-                                            JPanel jpS = new JPanel();
-
-//                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
-
-                                            jpS.add(messagePerson, BorderLayout.NORTH);
-                                            jpS.add(back, BorderLayout.SOUTH);
-
-                                            content.add("Student Option: Read Message", jpS);
-                                            cl.show(content, "Student Option: Read Message");
-                                            frame.setSize(317, 262);
-
-                                            back.addActionListener(new ActionListener() {
-                                                @Override
-                                                public void actionPerformed(ActionEvent e) {
-                                                    cl.show(content, "Student Menu");
-                                                }
-                                            });
-
-                                        } catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                                writeMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            writer.writeUTF("2");
-
-//                                            JLabel messagePerson = new JLabel("What message do you want to send?");
-//
-//                                            JTextField m
-//
-//                                            JButton back = new JButton("Back");
-//
-//                                            JPanel jpS = new JPanel();
-//
-////                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
-//
-//                                            jpS.add(messagePerson, BorderLayout.NORTH);
-//                                            jpS.add(back, BorderLayout.SOUTH);
-//
-//                                            content.add("Student Option: Read Message", jpS);
-//                                            cl.show(content, "Student Option: Read Message");
-//                                            frame.setSize(317, 262);
-
-                                            back.addActionListener(new ActionListener() {
-                                                @Override
-                                                public void actionPerformed(ActionEvent e) {
-                                                    cl.show(content, "Student Menu");
-                                                }
-                                            });
-                                        } catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                                deleteMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            writer.writeUTF("3");
-                                        } catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                                editMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            writer.writeUTF("4");
-                                        } catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                                searchMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            writer.writeUTF("5");
-                                        } catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                                importC.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            writer.writeUTF("6");
-                                        } catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                                exportC.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            writer.writeUTF("7");
-                                        } catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                                quit.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            writer.writeUTF("8");
-                                        } catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                                content.add("Student Message Menu", menuMessage);
-                                cl.show(content, "Student Message Menu");
-                                frame.setSize(317, 262);
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
                             }
                         }
                     });
-
-                    back.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            cl.show(content, "Student Menu");
-                        }
-                    });
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("3");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         blk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("4");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         ublk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("5");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         inv.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("6");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("7");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }
@@ -665,36 +762,7 @@ public class GUI {
         view.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    writer.writeUTF("1");
-
-                    String availableStudents = reader.readUTF();
-
-                    JLabel aS = new JLabel(availableStudents);
-
-                    JButton back = new JButton("Back");
-
-                    JPanel jpT = new JPanel();
-
-                    jpT.setLayout(new BoxLayout(jpT, BoxLayout.Y_AXIS));
-
-                    jpT.add(aS);
-
-                    jpT.add(back);
-
-                    content.add("Tutor Option: View", jpT);
-                    cl.show(content, "Tutor Option: View");
-                    frame.setSize(317, 262);
-
-                    back.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            cl.show(content, "Tutor Menu");
-                        }
-                    });
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                viewUserPage("Students");
             }
         });
         msg.addActionListener(new ActionListener() {
@@ -702,165 +770,397 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("2");
+                    writer.flush();
 
-                    JLabel messagePerson = new JLabel("Who would you like to message?");
+                    JLabel prompt = new JLabel("Who would you like to message:");
+                    JTextField username = new JTextField("");
+                    JPanel promptPanel = new JPanel();
 
-                    JTextField mP = new JTextField("User");
+                    promptPanel.add(prompt);
+                    promptPanel.add(username);
 
-                    JButton jb = new JButton("Message");
+                    JButton submitButton = new JButton("Submit");
+                    JPanel buttonPanel = new JPanel();
+                    buttonPanel.add(submitButton);
 
-                    JButton back = new JButton("Back");
+                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                    holder.add(promptPanel);
+                    holder.add(buttonPanel);
 
-                    JPanel jpM = new JPanel();
+                    content.add("Message Prompt", holder);
+                    cl.show(content, "Message Prompt");
 
-                    jpM.add(messagePerson, BorderLayout.NORTH);
-                    jpM.add(mP, BorderLayout.CENTER);
-                    jpM.add(jb, BorderLayout.SOUTH);
-                    jpM.add(back, BorderLayout.SOUTH);
-
-                    content.add("Tutor Option: Message", jpM);
-                    cl.show(content, "Tutor Option: Message");
-                    frame.setSize(317, 262);
-
-                    jb.addActionListener(new ActionListener() {
+                    submitButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             try {
-                                writer.writeUTF(mP.getText());
+                                writer.writeUTF(username.getText());
+                                writer.flush();
 
-                                if(reader.readUTF().equals("Person Found")){
-                                    JOptionPane.showMessageDialog(null, "Person Found", "Person Found", JOptionPane.INFORMATION_MESSAGE);
+                                String response = reader.readUTF();
+
+                                if (response.equals("0")) {
+                                    JLabel noUser = new JLabel("There are no students available");
+                                    noUser.setHorizontalAlignment(SwingConstants.CENTER);
+                                    JPanel noPanel = new JPanel();
+                                    noPanel.add(noUser);
+
+                                    JButton okButton = new JButton("OK");
+                                    okButton.setPreferredSize(new Dimension(151, 29));
+                                    JPanel buttonPanel = new JPanel();
+                                    buttonPanel.add(okButton);
+
+                                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                                    holder.add(noPanel);
+                                    holder.add(buttonPanel);
+
+                                    content.add("Unavailable", holder);
+                                    cl.show(content, "Unavailable");
+
+                                    okButton.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            cl.show(content, "Tutor Menu");
+                                        }
+                                    });
+                                } else if (response.equals("Fail")) {
+                                    JLabel noUser = new JLabel("You cannot message this person");
+                                    noUser.setHorizontalAlignment(SwingConstants.CENTER);
+                                    JPanel noPanel = new JPanel();
+                                    noPanel.add(noUser);
+
+                                    JButton okButton = new JButton("OK");
+                                    okButton.setPreferredSize(new Dimension(151, 29));
+                                    JPanel buttonPanel = new JPanel();
+                                    buttonPanel.add(okButton);
+
+                                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                                    holder.add(noPanel);
+                                    holder.add(buttonPanel);
+
+                                    content.add("Cannot Message", holder);
+                                    cl.show(content, "Cannot Message");
+
+                                    okButton.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            cl.show(content, "Tutor Menu");
+                                        }
+                                    });
+                                } else if (response.contains("Unable")) {
+                                    JLabel noUser = new JLabel(response);
+                                    noUser.setHorizontalAlignment(SwingConstants.CENTER);
+                                    JPanel noPanel = new JPanel();
+                                    noPanel.add(noUser);
+
+                                    JButton okButton = new JButton("OK");
+                                    okButton.setPreferredSize(new Dimension(151, 29));
+                                    JPanel buttonPanel = new JPanel();
+                                    buttonPanel.add(okButton);
+
+                                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                                    holder.add(noPanel);
+                                    holder.add(buttonPanel);
+
+                                    content.add("Unable to find", holder);
+                                    cl.show(content, "Unable to find");
+
+                                    okButton.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            cl.show(content, "Tutor Menu");
+                                        }
+                                    });
                                 } else {
-                                    JOptionPane.showMessageDialog(null, "You cannot message this person", "Cannot Message User", JOptionPane.ERROR_MESSAGE);
+                                    JMenuItem readMsg = new JMenuItem("Read message");
+                                    JMenuItem writeMsg = new JMenuItem("Write message");
+                                    JMenuItem deleteMsg = new JMenuItem("Delete message");
+                                    JMenuItem editMsg = new JMenuItem("Edit message");
+                                    JMenuItem searchMsg = new JMenuItem("Search message");
+                                    JMenuItem importC = new JMenuItem("Import conversation");
+                                    JMenuItem exportC = new JMenuItem("Export conversation");
+                                    JMenuItem quit = new JMenuItem("Quit");
+                                    JPanel menuMessage = new JPanel();
+                                    menuMessage.setLayout(new BoxLayout(menuMessage, BoxLayout.Y_AXIS));
+
+                                    menuMessage.add(readMsg);
+                                    menuMessage.add(writeMsg);
+                                    menuMessage.add(deleteMsg);
+                                    menuMessage.add(editMsg);
+                                    menuMessage.add(searchMsg);
+                                    menuMessage.add(importC);
+                                    menuMessage.add(exportC);
+                                    menuMessage.add(quit);
+
+                                    readMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("1");
+
+                                                String message = reader.readUTF();
+
+                                                JLabel messagePerson = new JLabel(message);
+
+                                                JButton back = new JButton("Back");
+
+                                                JPanel jpS = new JPanel();
+
+                                                //                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
+
+                                                jpS.add(messagePerson, BorderLayout.NORTH);
+                                                jpS.add(back, BorderLayout.SOUTH);
+
+                                                content.add("Tutor Option: Read Message", jpS);
+                                                cl.show(content, "Tutor Option: Read Message");
+                                                frame.setSize(317, 262);
+
+                                                back.addActionListener(new ActionListener() {
+                                                    @Override
+                                                    public void actionPerformed(ActionEvent e) {
+                                                        cl.show(content, "Tutor Menu");
+                                                    }
+                                                });
+
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    writeMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("2");
+
+                                                //                                            JLabel messagePerson = new JLabel("What message do you want to send?");
+                                                //
+                                                //                                            JTextField m
+                                                //
+                                                //                                            JButton back = new JButton("Back");
+                                                //
+                                                //                                            JPanel jpS = new JPanel();
+                                                //
+                                                ////                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
+                                                //
+                                                //                                            jpS.add(messagePerson, BorderLayout.NORTH);
+                                                //                                            jpS.add(back, BorderLayout.SOUTH);
+                                                //
+                                                //                                            content.add("Student Option: Read Message", jpS);
+                                                //                                            cl.show(content, "Student Option: Read Message");
+                                                //                                            frame.setSize(317, 262);
+
+//                                                back.addActionListener(new ActionListener() {
+//                                                    @Override
+//                                                    public void actionPerformed(ActionEvent e) {
+//                                                        cl.show(content, "Student Menu");
+//                                                    }
+//                                                });
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    deleteMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("3");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    editMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("4");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    searchMsg.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("5");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    importC.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("6");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    exportC.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("7");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    quit.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            try {
+                                                writer.writeUTF("8");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+
+                                    content.add("Tutor Message Menu", menuMessage);
+                                    cl.show(content, "Tutor Message Menu");
+                                    frame.setSize(317, 262);
                                 }
-
-                                JMenuItem readMsg = new JMenuItem("Read message");
-                                JMenuItem writeMsg = new JMenuItem("Write message");
-                                JMenuItem deleteMsg = new JMenuItem("Delete message");
-                                JMenuItem editMsg = new JMenuItem("Edit message");
-                                JMenuItem searchMsg = new JMenuItem("Search message");
-                                JMenuItem importC = new JMenuItem("Import conversation");
-                                JMenuItem exportC = new JMenuItem("Export conversation");
-                                JMenuItem quit = new JMenuItem("Quit");
-                                JPanel menuMessage = new JPanel();
-                                menuMessage.setLayout(new BoxLayout(menuMessage, BoxLayout.Y_AXIS));
-
-                                menuMessage.add(readMsg);
-                                menuMessage.add(writeMsg);
-                                menuMessage.add(deleteMsg);
-                                menuMessage.add(editMsg);
-                                menuMessage.add(searchMsg);
-                                menuMessage.add(importC);
-                                menuMessage.add(exportC);
-                                menuMessage.add(quit);
-
-                                readMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-
-                                    }
-                                });
-
-                                writeMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-
-                                    }
-                                });
-
-                                deleteMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-
-                                    }
-                                });
-
-                                editMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-
-                                    }
-                                });
-
-                                searchMsg.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-
-                                    }
-                                });
-
-                                importC.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-
-                                    }
-                                });
-
-                                exportC.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-
-                                    }
-                                });
-
-                                quit.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-
-                                    }
-                                });
-
-                                content.add("Tutor Message Menu", menuMessage);
-                                cl.show(content, "Tutor Message Menu");
-                                frame.setSize(317, 262);
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
                             }
                         }
                     });
-
-                    back.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            cl.show(content, "Student Menu");
-                        }
-                    });
-
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
                 }
             }
         });
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("3");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         blk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("4");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         ublk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("5");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         inv.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("6");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    writer.writeUTF("7");
+                    writer.flush();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
+    }
+
+    public void viewUserPage(String role) {
+        try {
+            writer.writeUTF("1");
+            writer.flush();
+
+            // read from server
+            int size = Integer.parseInt(reader.readUTF());
+            JPanel ListPanel = new JPanel(new GridLayout(0, 1));
+            if (size != 0) {
+                for (int i = 0; i < size; i++) {
+                    String response = reader.readUTF();
+
+                    JLabel Label = new JLabel(response);
+                    Label.setHorizontalAlignment(SwingConstants.CENTER);
+                    ListPanel.add(Label);
+                }
+                JButton okButton = new JButton("OK");
+                okButton.setPreferredSize(new Dimension(151, 29));
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.add(okButton);
+                ListPanel.add(buttonPanel);
+                content.add("View " + role, ListPanel);
+                cl.show(content, "View " + role);
+
+                okButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(role.equals("Students")) {
+                            cl.show(content, "Tutor Menu");
+                        } else {
+                            cl.show(content, "Student Menu");
+                        }
+                    }
+                });
+            }
+            else {
+                JLabel noUser = new JLabel("No " + role + " Available to Message");
+                noUser.setHorizontalAlignment(SwingConstants.CENTER);
+                JButton okButton = new JButton("OK");
+                okButton.setPreferredSize(new Dimension(151, 29));
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.add(okButton);
+                ListPanel.add(noUser);
+                ListPanel.add(buttonPanel);
+                content.add("View " + role + " Error", ListPanel);
+                cl.show(content, "View " + role + " Error");
+
+                okButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(role.equals("Students")) {
+                            cl.show(content, "Tutor Menu");
+                        } else {
+                            cl.show(content, "Student Menu");
+                        }
+                    }
+                });
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
 }

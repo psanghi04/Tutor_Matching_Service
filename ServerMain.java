@@ -12,9 +12,8 @@ public class ServerMain {
 
     void run() {
         try (DataOutputStream writer = new DataOutputStream(this.client.getOutputStream());
-             DataInputStream reader = new DataInputStream(this.client.getInputStream());
-        )
-        {
+            DataInputStream reader = new DataInputStream(this.client.getInputStream());
+            ) {
 //        Scanner scan = new Scanner(System.in);
             Message messageClass = new Message();
 
@@ -94,17 +93,14 @@ public class ServerMain {
                         System.out.println("Enter your username:");
 //                    userName = scan.nextLine();
                         userName = reader.readUTF();
-                        System.out.println(userName);
 
                         System.out.println("Enter your email:");
 //                    String email = scan.nextLine();
                         String email = reader.readUTF();
-                        System.out.println(email);
 
                         System.out.println("Enter password: ");
 //                    password = scan.nextLine();
                         password = reader.readUTF();
-                        System.out.println(password);
 
                         boolean accountSimilarity = false;
 
@@ -176,27 +172,15 @@ public class ServerMain {
                             System.out.println("Username:");
 //                        userName = scan.nextLine();
                             userName = reader.readUTF();
-                            System.out.println(userName);
 
                             System.out.println("Password:");
 //                        password = scan.nextLine();
                             password = reader.readUTF();
-                            System.out.println(password);
-
-                            System.out.println(userList.size());
-
 
                             for (User acc : userList) {
                                 if (acc.getAccountUsername().equals(userName)) {
                                     if (acc.getPassword().equals(password)) {
-                                        writer.writeUTF("Successfully Logged In");
-
-                                        if(acc instanceof Student){
-                                            writer.writeUTF("S");
-                                        }else{
-                                            writer.writeUTF("T");
-                                        }
-
+                                        System.out.println("Successfully Signed In!\n");
                                         user = acc;
                                         login = true;
                                         break;
@@ -206,7 +190,11 @@ public class ServerMain {
 
                             if (login) {
                                 System.out.println("Welcome Back!\n");
+                                writer.writeUTF("Success");
+                                writer.writeUTF(user.toString());
+                                writer.flush();
                             } else {
+                                writer.writeUTF("Falied");
                                 System.out.println("Invalid Username or Password");
                                 System.out.println();
                                 System.out.println("Do you want to go back?");
@@ -278,16 +266,11 @@ public class ServerMain {
 
 
                             if (availableTutors.size() == 0) {
-                                writer.writeUTF("There are no tutors available to message");
+                                System.out.println("There are no tutors available to message");
+                                writer.writeUTF("0");
                             } else {
-                                String availableTutorString = "";
-                                for (int i = 0; i < userList.size(); i++) {
-                                    if(userList.get(i) instanceof Tutor){
-                                        availableTutorString += String.format("[%d]: %s\n", i+1, userList.get(i).getAccountUsername());
-                                    }
-                                }
-                                writer.writeUTF(availableTutorString);
-//                                System.out.println();
+//                            availability(availableTutors);
+                                availability(availableTutors, writer);
                             }
 
                             break;
@@ -303,6 +286,8 @@ public class ServerMain {
 
                             if (userList.size() == 0) {
                                 System.out.println("There are no tutors available\n");
+                                writer.writeUTF("0");
+                                writer.flush();
                                 break;
                             }
 
@@ -322,11 +307,15 @@ public class ServerMain {
                                     index = i;
 
                                     if (userList.get(i) instanceof Tutor) {
-                                        writer.writeUTF("Person Found");
+                                        System.out.println("Person Found\n");
+                                        writer.writeUTF("Success");
+                                        writer.flush();
                                         unableToMessage = false;
                                         break;
                                     } else {
-                                        writer.writeUTF("You cannot message this person");
+                                        System.out.println("You cannot message this person\n");
+                                        writer.writeUTF("Fail");
+                                        writer.flush();
                                         unableToMessage = true;
                                     }
                                 }
@@ -335,7 +324,9 @@ public class ServerMain {
 
                             if (index == -1 || unableToMessage) {
                                 if (index == -1) {
-                                    System.out.printf("Unable to find/messsage %s\n\n", person);
+                                    System.out.printf("Unable to find/message %s\n\n", person);
+                                    writer.writeUTF(String.format("Unable to find/message %s\n\n", person));
+                                    writer.flush();
                                 }
                                 break;
                             }
@@ -363,15 +354,14 @@ public class ServerMain {
                                         ArrayList<String> messages = messageClass.readMsg(user, userList.get(index));
 
                                         if (messages.size() == 0) {
-                                            writer.writeUTF("No Messages Available");
+                                            System.out.println("No Messages Available");
                                             continue;
-                                        } else {
-                                            int count = 1;
-                                            writer.writeUTF(printMsg(messages, count, user));
-                                            System.out.println();
-                                            break;
                                         }
 
+                                        int count = 1;
+                                        printMsg(messages, count, user);
+                                        System.out.println();
+                                        break;
                                     case 2:
                                         System.out.println("Message Body:");
 //                                    String content = scan.nextLine();
@@ -828,18 +818,10 @@ public class ServerMain {
 
                             if (availableStudents.size() == 0) {
                                 System.out.println("There are no students available to message");
+                                writer.writeUTF("0");
                             } else {
-                                System.out.println("Hello");
-
-                                String availableStudentString = "";
-                                for (int i = 0; i < userList.size(); i++) {
-                                    if(userList.get(i) instanceof Student){
-                                        availableStudentString += String.format("[%d]: %s\n", i+1, userList.get(i).getAccountUsername());
-                                    }
-                                }
-                                writer.writeUTF(availableStudentString);
-
-//                                System.out.println();
+//                            availability(availableStudents);
+                                availability(availableStudents, writer);
                             }
 
 
@@ -1347,7 +1329,7 @@ public class ServerMain {
     }
 
     public static void block(ArrayList<String> blockList) throws IOException {
-        File blockedUsers = new File("InvisibleUsers.txt");
+        File blockedUsers = new File("BlockedUsers.txt");
         if (!blockedUsers.exists()) {
             blockedUsers.createNewFile();
         }
@@ -1361,9 +1343,7 @@ public class ServerMain {
         pw.flush();
     }
 
-    public static String printMsg(ArrayList<String> messages, int count, User user) {
-        String finalMessage = "";
-
+    public static void printMsg(ArrayList<String> messages, int count, User user) {
         if (user instanceof Student) {
             for (String message : messages) {
                 if (!((Student) user).getFilterWordList().get(0).equals("")) {
@@ -1371,7 +1351,7 @@ public class ServerMain {
                         message = message.replaceAll(String.format("(?i)%s", filterWord), ((Student) user).getFilter());
                     }
                 }
-                finalMessage += String.format("[%d]: %s\n", count++, message);
+                System.out.printf("[%d]: %s\n", count++, message);
             }
         } else {
             for (String message : messages) {
@@ -1380,11 +1360,31 @@ public class ServerMain {
                         message = message.replaceAll(String.format("(?i)%s", filterWord), ((Tutor) user).getFilter());
                     }
                 }
-                finalMessage += String.format("[%d]: %s\n", count++, message);
+                System.out.printf("[%d]: %s\n", count++, message);
             }
         }
+    }
 
-        return finalMessage;
+    public static void printMsg(ArrayList<String> messages, int count, User user, DataOutputStream writer) throws IOException {
+        if (user instanceof Student) {
+            for (String message : messages) {
+                if (!((Student) user).getFilterWordList().get(0).equals("")) {
+                    for (String filterWord : ((Student) user).getFilterWordList()) {
+                        message = message.replaceAll(String.format("(?i)%s", filterWord), ((Student) user).getFilter());
+                    }
+                }
+                writer.writeUTF(message);
+            }
+        } else {
+            for (String message : messages) {
+                if (!((Tutor) user).getFilterWordList().get(0).equals("")) {
+                    for (String filterWord : ((Tutor) user).getFilterWordList()) {
+                        message = message.replaceAll(String.format("(?i)%s", filterWord), ((Tutor) user).getFilter());
+                    }
+                }
+                writer.writeUTF(message);
+            }
+        }
     }
 
     public static void updateFile(ArrayList<User> userList, File f) throws IOException {
@@ -1464,7 +1464,7 @@ public class ServerMain {
 
     public static void unblockUser(ArrayList<String> blockedUserList) {
         try {
-            File blockedUsers = new File("InvisibleUsers.txt");
+            File blockedUsers = new File("BlockedUsers.txt");
             if (!blockedUsers.exists()) {
                 blockedUsers.createNewFile();
             }
@@ -1563,15 +1563,24 @@ public class ServerMain {
         }
     }
 
-//    public static void availability(ArrayList<User> userList) {
-//        for (int i = 0; i < userList.size(); i++) {
-//            System.out.printf("[%d]: %s\n", i+1, userList.get(i).getAccountUsername());
-//        }
-//        System.out.println();
-//    }
+    public static void availability(ArrayList<User> userList) {
+        for (int i = 0; i < userList.size(); i++) {
+            System.out.printf("[%d]: %s\n", i+1, userList.get(i).getAccountUsername());
+        }
+        System.out.println();
+    }
+
+    public static void availability(ArrayList<User> userList, DataOutputStream writer) throws IOException {
+        writer.writeUTF(String.valueOf(userList.size()));
+        for (int i = 0; i < userList.size(); i++) {
+            writer.writeUTF(userList.get(i).getAccountUsername());
+        }
+        writer.flush();
+        System.out.println();
+    }
 
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(4242)) {
+        try (ServerSocket serverSocket = new ServerSocket(4240)) {
             while (true) {
                 Socket socket = serverSocket.accept();
                 ServerMain serverMain = new ServerMain(socket);
