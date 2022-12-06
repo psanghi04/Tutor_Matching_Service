@@ -8,7 +8,7 @@ public class ClientMain {
             DataInputStream reader = new DataInputStream(socket.getInputStream());
             DataOutputStream writer = new DataOutputStream(socket.getOutputStream());
             GUI gui = new GUI(reader, writer);
-            gui.createMainPage();
+            gui.createInterface();
         } catch (Exception e) {
             System.out.println("Couldn't print");
         }

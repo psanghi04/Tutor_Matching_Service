@@ -19,14 +19,13 @@ public class GUI {
         content.setLayout(cl);
         this.reader =  reader;
         this.writer = writer;
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
-    public void createMainPage() {
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+    public void createInterface() {
         JPanel welcomePanel = new JPanel();
         JPanel buttonPanel = new JPanel();
-        JPanel panelThree = new JPanel(new BorderLayout());
+        JPanel holder = new JPanel(new GridLayout(0, 1));
 
         JLabel welcomeField = new JLabel("Welcome to Tutoring Center");
         welcomeField.setFont(new Font("Open Sans", Font.PLAIN, 18));
@@ -40,13 +39,13 @@ public class GUI {
         JButton createAcc = new JButton("Create an Account");
         JButton signIn = new JButton("Log In");
 
-        welcomePanel.add(welcomeField, BorderLayout.CENTER);
-        buttonPanel.add(createAcc, BorderLayout.SOUTH);
-        buttonPanel.add(signIn, BorderLayout.SOUTH);
+        welcomePanel.add(welcomeField);
+        buttonPanel.add(createAcc);
+        buttonPanel.add(signIn);
 
-        panelThree.add(welcomePanel, BorderLayout.NORTH);
-        panelThree.add(buttonPanel, BorderLayout.SOUTH);
-        content.add("Welcome", panelThree);
+        holder.add(welcomePanel);
+        holder.add(buttonPanel);
+        content.add("Welcome", holder);
         cl.show(content, "Welcome");
 
         frame.setVisible(true);
@@ -57,6 +56,7 @@ public class GUI {
                 System.out.println("Create Account Selected successfully");
                 try {
                     writer.writeUTF("1");
+                    writer.flush();
                 } catch (Exception ex) {
                     System.out.println("error");
                 }
@@ -90,6 +90,7 @@ public class GUI {
                     public void actionPerformed(ActionEvent e) {
                         try {
                             writer.writeUTF("1");
+                            writer.flush();
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
@@ -101,6 +102,7 @@ public class GUI {
                     public void actionPerformed(ActionEvent e) {
                         try {
                             writer.writeUTF("2");
+                            writer.flush();
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
@@ -115,10 +117,13 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("2");
+                    writer.flush();
                 } catch (IOException ex) {
                     System.out.println("error");
                 }
                 System.out.println("Log In Selected successfully");
+
+                frame.setTitle("Messenger");
                 JPanel usernamePanel = new JPanel();
                 JPanel pwdPanel = new JPanel();
                 JPanel holder = new JPanel(new GridLayout(3,1));
@@ -171,6 +176,7 @@ public class GUI {
                         try {
                             writer.writeUTF(username);
                             writer.writeUTF(passwd);
+                            writer.flush();
 
                             String response = reader.readUTF();
                             if (response.equals("Success")) {
@@ -199,6 +205,7 @@ public class GUI {
                                     public void actionPerformed(ActionEvent e) {
                                         try {
                                             writer.writeUTF("2");
+                                            writer.flush();
                                             cl.show(content, "Login Page");
                                         } catch (IOException ex) {
                                             throw new RuntimeException(ex);
@@ -211,6 +218,7 @@ public class GUI {
                                     public void actionPerformed(ActionEvent e) {
                                         try {
                                             writer.writeUTF("1");
+                                            writer.flush();
                                             cl.show(content, "Welcome");
                                         } catch (IOException ex) {
                                             throw new RuntimeException(ex);
@@ -332,6 +340,7 @@ public class GUI {
                         writer.writeUTF(price);
                     }
 
+                    writer.flush();
                 } catch (IOException ex) {
                     System.out.println("error");
                 }
@@ -373,6 +382,7 @@ public class GUI {
         menu.add(ublk);
         menu.add(inv);
         menu.add(exit);
+
         content.add("Student Menu", menu);
         cl.show(content, "Student Menu");
         frame.setSize(317, 262);
@@ -383,12 +393,12 @@ public class GUI {
                 viewUserPage("Tutors");
             }
         });
-
         msg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("2");
+                    writer.flush();
 
                     JLabel prompt = new JLabel("Who would you like to message:");
                     JTextField username = new JTextField("");
@@ -412,17 +422,13 @@ public class GUI {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             try {
-
-                                System.out.println(username.getText());
-
                                 writer.writeUTF(username.getText());
+                                writer.flush();
 
                                 String response = reader.readUTF();
 
-                                System.out.println(response);
-
                                 if (response.equals("0")) {
-                                    JLabel noUser = new JLabel("There are no students available");
+                                    JLabel noUser = new JLabel("There are no tutors available");
                                     noUser.setHorizontalAlignment(SwingConstants.CENTER);
                                     JPanel noPanel = new JPanel();
                                     noPanel.add(noUser);
@@ -445,7 +451,7 @@ public class GUI {
                                             cl.show(content, "Student Menu");
                                         }
                                     });
-                                } else if (response.equals("Fail")) {
+                                } else if(response.equals("Fail")) {
                                     JLabel noUser = new JLabel("You cannot message this person");
                                     noUser.setHorizontalAlignment(SwingConstants.CENTER);
                                     JPanel noPanel = new JPanel();
@@ -469,7 +475,7 @@ public class GUI {
                                             cl.show(content, "Student Menu");
                                         }
                                     });
-                                } else if (response.contains("Unable")) {
+                                } else if(response.contains("Unable")) {
                                     JLabel noUser = new JLabel(response);
                                     noUser.setHorizontalAlignment(SwingConstants.CENTER);
                                     JPanel noPanel = new JPanel();
@@ -532,6 +538,7 @@ public class GUI {
 
                                                 JPanel jpS = new JPanel();
 
+                                                //                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
                                                 if(message.equals("0")){
                                                     JOptionPane.showMessageDialog(null, "No Messages Available", "No Messages Available", JOptionPane.ERROR_MESSAGE);
                                                 } else {
@@ -541,10 +548,9 @@ public class GUI {
                                                 jpS.add(messagePerson, BorderLayout.NORTH);
                                                 jpS.add(back, BorderLayout.SOUTH);
 
-                                                content.add("Tutor Option: Read Message", jpS);
-                                                cl.show(content, "Tutor Option: Read Message");
+                                                content.add("Student Option: Read Message", jpS);
+                                                cl.show(content, "Student Option: Read Message");
                                                 frame.setSize(317, 262);
-
 
                                                 back.addActionListener(new ActionListener() {
                                                     @Override
@@ -570,12 +576,11 @@ public class GUI {
                                                 JTextField mP = new JTextField("Send Message");
 
                                                 JButton jb = new JButton("Send Message");
-
                                                 JButton back = new JButton("Back");
 
                                                 JPanel jpS = new JPanel();
 
-    //                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
+                                                //                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
 
                                                 jpS.add(messagePerson, BorderLayout.NORTH);
                                                 jpS.add(mP);
@@ -609,6 +614,7 @@ public class GUI {
                                                         cl.show(content, "Student Menu");
                                                     }
                                                 });
+
                                             } catch (Exception ex) {
                                                 ex.printStackTrace();
                                             }
@@ -620,6 +626,7 @@ public class GUI {
                                         public void actionPerformed(ActionEvent e) {
                                             try {
                                                 writer.writeUTF("3");
+                                                writer.flush();
 
                                                 JLabel messagePerson = new JLabel("What message or line number do you want to delete?");
 
@@ -816,7 +823,6 @@ public class GUI {
                                                         cl.show(content, "Student Message Menu");
                                                     }
                                                 });
-
                                             } catch (Exception ex) {
                                                 ex.printStackTrace();
                                             }
@@ -931,24 +937,25 @@ public class GUI {
                                             }
                                         }
                                     });
-
                                 }
-                            } catch (IOException ex) {
+
+                            } catch (Exception ex) {
                                 throw new RuntimeException(ex);
                             }
                         }
                     });
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }
         });
-
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("3");
+                    writer.flush();
+                    editProfilePage("Student");
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -959,6 +966,9 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("4");
+                    writer.flush();
+
+                    changeBlockedStatus("Which user would you like to block?", "Block User", "Student");
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -969,6 +979,9 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("5");
+                    writer.flush();
+
+                    changeBlockedStatus("Which user would you like to unblock?", "Unblock User", "Student");
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -979,6 +992,9 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("6");
+                    writer.flush();
+
+                    invisiblePage("Student");
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -989,6 +1005,9 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("7");
+                    writer.flush();
+
+                    thankYouPage();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -1034,12 +1053,12 @@ public class GUI {
                 viewUserPage("Students");
             }
         });
-
         msg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("2");
+                    writer.flush();
 
                     JLabel prompt = new JLabel("Who would you like to message:");
                     JTextField username = new JTextField("");
@@ -1063,14 +1082,10 @@ public class GUI {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             try {
-
-                                System.out.println(username.getText());
-
                                 writer.writeUTF(username.getText());
+                                writer.flush();
 
                                 String response = reader.readUTF();
-
-                                System.out.println(response);
 
                                 if (response.equals("0")) {
                                     JLabel noUser = new JLabel("There are no students available");
@@ -1321,6 +1336,8 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("3");
+                    writer.flush();
+                    editProfilePage("Tutor");
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -1331,6 +1348,9 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("4");
+                    writer.flush();
+
+                    changeBlockedStatus("Which user would you like to block?", "Block User", "Tutor");
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -1341,6 +1361,9 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("5");
+                    writer.flush();
+
+                    changeBlockedStatus("Which user would you like to unblock?", "Unblock User", "Tutor");
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -1351,6 +1374,9 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("6");
+                    writer.flush();
+
+                    invisiblePage("Tutor");
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -1361,6 +1387,9 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writer.writeUTF("7");
+                    writer.flush();
+
+                    thankYouPage();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -1371,6 +1400,7 @@ public class GUI {
     public void viewUserPage(String role) {
         try {
             writer.writeUTF("1");
+            writer.flush();
 
             // read from server
             int size = Integer.parseInt(reader.readUTF());
@@ -1428,6 +1458,459 @@ public class GUI {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public void changed(String response, String user) {
+        JPanel messagePanel = new JPanel();
+        JLabel message;
+        if (response.equals("Success")) {
+            message = new JLabel("Changed Successfully");
+        } else {
+            message = new JLabel("Failed!");
+        }
+        messagePanel.add(message);
+        JButton okButton = new JButton("OK");
+        okButton.setPreferredSize(new Dimension(151, 29));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(okButton);
+
+        JPanel holder = new JPanel(new GridLayout(0, 1));
+        holder.add(messagePanel);
+        holder.add(buttonPanel);
+
+        content.add("Edit Profile Response", holder);
+        cl.show(content, "Edit Profile Response");
+
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cl.show(content, user + " Menu");
+            }
+        });
+    }
+
+    public void changeProfile(String action, String user) {
+        JLabel prompt = new JLabel("Enter new " + action);
+        JTextField pass = new JTextField("");
+
+        JPanel promptPanel = new JPanel();
+        promptPanel.add(prompt);
+        promptPanel.add(pass);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(151, 29));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(submitButton);
+
+        JPanel holder = new JPanel(new GridLayout(0, 1));
+        holder.add(promptPanel);
+        holder.add(buttonPanel);
+
+        content.add("Change " + action, holder);
+        cl.show(content, "Change " + action);
+
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF(pass.getText());
+                    writer.flush();
+
+                    String response = reader.readUTF();
+                    changed(response, user);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
+
+    public void changedVisibility(String response, String panelName, String role) {
+        JPanel responsePanel = new JPanel();
+        JLabel responseLabel = new JLabel(response);
+        responseLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        responsePanel.add(responseLabel);
+
+        JPanel buttonPanel = new JPanel();
+        JButton okButton = new JButton("OK");
+        okButton.setPreferredSize(new Dimension(151, 29));
+
+        buttonPanel.add(okButton);
+
+        JPanel holder = new JPanel(new GridLayout(0, 1));
+        holder.add(responsePanel);
+        holder.add(buttonPanel);
+
+        content.add(panelName, holder);
+        cl.show(content, panelName);
+
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cl.show(content, role + " Menu");
+            }
+        });
+    }
+
+    public void changeBlockedStatus(String label, String panelName, String role) {
+        JPanel promptPanel = new JPanel();
+        JLabel prompt = new JLabel(label);
+        JTextField answer = new JTextField("");
+        promptPanel.add(prompt);
+        promptPanel.add(answer);
+
+        JPanel buttonPanel = new JPanel();
+        JButton submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(151, 29));
+        buttonPanel.add(submitButton);
+
+        JPanel holder = new JPanel(new GridLayout(0, 1));
+        holder.add(promptPanel);
+        holder.add(buttonPanel);
+
+        content.add(panelName, holder);
+        cl.show(content, panelName);
+
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF(answer.getText());
+                    writer.flush();
+
+                    String response = reader.readUTF();
+                    if (response.contains("Cannot")) {
+                        changedVisibility(response, "Block yourself", role);
+                    } else if (response.contains("no")) {
+                        changedVisibility(response, "No Blocked User", role);
+                    } else {
+                        changedVisibility(response, "Successful Block", role);
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
+
+    public void editProfilePage(String role) {
+        JMenuItem changePwd = new JMenuItem("Change Password");
+        JMenuItem changeUsername = new JMenuItem("Change Username");
+        JMenuItem changeEmail = new JMenuItem("Change Email");
+        JMenuItem delAcc = new JMenuItem("Delete Account");
+        JMenuItem changeFilter = new JMenuItem("Change Filter");
+        JMenuItem changeFilterWords = new JMenuItem("Change Filter Words");
+        JMenuItem displayFilterWords = new JMenuItem("Display Filter Words");
+        JMenuItem exit = new JMenuItem("Exit");
+
+        JPanel editProfileMenu = new JPanel();
+        editProfileMenu.setLayout(new BoxLayout(editProfileMenu, BoxLayout.Y_AXIS));
+
+        editProfileMenu.add(changePwd);
+        editProfileMenu.add(changeUsername);
+        editProfileMenu.add(changeEmail);
+        editProfileMenu.add(delAcc);
+        editProfileMenu.add(changeFilter);
+        editProfileMenu.add(changeFilterWords);
+        editProfileMenu.add(displayFilterWords);
+        editProfileMenu.add(exit);
+
+        content.add("Edit Profile Menu", editProfileMenu);
+        cl.show(content, "Edit Profile Menu");
+
+        changePwd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("1");
+                    writer.flush();
+                    changeProfile("Password",role);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        changeUsername.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("2");
+                    writer.flush();
+                    changeProfile("Username", role);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        changeEmail.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("3");
+                    writer.flush();
+                    changeProfile("Email", role);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        delAcc.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("4");
+                    writer.flush();
+                    thankYouPage();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        changeFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("5");
+                    writer.flush();
+                    changed("Filter", role);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        changeFilterWords.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("6");
+                    writer.flush();
+
+                    JPanel menu = new JPanel();
+                    menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
+
+                    JMenuItem addWord = new JMenuItem("Add Words");
+                    JMenuItem removeWord = new JMenuItem("Remove Words");
+                    JMenuItem back = new JMenuItem("Back");
+
+                    menu.add(addWord);
+                    menu.add(removeWord);
+                    menu.add(back);
+
+                    content.add("Change Filter Word Page", menu);
+                    cl.show(content, "Change Filter Word Page");
+
+                    addWord.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                writer.writeUTF("1");
+                                writer.flush();
+
+                                JPanel promptPanel = new JPanel();
+                                JLabel prompt = new JLabel("Enter words to be added [Comma separated]");
+                                JTextField answer = new JTextField("");
+                                promptPanel.add(prompt);
+                                promptPanel.add(answer);
+
+                                JPanel buttonPanel = new JPanel();
+                                JButton submitButton = new JButton("Submit");
+                                buttonPanel.add(submitButton);
+
+                                JPanel holder = new JPanel(new GridLayout(0, 1));
+                                holder.add(promptPanel);
+                                holder.add(buttonPanel);
+
+                                content.add("Add Word", holder);
+                                cl.show(content, "Add Word");
+
+                                submitButton.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        try {
+                                            writer.writeUTF(answer.getText());
+                                            writer.flush();
+                                        } catch (IOException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    }
+                                });
+
+
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    });
+
+                    removeWord.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                writer.writeUTF("2");
+                                writer.flush();
+
+                                JPanel promptPanel = new JPanel();
+                                JLabel prompt = new JLabel("Enter words to be deleted [Comma separated]");
+                                JTextField answer = new JTextField("");
+                                promptPanel.add(prompt);
+                                promptPanel.add(answer);
+
+                                JPanel buttonPanel = new JPanel();
+                                JButton submitButton = new JButton("Submit");
+                                submitButton.setPreferredSize(new Dimension(151, 29));
+                                buttonPanel.add(submitButton);
+
+                                JPanel holder = new JPanel(new GridLayout(0, 1));
+                                holder.add(promptPanel);
+                                holder.add(buttonPanel);
+
+                                content.add("Delete Word", holder);
+                                cl.show(content, "Delete Word");
+
+                                submitButton.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        try {
+                                            writer.writeUTF(answer.getText());
+                                            writer.flush();
+                                        } catch (IOException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    }
+                                });
+
+
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    });
+
+                    back.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                writer.writeUTF("3");
+                                writer.flush();
+
+                                cl.show(content, "Edit Profile Menu");
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    });
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        displayFilterWords.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("7");
+                    writer.flush();
+
+                    JPanel censorPanel = new JPanel(new GridLayout(0, 1));
+                    int size = Integer.parseInt(reader.readUTF());
+                    for (int i = 0; i < size; i++) {
+                        JLabel censorWord = new JLabel(reader.readUTF());
+                        censorWord.setHorizontalAlignment(SwingConstants.CENTER);
+                        censorPanel.add(censorWord);
+                    }
+
+                    JButton okButton = new JButton("OK");
+                    okButton.setPreferredSize(new Dimension(151, 29));
+
+                    content.add("Censor List", censorPanel);
+                    cl.show(content, "Censor List");
+
+                    okButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            cl.show(content, role + " Menu");
+                        }
+                    });
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF("8");
+                    writer.flush();
+
+                    cl.show(content, role + " Menu");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
+
+    public void invisiblePage(String role) throws IOException {
+        String response = reader.readUTF();
+
+        JPanel promptPanel = new JPanel();
+        JLabel prompt = new JLabel(response);
+        JTextField answer = new JTextField("");
+        promptPanel.add(prompt);
+        promptPanel.add(answer);
+
+        JPanel buttonPanel = new JPanel();
+        JButton submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(151, 29));
+        buttonPanel.add(submitButton);
+
+        JPanel holder = new JPanel(new GridLayout(0, 1));
+        holder.add(promptPanel);
+        holder.add(buttonPanel);
+
+        content.add("Invisible User", holder);
+        cl.show(content, "Invisible User");
+
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer.writeUTF(answer.getText());
+                    writer.flush();
+
+                    String response = reader.readUTF();
+                    if (response.equals("There are no invisible users")) {
+                        changedVisibility(response, "No Invisible Users", role);
+                    } else {
+                        changedVisibility(response, "Successful Invisibility", role);
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
+
+    public void thankYouPage() {
+        JPanel thankYouPanel = new JPanel(new GridLayout(0, 1));
+        JLabel thankYou = new JLabel("Have a nice day!");
+        thankYou.setHorizontalAlignment(SwingConstants.CENTER);
+        thankYou.setVerticalAlignment(SwingConstants.CENTER);
+        thankYou.setFont(new Font("Open Sans", Font.PLAIN, 18));
+
+        thankYouPanel.add(thankYou);
+
+        frame.setTitle("Thank You");
+        content.add("Thank You", thankYouPanel);
+        cl.show(content, "Thank You");
     }
 
 }
