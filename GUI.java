@@ -95,6 +95,7 @@ public class GUI {
                         try {
                             writer.writeUTF("1");
                             writer.flush();
+
                         } catch (IOException ex) {
                             System.out.println("error");
                         }
@@ -134,9 +135,7 @@ public class GUI {
                 JPanel buttonPanel = new JPanel();
 
                 JButton loginButton = new JButton("Login");
-                JButton backButton = new JButton("Back");
                 loginButton.setPreferredSize(new Dimension(151, 29));
-                backButton.setPreferredSize(new Dimension(151, 29));
 
                 JLabel usernamePrompt = new JLabel("Username:");
                 JTextField usernameField = new JTextField(10);
@@ -152,7 +151,6 @@ public class GUI {
                 pwdPanel.add(passwordPrompt);
                 pwdPanel.add(passwordField);
 
-                buttonPanel.add(backButton);
                 buttonPanel.add(loginButton);
 
                 holder.add(usernamePanel);
@@ -164,13 +162,6 @@ public class GUI {
                 cl.show(content, "Login Page");
                 frame.pack();
                 frame.setVisible(true);
-
-                backButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        cl.show(content, "Welcome");
-                    }
-                });
 
                 loginButton.addActionListener(new ActionListener() {
                     @Override
@@ -257,9 +248,7 @@ public class GUI {
         JPanel buttonPanel = new JPanel();
 
         JButton createButton = new JButton("Create");
-        JButton backButton = new JButton("Back");
         createButton.setPreferredSize(new Dimension(151, 29));
-        backButton.setPreferredSize(new Dimension(151, 29));
 
         JLabel usernamePrompt = new JLabel("Username:");
         JTextField usernameField = new JTextField(10);
@@ -298,7 +287,6 @@ public class GUI {
         pwdPanel.add(passwordPrompt);
         pwdPanel.add(passwordField);
 
-        buttonPanel.add(backButton);
         buttonPanel.add(createButton);
 
         holder.add(usernamePanel);
@@ -320,13 +308,6 @@ public class GUI {
         }
         frame.pack();
 
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cl.show(content, "Welcome");
-            }
-        });
-
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -339,6 +320,10 @@ public class GUI {
                     writer.writeUTF(email);
                     writer.writeUTF(passwd);
 
+                    if (reader.readUTF().equals("Sorry")) {
+                        throw new IOException("Sorry! You have the same username/email as another user");
+                    }
+
                     if (role == 'T') {
                         String subjects = subField.getText();
                         String price = priceField.getText();
@@ -347,14 +332,48 @@ public class GUI {
                     }
 
                     writer.flush();
-                } catch (IOException ex) {
-                    System.out.println("error");
-                }
 
-                if (role == 'T') {
-                    tutorMenu();
-                } else {
-                    studentMenu();
+                    if (role == 'T') {
+                        tutorMenu();
+                    } else {
+                        studentMenu();
+                    }
+                } catch (IOException ex) {
+//                    System.out.println(ex.getMessage());
+                    String label1 = ex.getMessage().split("/")[0];
+                    String label2 = "or " + ex.getMessage().split("/")[1];
+                    JLabel errorMsg1 = new JLabel(label1);
+                    JLabel errorMsg2 = new JLabel(label2);
+                    errorMsg1.setHorizontalAlignment(SwingConstants.CENTER);
+                    errorMsg1.setVerticalAlignment(SwingConstants.CENTER);
+                    errorMsg1.setFont(new Font("Open Sans", Font.PLAIN, 16));
+
+                    errorMsg2.setHorizontalAlignment(SwingConstants.CENTER);
+                    errorMsg2.setVerticalAlignment(SwingConstants.CENTER);
+                    errorMsg2.setFont(new Font("Open Sans", Font.PLAIN, 16));
+
+                    JPanel errorPanel = new JPanel(new GridLayout(0, 1));
+                    errorPanel.add(errorMsg1);
+                    errorPanel.add(errorMsg2);
+
+                    JButton tryAgainButton = new JButton("Try Again");
+                    tryAgainButton.setPreferredSize(new Dimension(151, 29));
+                    JPanel buttonPanel = new JPanel();
+                    buttonPanel.add(tryAgainButton);
+
+                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                    holder.add(errorPanel);
+                    holder.add(buttonPanel);
+
+                    content.add("Error Login", holder);
+                    cl.show(content, "Error Login");
+
+                    tryAgainButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            cl.show(content, "Welcome");
+                        }
+                    });
                 }
             }
         });

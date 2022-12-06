@@ -36,37 +36,6 @@ public class ServerMain extends Thread {
 
             readUsers(f, filterList, userList);
 
-//            try {
-//                if (!f.exists()) {
-//                    f.createNewFile();
-//                }
-//
-//                BufferedReader bfr = new BufferedReader(new FileReader(f));
-//
-//                String userLine = bfr.readLine();
-//                while (userLine != null) {
-//                    filterList = new ArrayList<>();
-//                    String[] splitLines = userLine.split(",");
-//
-//                    User user;
-//
-//                    if (splitLines[5].equals("Student")) {
-//                        Collections.addAll(filterList, splitLines[4].split(";"));
-//                        user = new Student(splitLines[0], splitLines[1], splitLines[2], splitLines[3], filterList, UUID.fromString(splitLines[6]));
-//                    } else {
-//                        Collections.addAll(filterList, splitLines[6].split(";"));
-//                        user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(";"), Double.parseDouble(splitLines[4]), splitLines[5], filterList, UUID.fromString(splitLines[8]));
-//                    }
-//
-//                    userList.add(user);
-//                    userLine = bfr.readLine();
-//                }
-//
-//                bfr.close();
-//            } catch (IOException e) {
-//                System.out.println("Cannot write to file!");
-//            }
-
             User user = null; // currentUser logged in
             boolean signedIn = false;
 
@@ -79,19 +48,6 @@ public class ServerMain extends Thread {
                                 "Enter Option Number:");
 
                 int optionNum = Integer.parseInt(reader.readUTF());
-
-//                Checking for early close
-//                int optionNum = 0;
-//                try {
-//                    optionNum = Integer.parseInt(reader.readUTF());
-//                } catch (IOException e) {
-//                    System.out.println("yooo");
-//                    client = serverSocket.accept();
-//                    System.out.println("test");
-//                    ServerMain serverMain = new ServerMain(client, serverSocket);
-//                    System.out.println("anything");
-//                    (new Thread()).start();
-//                }
                 System.out.println();
 
                 switch (optionNum) {
@@ -139,15 +95,22 @@ public class ServerMain extends Thread {
                                 try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f, true)))) {
                                     pw.write(userName + "," + password + "," + email + "," + "****,," + user + "," + user.getID() + "\n");
                                     pw.flush();
+
+                                    writer.writeUTF("Success");
+                                    writer.flush();
                                 } catch (IOException e) {
                                     System.out.println("Unable to write file");
                                 }
                             } else {
-                                System.out.println("Sorry, you have the same username or email as another account\n");
+//                                System.out.println("Sorry, you have the same username or email as another account\n");
+                                writer.writeUTF("Sorry");
+                                writer.flush();
                                 continue;
                             }
                         } else {
                             if (!accountSimilarity) {
+                                writer.writeUTF("Success");
+                                writer.flush();
                                 // Use commas
                                 System.out.println("What subjects are you planning to teach");
 
@@ -169,7 +132,9 @@ public class ServerMain extends Thread {
                                     System.out.println("Unable to write file");
                                 }
                             } else {
-                                System.out.println("Sorry, you have the same username or email as another account\n");
+//                                System.out.println("Sorry, you have the same username or email as another account\n");
+                                writer.writeUTF("Sorry");
+                                writer.flush();
                                 continue;
                             }
                         }
@@ -1382,7 +1347,7 @@ public class ServerMain extends Thread {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error thrown");
+            System.out.println("Socket Closed");
         }
     }
 
