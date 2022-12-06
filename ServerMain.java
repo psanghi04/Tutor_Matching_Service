@@ -1,16 +1,19 @@
+import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class ServerMain {
+public class ServerMain extends Thread {
 
     Socket client;
+    ServerSocket serverSocket;
 
-    public ServerMain(Socket client) {
+    public ServerMain(Socket client, ServerSocket socket) {
         this.client = client;
+        this.serverSocket = socket;
     }
 
-    void run() {
+    public void run() {
         try (DataOutputStream writer = new DataOutputStream(this.client.getOutputStream());
             DataInputStream reader = new DataInputStream(this.client.getInputStream())
             ) {
@@ -31,37 +34,38 @@ public class ServerMain {
 
             File f = new File("UserDetails.txt");
 
-            try {
-                if (!f.exists()) {
-                    f.createNewFile();
-                }
+            readUsers(f, filterList, userList);
 
-                FileReader fr = new FileReader(f);
-                BufferedReader bfr = new BufferedReader(fr);
-
-                String userLine = bfr.readLine();
-                while (userLine != null) {
-                    filterList = new ArrayList<>();
-                    String[] splitLines = userLine.split(",");
-
-                    User user;
-
-                    if (splitLines[5].equals("Student")) {
-                        Collections.addAll(filterList, splitLines[4].split(";"));
-                        user = new Student(splitLines[0], splitLines[1], splitLines[2], splitLines[3], filterList, UUID.fromString(splitLines[6]));
-                    } else {
-                        Collections.addAll(filterList, splitLines[6].split(";"));
-                        user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(";"), Double.parseDouble(splitLines[4]), splitLines[5], filterList, UUID.fromString(splitLines[8]));
-                    }
-
-                    userList.add(user);
-                    userLine = bfr.readLine();
-                }
-
-                bfr.close();
-            } catch (IOException e) {
-                System.out.println("Cannot write to file!");
-            }
+//            try {
+//                if (!f.exists()) {
+//                    f.createNewFile();
+//                }
+//
+//                BufferedReader bfr = new BufferedReader(new FileReader(f));
+//
+//                String userLine = bfr.readLine();
+//                while (userLine != null) {
+//                    filterList = new ArrayList<>();
+//                    String[] splitLines = userLine.split(",");
+//
+//                    User user;
+//
+//                    if (splitLines[5].equals("Student")) {
+//                        Collections.addAll(filterList, splitLines[4].split(";"));
+//                        user = new Student(splitLines[0], splitLines[1], splitLines[2], splitLines[3], filterList, UUID.fromString(splitLines[6]));
+//                    } else {
+//                        Collections.addAll(filterList, splitLines[6].split(";"));
+//                        user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(";"), Double.parseDouble(splitLines[4]), splitLines[5], filterList, UUID.fromString(splitLines[8]));
+//                    }
+//
+//                    userList.add(user);
+//                    userLine = bfr.readLine();
+//                }
+//
+//                bfr.close();
+//            } catch (IOException e) {
+//                System.out.println("Cannot write to file!");
+//            }
 
             User user = null; // currentUser logged in
             boolean signedIn = false;
@@ -73,9 +77,21 @@ public class ServerMain {
                                 "2. Login\n" +
                                 "3. Exit\n\n" +
                                 "Enter Option Number:");
-//            int optionNum = scan.nextInt();
-//            scan.nextLine();
+
                 int optionNum = Integer.parseInt(reader.readUTF());
+
+//                Checking for early close
+//                int optionNum = 0;
+//                try {
+//                    optionNum = Integer.parseInt(reader.readUTF());
+//                } catch (IOException e) {
+//                    System.out.println("yooo");
+//                    client = serverSocket.accept();
+//                    System.out.println("test");
+//                    ServerMain serverMain = new ServerMain(client, serverSocket);
+//                    System.out.println("anything");
+//                    (new Thread()).start();
+//                }
                 System.out.println();
 
                 switch (optionNum) {
@@ -250,6 +266,7 @@ public class ServerMain {
                     switch (option) {
 
                         case 1:
+                            readUsers(f, filterList, userList);
                             ArrayList<User> availableTutors = new ArrayList<>();
 
                             for (User userEl : userList) {
@@ -1609,12 +1626,47 @@ public class ServerMain {
         System.out.println();
     }
 
+    public void readUsers(File f, ArrayList<String> filterList, ArrayList<User> userList) {
+        try {
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+
+            BufferedReader bfr = new BufferedReader(new FileReader(f));
+
+            String userLine = bfr.readLine();
+            while (userLine != null) {
+                filterList = new ArrayList<>();
+                String[] splitLines = userLine.split(",");
+
+                User user;
+
+                if (splitLines[5].equals("Student")) {
+                    Collections.addAll(filterList, splitLines[4].split(";"));
+                    user = new Student(splitLines[0], splitLines[1], splitLines[2], splitLines[3], filterList, UUID.fromString(splitLines[6]));
+                } else {
+                    Collections.addAll(filterList, splitLines[6].split(";"));
+                    user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(";"), Double.parseDouble(splitLines[4]), splitLines[5], filterList, UUID.fromString(splitLines[8]));
+                }
+
+                userList.add(user);
+                userLine = bfr.readLine();
+            }
+
+            bfr.close();
+        } catch (IOException e) {
+            System.out.println("Cannot read file!");
+        }
+    }
+
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(4240)) {
+        try {
+            ServerSocket serverSocket = new ServerSocket(4240);
             while (true) {
                 Socket socket = serverSocket.accept();
-                ServerMain serverMain = new ServerMain(socket);
-                serverMain.run();
+//                ServerMain serverMain = new ServerMain(socket, serverSocket);
+//                serverMain.run();
+               (new ServerMain(socket, serverSocket)).start();
             }
         } catch (Exception e) {
             System.out.println("Couldn't Connect");

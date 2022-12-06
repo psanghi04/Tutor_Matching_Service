@@ -37,7 +37,9 @@ public class GUI {
         welcomeField.setBounds(0, 0, size.width, size.height);
 
         JButton createAcc = new JButton("Create an Account");
+        createAcc.setPreferredSize(new Dimension(151, 29));
         JButton signIn = new JButton("Log In");
+        signIn.setPreferredSize(new Dimension(151, 29));
 
         welcomePanel.add(welcomeField);
         buttonPanel.add(createAcc);
@@ -67,7 +69,9 @@ public class GUI {
                 JPanel holder = new JPanel(new GridLayout(2,1));
 
                 JButton studentButton = new JButton("Student");
+                studentButton.setPreferredSize(new Dimension(151, 29));
                 JButton tutorButton = new JButton("Tutor");
+                tutorButton.setPreferredSize(new Dimension(151, 29));
 
                 buttonPanel.add(studentButton);
                 buttonPanel.add(tutorButton);
@@ -191,7 +195,9 @@ public class GUI {
                                 JLabel errorMsg = new JLabel("Invalid Username or Password");
                                 errorMsg.setHorizontalAlignment(SwingConstants.CENTER);
                                 JButton tryAgain = new JButton("Try Again");
+                                tryAgain.setPreferredSize(new Dimension(151, 29));
                                 JButton createButton = new JButton("Create Account");
+                                createButton.setPreferredSize(new Dimension(151, 29));
                                 buttonPanel.add(tryAgain);
                                 buttonPanel.add(createButton);
                                 JPanel holder = new JPanel(new GridLayout(0, 1));
@@ -401,13 +407,14 @@ public class GUI {
                     writer.flush();
 
                     JLabel prompt = new JLabel("Who would you like to message:");
-                    JTextField username = new JTextField("");
+                    JTextField username = new JTextField("", 10);
                     JPanel promptPanel = new JPanel();
 
                     promptPanel.add(prompt);
                     promptPanel.add(username);
 
                     JButton submitButton = new JButton("Submit");
+                    submitButton.setPreferredSize(new Dimension(151, 29));
                     JPanel buttonPanel = new JPanel();
                     buttonPanel.add(submitButton);
 
@@ -535,6 +542,7 @@ public class GUI {
                                                 JLabel messagePerson = new JLabel();
 
                                                 JButton back = new JButton("Back");
+                                                back.setPreferredSize(new Dimension(151, 29));
 
                                                 JPanel jpS = new JPanel();
 
@@ -573,10 +581,12 @@ public class GUI {
 
                                                 JLabel messagePerson = new JLabel("What message do you want to send?");
 
-                                                JTextField mP = new JTextField("Send Message");
+                                                JTextField mP = new JTextField("Send Message", 10);
 
                                                 JButton jb = new JButton("Send Message");
+                                                jb.setPreferredSize(new Dimension(151, 29));
                                                 JButton back = new JButton("Back");
+                                                back.setPreferredSize(new Dimension(151, 29));
 
                                                 JPanel jpS = new JPanel();
 
@@ -630,11 +640,13 @@ public class GUI {
 
                                                 JLabel messagePerson = new JLabel("What message or line number do you want to delete?");
 
-                                                JTextField mP = new JTextField("Delete Message");
+                                                JTextField mP = new JTextField("Delete Message", 10);
 
                                                 JButton delete = new JButton("Delete Message");
+                                                delete.setPreferredSize(new Dimension(151, 29));
 
                                                 JButton back = new JButton("Back");
+                                                back.setPreferredSize(new Dimension(151, 29));
 
                                                 JPanel jpS = new JPanel();
 
@@ -685,13 +697,15 @@ public class GUI {
 
                                                 JLabel messagePerson = new JLabel("What message or line number do you want to edit?");
 
-                                                JTextField oldMessage = new JTextField("Old Message");
+                                                JTextField oldMessage = new JTextField("Old Message", 10);
 
-                                                JTextField newMessage = new JTextField("New Message");
+                                                JTextField newMessage = new JTextField("New Message", 10);
 
                                                 JButton edit = new JButton("Edit Message");
+                                                edit.setPreferredSize(new Dimension(151, 29));
 
                                                 JButton back = new JButton("Back");
+                                                back.setPreferredSize(new Dimension(151, 29));
 
                                                 JPanel jpS = new JPanel();
 
@@ -745,11 +759,13 @@ public class GUI {
 
                                                 JLabel messagePerson = new JLabel("Enter a keyword to search for a message: ");
 
-                                                JTextField keyword = new JTextField("Keyword");
+                                                JTextField keyword = new JTextField("Keyword", 10);
 
                                                 JButton search = new JButton("Search For Message");
+                                                search.setPreferredSize(new Dimension(151, 29));
 
                                                 JButton back = new JButton("Back");
+                                                back.setPreferredSize(new Dimension(151, 29));
 
                                                 JPanel jpS = new JPanel();
 
@@ -777,7 +793,9 @@ public class GUI {
                                                             } else {
                                                                 JLabel messagePerson = new JLabel(searchResult);
                                                                 JButton searchAgain = new JButton("Search Again");
+                                                                searchAgain.setPreferredSize(new Dimension(151, 29));
                                                                 JButton backToMenu = new JButton("Back");
+                                                                backToMenu.setPreferredSize(new Dimension(151, 29));
 
                                                                 JPanel jIn = new JPanel();
 
@@ -836,9 +854,11 @@ public class GUI {
                                                 writer.writeUTF("6");
 
                                                 JLabel importFile = new JLabel("Please enter the filename");
-                                                JTextField jt = new JTextField("File Name");
+                                                JTextField jt = new JTextField("File Name", 10);
                                                 JButton importF = new JButton("Import");
+                                                importF.setPreferredSize(new Dimension(151, 29));
                                                 JButton back = new JButton("Back");
+                                                back.setPreferredSize(new Dimension(151, 29));
 
                                                 JPanel importPan = new JPanel();
 
@@ -882,9 +902,11 @@ public class GUI {
                                                 writer.writeUTF("7");
 
                                                 JLabel exportFile = new JLabel("Enter file name to export conversation into:");
-                                                JTextField exportFileName = new JTextField("Export File Name");
+                                                JTextField exportFileName = new JTextField("Export File Name", 10);
                                                 JButton export = new JButton("Export");
+                                                export.setPreferredSize(new Dimension(151, 29));
                                                 JButton back = new JButton("Back");
+                                                back.setPreferredSize(new Dimension(151, 29));
 
                                                 JPanel exportPan = new JPanel();
 
@@ -1061,13 +1083,14 @@ public class GUI {
                     writer.flush();
 
                     JLabel prompt = new JLabel("Who would you like to message:");
-                    JTextField username = new JTextField("");
+                    JTextField username = new JTextField("", 10);
                     JPanel promptPanel = new JPanel();
 
                     promptPanel.add(prompt);
                     promptPanel.add(username);
 
                     JButton submitButton = new JButton("Submit");
+                    submitButton.setPreferredSize(new Dimension(151, 29));
                     JPanel buttonPanel = new JPanel();
                     buttonPanel.add(submitButton);
 
@@ -1191,6 +1214,7 @@ public class GUI {
                                                 JLabel messagePerson = new JLabel(message);
 
                                                 JButton back = new JButton("Back");
+                                                back.setPreferredSize(new Dimension(151, 29));
 
                                                 JPanel jpS = new JPanel();
 
@@ -1221,30 +1245,6 @@ public class GUI {
                                         public void actionPerformed(ActionEvent e) {
                                             try {
                                                 writer.writeUTF("2");
-
-                                                //                                            JLabel messagePerson = new JLabel("What message do you want to send?");
-                                                //
-                                                //                                            JTextField m
-                                                //
-                                                //                                            JButton back = new JButton("Back");
-                                                //
-                                                //                                            JPanel jpS = new JPanel();
-                                                //
-                                                ////                    jpS.setLayout(new BoxLayout(jpS, BoxLayout.Y_AXIS));
-                                                //
-                                                //                                            jpS.add(messagePerson, BorderLayout.NORTH);
-                                                //                                            jpS.add(back, BorderLayout.SOUTH);
-                                                //
-                                                //                                            content.add("Student Option: Read Message", jpS);
-                                                //                                            cl.show(content, "Student Option: Read Message");
-                                                //                                            frame.setSize(317, 262);
-
-//                                                back.addActionListener(new ActionListener() {
-//                                                    @Override
-//                                                    public void actionPerformed(ActionEvent e) {
-//                                                        cl.show(content, "Student Menu");
-//                                                    }
-//                                                });
                                             } catch (Exception ex) {
                                                 ex.printStackTrace();
                                             }
@@ -1409,7 +1409,7 @@ public class GUI {
                 for (int i = 0; i < size; i++) {
                     String response = reader.readUTF();
 
-                    JLabel Label = new JLabel(response);
+                    JLabel Label = new JLabel((i + 1) + ". " + response);
                     Label.setHorizontalAlignment(SwingConstants.CENTER);
                     ListPanel.add(Label);
                 }
@@ -1491,7 +1491,7 @@ public class GUI {
 
     public void changeProfile(String action, String user) {
         JLabel prompt = new JLabel("Enter new " + action);
-        JTextField pass = new JTextField("");
+        JTextField pass = new JTextField("", 10);
 
         JPanel promptPanel = new JPanel();
         promptPanel.add(prompt);
@@ -1555,7 +1555,7 @@ public class GUI {
     public void changeBlockedStatus(String label, String panelName, String role) {
         JPanel promptPanel = new JPanel();
         JLabel prompt = new JLabel(label);
-        JTextField answer = new JTextField("");
+        JTextField answer = new JTextField("", 10);
         promptPanel.add(prompt);
         promptPanel.add(answer);
 
@@ -1713,12 +1713,13 @@ public class GUI {
 
                                 JPanel promptPanel = new JPanel();
                                 JLabel prompt = new JLabel("Enter words to be added [Comma separated]");
-                                JTextField answer = new JTextField("");
+                                JTextField answer = new JTextField("", 10);
                                 promptPanel.add(prompt);
                                 promptPanel.add(answer);
 
                                 JPanel buttonPanel = new JPanel();
                                 JButton submitButton = new JButton("Submit");
+                                submitButton.setPreferredSize(new Dimension(151, 29));
                                 buttonPanel.add(submitButton);
 
                                 JPanel holder = new JPanel(new GridLayout(0, 1));
@@ -1756,7 +1757,7 @@ public class GUI {
 
                                 JPanel promptPanel = new JPanel();
                                 JLabel prompt = new JLabel("Enter words to be deleted [Comma separated]");
-                                JTextField answer = new JTextField("");
+                                JTextField answer = new JTextField("", 10);
                                 promptPanel.add(prompt);
                                 promptPanel.add(answer);
 
@@ -1863,7 +1864,7 @@ public class GUI {
 
         JPanel promptPanel = new JPanel();
         JLabel prompt = new JLabel(response);
-        JTextField answer = new JTextField("");
+        JTextField answer = new JTextField("", 10);
         promptPanel.add(prompt);
         promptPanel.add(answer);
 
