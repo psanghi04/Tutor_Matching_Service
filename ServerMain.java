@@ -1,5 +1,6 @@
 import java.io.*;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
 
 public class ServerMain extends Thread {
@@ -14,9 +15,8 @@ public class ServerMain extends Thread {
 
     public void run() {
         try (DataOutputStream writer = new DataOutputStream(this.client.getOutputStream());
-            DataInputStream reader = new DataInputStream(this.client.getInputStream())
-            ) {
-//        Scanner scan = new Scanner(System.in);
+             DataInputStream reader = new DataInputStream(this.client.getInputStream())
+        ) {
             Message messageClass = new Message();
 
             boolean login = false;
@@ -1004,7 +1004,6 @@ public class ServerMain extends Thread {
 
     public static void export(DataOutputStream writer, DataInputStream reader, Message messageClass, ArrayList<User> userList, User user, int index) throws IOException {
         try {
-//            System.out.println("Enter file name to export conversation into:");
             String expFileName = reader.readUTF();
 
             File exportFile = new File(expFileName + ".csv");
@@ -1017,21 +1016,14 @@ public class ServerMain extends Thread {
             BufferedWriter bfw = new BufferedWriter(fw);
 
             ArrayList<String> pastMessages = messageClass.readMsg(user, userList.get(index), true);
-//            ArrayList<String> unEditPastMessages = messageClass.readMsg(user, userList.get(index));
-
-//            System.out.println("Messages being exported:");
             for (int i = 0; i < pastMessages.size(); i++) {
-//                System.out.printf("[%d]: %s", i + 1, unEditPastMessages.get(i));
                 bfw.write(user.getAccountUsername() + ";" + userList.get(index).getAccountUsername() + "," + user.getAccountUsername() + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
             }
 
             bfw.flush();
-//            System.out.println();
-//            System.out.println("Conversation exported successfully!");
             writer.writeUTF("Success");
             writer.flush();
         } catch (IOException e) {
-//            System.out.println("Unable to export file");
             writer.writeUTF("Fail");
             writer.flush();
         }
@@ -1057,12 +1049,10 @@ public class ServerMain extends Thread {
 
             messageClass.export(user, userList.get(index));
 
-//            System.out.println("Imported conversation successfully!");
             writer.writeUTF("Success");
             writer.flush();
 
         } catch (IOException e) {
-//            System.out.println("Cannot find or read from file!");
             writer.writeUTF("Fail");
             writer.flush();
         }
@@ -1112,8 +1102,8 @@ public class ServerMain extends Thread {
     }
 
     public boolean messageMenu(int optionMessage, DataOutputStream writer,
-                            DataInputStream reader, Message messageClass,
-                            User user, ArrayList<User> userList, int index, boolean quit) throws IOException {
+                               DataInputStream reader, Message messageClass,
+                               User user, ArrayList<User> userList, int index, boolean quit) throws IOException {
         switch (optionMessage) {
             case 1:
                 ArrayList<String> messages = messageClass.readMsg(user, userList.get(index));
@@ -1160,7 +1150,6 @@ public class ServerMain extends Thread {
                 }
 
                 if (!dMessageExists) {
-//                                            System.out.println("Message not found!");
                     writer.writeUTF("Message not found");
                     writer.flush();
                     break;
@@ -1179,7 +1168,6 @@ public class ServerMain extends Thread {
                 writer.flush();
 
                 if (allMessages.size() == 0) {
-//                                            System.out.println("There are no messages!");
                     break;
                 }
 
@@ -1207,7 +1195,6 @@ public class ServerMain extends Thread {
                 String newMessage = reader.readUTF();
 
                 if (!messageExists) {
-//                                            System.out.println("Message not found!");
                     writer.writeUTF("Message not found");
                     writer.flush();
                     break;
@@ -1278,7 +1265,7 @@ public class ServerMain extends Thread {
             ServerSocket serverSocket = new ServerSocket(4240);
             while (true) {
                 Socket socket = serverSocket.accept();
-               (new ServerMain(socket, serverSocket)).start();
+                (new ServerMain(socket, serverSocket)).start();
             }
         } catch (Exception e) {
             System.out.println("Couldn't Connect");

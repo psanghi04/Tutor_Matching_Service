@@ -2,7 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class GUI {
     JFrame frame;
@@ -17,7 +19,7 @@ public class GUI {
         frame.setLocationRelativeTo(null);
         content = frame.getContentPane();
         content.setLayout(cl);
-        this.reader =  reader;
+        this.reader = reader;
         this.writer = writer;
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
@@ -62,7 +64,7 @@ public class GUI {
                 frame.setTitle("Messenger");
                 JPanel buttonPanel = new JPanel();
                 JPanel promptPanel = new JPanel();
-                JPanel holder = new JPanel(new GridLayout(2,1));
+                JPanel holder = new JPanel(new GridLayout(2, 1));
 
                 JButton studentButton = new JButton("Student");
                 studentButton.setPreferredSize(new Dimension(151, 29));
@@ -127,7 +129,7 @@ public class GUI {
                 frame.setTitle("Messenger");
                 JPanel usernamePanel = new JPanel();
                 JPanel pwdPanel = new JPanel();
-                JPanel holder = new JPanel(new GridLayout(3,1));
+                JPanel holder = new JPanel(new GridLayout(3, 1));
                 JPanel buttonPanel = new JPanel();
 
                 JButton loginButton = new JButton("Login");
@@ -339,7 +341,6 @@ public class GUI {
                         studentMenu();
                     }
                 } catch (IOException ex) {
-//                    System.out.println(ex.getMessage());
                     String label1 = ex.getMessage().split("/")[0];
                     String label2 = "or " + ex.getMessage().split("/")[1];
                     JLabel errorMsg1 = new JLabel(label1);
@@ -380,16 +381,6 @@ public class GUI {
     }
 
     public void studentMenu() {
-//        "Menu\n\n" +
-//                "1. View tutors\n" +
-//                "2. Message a tutor\n" +
-//                "3. Edit profile\n" +
-//                "4. Block a tutor\n" +
-//                "5. Unblock a tutor\n" +
-//                "6. Become invisible to a tutor\n" +
-//                "7. Sign out\n\n" +
-//                "Enter Option Number:");
-
         JMenuItem view = new JMenuItem("View Tutors");
         JMenuItem msg = new JMenuItem("Message a Tutor");
         JMenuItem edit = new JMenuItem("Edit Profile");
@@ -483,7 +474,7 @@ public class GUI {
                                             cl.show(content, "Student Menu");
                                         }
                                     });
-                                } else if(response.contains("Unable")) {
+                                } else if (response.contains("Unable")) {
                                     JLabel noUser = new JLabel(response);
                                     noUser.setHorizontalAlignment(SwingConstants.CENTER);
                                     noUser.setVerticalAlignment(SwingConstants.CENTER);
@@ -672,7 +663,7 @@ public class GUI {
 
                                                             String response = reader.readUTF();
 
-                                                            if(response.equals("Message Deleted Successfully")){
+                                                            if (response.equals("Message Deleted Successfully")) {
                                                                 successPage("Student", "Deleted Successfully");
                                                             } else {
                                                                 errorPage("Student", "Message Not Found");
@@ -847,7 +838,6 @@ public class GUI {
                                         @Override
                                         public void actionPerformed(ActionEvent e) {
                                             try {
-                                                // continue
                                                 writer.writeUTF("6");
                                                 writer.flush();
 
@@ -1039,16 +1029,6 @@ public class GUI {
     }
 
     public void tutorMenu() {
-//        "Menu\n\n" +
-//                "1. View students\n" +
-//                "2. Message a student\n" +
-//                "3. Edit profile\n" +
-//                "4. Block a student\n" +
-//                "5. Unblock a student\n" +
-//                "6. Become invisible to a student\n" +
-//                "7. Sign out\n\n" +
-//                "Enter Option Number:");
-
         JMenuItem view = new JMenuItem("View Students");
         JMenuItem msg = new JMenuItem("Message a Student");
         JMenuItem edit = new JMenuItem("Edit Profile");
@@ -1141,7 +1121,7 @@ public class GUI {
                                             cl.show(content, "Tutor Menu");
                                         }
                                     });
-                                } else if(response.contains("Unable")) {
+                                } else if (response.contains("Unable")) {
                                     JLabel noUser = new JLabel(response);
                                     noUser.setHorizontalAlignment(SwingConstants.CENTER);
                                     noUser.setVerticalAlignment(SwingConstants.CENTER);
@@ -1504,7 +1484,6 @@ public class GUI {
                                         @Override
                                         public void actionPerformed(ActionEvent e) {
                                             try {
-                                                // continue
                                                 writer.writeUTF("6");
                                                 writer.flush();
 
@@ -1699,7 +1678,6 @@ public class GUI {
             writer.writeUTF("1");
             writer.flush();
 
-            // read from server
             int size = Integer.parseInt(reader.readUTF());
             JPanel ListPanel = new JPanel(new GridLayout(0, 1));
             if (size != 0) {
@@ -1721,15 +1699,14 @@ public class GUI {
                 okButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if(role.equals("Tutors")) {
+                        if (role.equals("Tutors")) {
                             cl.show(content, "Student Menu");
                         } else {
                             cl.show(content, "Tutor Menu");
                         }
                     }
                 });
-            }
-            else {
+            } else {
                 JLabel noUser = new JLabel("No " + role + " Available to Message");
                 noUser.setHorizontalAlignment(SwingConstants.CENTER);
                 JButton okButton = new JButton("OK");
@@ -1744,7 +1721,7 @@ public class GUI {
                 okButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if(role.equals("Tutors")) {
+                        if (role.equals("Tutors")) {
                             cl.show(content, "Student Menu");
                         } else {
                             cl.show(content, "Tutor Menu");
@@ -1921,7 +1898,7 @@ public class GUI {
                 try {
                     writer.writeUTF("1");
                     writer.flush();
-                    changeProfile("Password",role);
+                    changeProfile("Password", role);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -2263,5 +2240,4 @@ public class GUI {
         });
     }
 
-    // reading wrong messages... check read and write statements
 }

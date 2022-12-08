@@ -1,12 +1,12 @@
 import java.io.*;
-import java.sql.*;
-import java.time.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class Message {
-    public boolean isBlocked(User user, User personBlocked){
-        
+    public boolean isBlocked(User user, User personBlocked) {
+
         String[] lineArr;
         try (BufferedReader bfr = new BufferedReader(new FileReader("BlockedUsers.txt"))) {
             String line = bfr.readLine();
@@ -24,7 +24,7 @@ public class Message {
         return false;
     } // if he is blocked/invisible and correct user
 
-    public boolean isInvisible(User user, User personInvisible){
+    public boolean isInvisible(User user, User personInvisible) {
 
         String[] lineArr;
         try (BufferedReader bfr = new BufferedReader(new FileReader("InvisibleUsers.txt"))) {
@@ -42,11 +42,12 @@ public class Message {
         }
         return false;
     }
+
     public void edit(User user, User otherPerson, String message, String edit) {
         ArrayList<String> conversation = new ArrayList<>();
         try {
             File f = new File(user.getID() + "_" + otherPerson.getID());
-            if(!f.exists()){
+            if (!f.exists()) {
                 f.createNewFile();
             }
             BufferedReader bfr = new BufferedReader(new FileReader(f));
@@ -80,7 +81,7 @@ public class Message {
         try {
             File f = new File(user.getID() + "_" + otherPerson.getID());
 
-            if(f.exists()){
+            if (f.exists()) {
                 f.createNewFile();
             }
 
@@ -225,7 +226,7 @@ public class Message {
 
         try {
             File f = new File(sender.getID() + "_" + receiver.getID());
-            if(f.exists()){
+            if (f.exists()) {
                 f.createNewFile();
             }
 
@@ -274,8 +275,8 @@ public class Message {
         String fileName = receiver.getID() + "_" + sender.getID();
         File f = new File(fileName);
 
-        try{
-            if(!f.exists()){
+        try {
+            if (!f.exists()) {
                 f.createNewFile();
             }
 
@@ -286,7 +287,7 @@ public class Message {
                 bfw.newLine();
                 bfw.flush();
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Error!");
         }
     }
