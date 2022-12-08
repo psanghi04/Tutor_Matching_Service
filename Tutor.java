@@ -8,7 +8,6 @@ public class Tutor extends User {
     String filter;
 
     ArrayList<String> filterWordList;
-    ArrayList<Store> stores = new ArrayList<>();
 
     // add as a parameter ArrayList<Store> stores
     public Tutor(String accountUsername, String password, String email,
@@ -19,7 +18,6 @@ public class Tutor extends User {
         this.price = price;
         this.filter = filter;
         this.filterWordList = filterWordList;
-        // this.stores = stores;
     }
 
     public Tutor(String accountUsername, String password, String email,
@@ -29,7 +27,6 @@ public class Tutor extends User {
         this.price = price;
         this.filter = filter;
         this.filterWordList = filterWordList;
-        // this.stores = stores;
     }
 
     public String[] getSubjects() {
@@ -46,18 +43,6 @@ public class Tutor extends User {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public ArrayList<Store> getStores() {
-        return stores;
-    }
-
-    public void setStores(ArrayList<Store> stores) {
-        this.stores = new ArrayList<>();
-    }
-
-    public void addStore(Store store) {
-        stores.add(store);
     }
 
     public String getFilter() {

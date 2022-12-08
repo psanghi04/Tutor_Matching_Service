@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -30,8 +29,6 @@ public class ServerMain extends Thread {
 
             ArrayList<String> filterList = new ArrayList<>();
 
-            System.out.println("Welcome to Tutoring Center!\n");
-
             File f = new File("UserDetails.txt");
 
             readUsers(f, filterList, userList);
@@ -40,38 +37,13 @@ public class ServerMain extends Thread {
             boolean signedIn = false;
 
             while (!login) {
-                System.out.println("Log In or Sign Up");
-                System.out.println(
-                        "1. Sign Up\n" +
-                                "2. Login\n" +
-                                "3. Exit\n\n" +
-                                "Enter Option Number:");
-
                 int optionNum = Integer.parseInt(reader.readUTF());
-                System.out.println();
 
                 switch (optionNum) {
                     case 1:
-                        System.out.println(
-                                "Select a role:\n" +
-                                        "1. Student\n" +
-                                        "2. Tutor\n\n" +
-                                        "Enter Option Number:");
-//                    int option = scan.nextInt();
-//                    scan.nextLine();
                         int option = Integer.parseInt(reader.readUTF());
-                        System.out.println();
-
-                        System.out.println("Enter your username:");
-//                    userName = scan.nextLine();
                         userName = reader.readUTF();
-
-                        System.out.println("Enter your email:");
-//                    String email = scan.nextLine();
                         String email = reader.readUTF();
-
-                        System.out.println("Enter password: ");
-//                    password = scan.nextLine();
                         password = reader.readUTF();
 
                         boolean accountSimilarity = false;
@@ -102,7 +74,6 @@ public class ServerMain extends Thread {
                                     System.out.println("Unable to write file");
                                 }
                             } else {
-//                                System.out.println("Sorry, you have the same username or email as another account\n");
                                 writer.writeUTF("Sorry");
                                 writer.flush();
                                 continue;
@@ -111,16 +82,10 @@ public class ServerMain extends Thread {
                             if (!accountSimilarity) {
                                 writer.writeUTF("Success");
                                 writer.flush();
-                                // Use commas
-                                System.out.println("What subjects are you planning to teach");
 
-//                            String subjects = scan.nextLine();
                                 String subjects = reader.readUTF();
                                 String[] newSubjects = subjects.split(",");
 
-                                System.out.println("What is the price you charge?");
-//                            double price = scan.nextDouble();
-//                            scan.nextLine();
                                 double price = Double.parseDouble(reader.readUTF());
 
                                 user = new Tutor(userName, password, email, newSubjects, price, "****", filterList);
@@ -132,7 +97,6 @@ public class ServerMain extends Thread {
                                     System.out.println("Unable to write file");
                                 }
                             } else {
-//                                System.out.println("Sorry, you have the same username or email as another account\n");
                                 writer.writeUTF("Sorry");
                                 writer.flush();
                                 continue;
@@ -144,24 +108,16 @@ public class ServerMain extends Thread {
                         login = true;
                         signedIn = true;
 
-                        System.out.println("Congratulations on creating a new account!!\n");
-
                         break;
 
                     case 2:
                         while (!login) {
-                            System.out.println("Username:");
-//                        userName = scan.nextLine();
                             userName = reader.readUTF();
-
-                            System.out.println("Password:");
-//                        password = scan.nextLine();
                             password = reader.readUTF();
 
                             for (User acc : userList) {
                                 if (acc.getAccountUsername().equals(userName)) {
                                     if (acc.getPassword().equals(password)) {
-                                        System.out.println("Successfully Signed In!\n");
                                         user = acc;
                                         login = true;
                                         break;
@@ -170,26 +126,15 @@ public class ServerMain extends Thread {
                             }
 
                             if (login) {
-                                System.out.println("Welcome Back!\n");
                                 writer.writeUTF("Success");
                                 writer.writeUTF(user.toString());
                                 writer.flush();
                             } else {
                                 writer.writeUTF("Failed");
-                                System.out.println("Invalid Username or Password");
-                                System.out.println();
-                                System.out.println("Do you want to go back?");
-                                System.out.println(
-                                        "1. Yes\n" +
-                                                "2. No\n\n" +
-                                                "Enter Option Number:");
-//                            String answer = scan.nextLine();
                                 String answer = reader.readUTF();
                                 if (answer.equals("1")) {
                                     break;
                                 }
-                                System.out.println("Try Again");
-                                System.out.println();
                             }
                         }
 
@@ -197,34 +142,17 @@ public class ServerMain extends Thread {
                         break;
 
                     case 3:
-                        System.out.println("Have a nice day!");
                         login = true;
                         signedIn = false;
                         break;
-
-                    default:
-                        System.out.println("Invalid Option Number");
-                        System.out.println("Please Try Again\n");
                 }
             }
 
             while (signedIn) {
                 if (user instanceof Student) {
                     // Student Interface
-                    System.out.println(
-                            "Menu\n\n" +
-                                    "1. View tutors\n" +
-                                    "2. Message a tutor\n" +
-                                    "3. Edit profile\n" +
-                                    "4. Block a tutor\n" +
-                                    "5. Unblock a tutor\n" +
-                                    "6. Become invisible to a tutor\n" +
-                                    "7. Sign out\n\n" +
-                                    "Enter Option Number:");
-//                int option = scan.nextInt();
-//                scan.nextLine();
+
                     int option = Integer.parseInt(reader.readUTF());
-                    System.out.println();
 
                     boolean deletedAccount = false;
 
@@ -241,17 +169,13 @@ public class ServerMain extends Thread {
                                             !messageClass.isInvisible(user, userEl)) {
                                         availableTutors.add(userEl);
                                     }
-
-
                                 }
                             }
 
 
                             if (availableTutors.size() == 0) {
-                                System.out.println("There are no tutors available to message");
                                 writer.writeUTF("0");
                             } else {
-//                            availability(availableTutors);
                                 availability(availableTutors, writer);
                             }
 
@@ -262,12 +186,9 @@ public class ServerMain extends Thread {
                             int index = -1;
                             boolean unableToMessage = false;
 
-                            System.out.println("Who would you like to message?");
-//                        String person = scan.nextLine();
                             String person = reader.readUTF();
 
                             if (userList.size() == 0) {
-                                System.out.println("There are no tutors available\n");
                                 writer.writeUTF("0");
                                 writer.flush();
                                 break;
@@ -289,27 +210,21 @@ public class ServerMain extends Thread {
                                     index = i;
 
                                     if (userList.get(i) instanceof Tutor) {
-                                        System.out.println("Person Found\n");
                                         writer.writeUTF("Success");
                                         writer.flush();
                                         unableToMessage = false;
                                         break;
                                     } else {
-                                        System.out.println("You cannot message this person\n");
-                                        writer.writeUTF("Fail");
+                                        writer.writeUTF(String.format("Unable to find/message %s\n\n", person));
                                         writer.flush();
                                         unableToMessage = true;
+                                        break;
                                     }
                                 }
                             }
 
 
                             if (index == -1 || unableToMessage) {
-                                if (index == -1) {
-                                    System.out.printf("Unable to find/message %s\n\n", person);
-                                    writer.writeUTF(String.format("Unable to find/message %s\n\n", person));
-                                    writer.flush();
-                                }
                                 break;
                             }
 
@@ -317,223 +232,35 @@ public class ServerMain extends Thread {
                             boolean quit = true;
 
                             while (quit) {
-                                System.out.println(
-                                        "1. Read message\n" +
-                                                "2. Write message\n" +
-                                                "3. Delete message\n" +
-                                                "4. Edit message\n" +
-                                                "5. Search message\n" +
-                                                "6. Import conversation\n" +
-                                                "7. Export conversation\n" +
-                                                "8. Quit\n\n" +
-                                                "Enter Option Number:");
-//                            int optionMessage = scan.nextInt();
-//                            scan.nextLine();
                                 int optionMessage = Integer.parseInt(reader.readUTF());
-
-                                switch (optionMessage) {
-                                    case 1:
-                                        ArrayList<String> messages = messageClass.readMsg(user, userList.get(index));
-
-                                        if (messages.size() == 0) {
-                                            System.out.println("No Messages Available");
-                                            writer.writeUTF("0");
-                                            break;
-                                        }
-
-                                        int count = 1;
-//                                        printMsg(messages, count, user);
-                                        printMsg(messages, count, user, writer);
-                                        System.out.println();
-                                        break;
-                                    case 2:
-                                        System.out.println("Message Body:");
-//                                    String content = scan.nextLine();
-                                        String content = reader.readUTF();
-                                        messageClass.writeMsg(user, userList.get(index), content);
-                                        messageClass.export(user, userList.get(index));
-//                                        System.out.println("Written Successfully");
-                                        writer.writeUTF("Written Successfully");
-                                        System.out.println();
-
-                                        break;
-                                    case 3:
-                                        System.out.println("Which message would you like to delete?");
-//                                    String answer = scan.nextLine();
-                                        String answer = reader.readUTF();
-
-                                        ArrayList<String> messagesDelete;
-                                        String message = null;
-                                        boolean dMessageExists = false;
-
-                                        try {
-                                            int lineNum = Integer.parseInt(answer);
-                                            messagesDelete = messageClass.readMsg(user, userList.get(index));
-                                            message = messagesDelete.get(lineNum - 1).split(":")[1];
-                                            dMessageExists = true;
-                                        } catch (Exception e) {
-                                            messagesDelete = messageClass.readMsg(user, userList.get(index), true);
-                                            for (String s : messagesDelete) {
-                                                if (s.substring(s.lastIndexOf(",") + 1).equals(answer)) {
-                                                    message = answer;
-                                                    dMessageExists = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                        if (!dMessageExists) {
-                                            System.out.println("Message not found!");
-                                            break;
-                                        }
-
-                                        messageClass.delete(user, userList.get(index), message);
-//                                        System.out.println("Message Deleted Successfully");
-                                        writer.writeUTF("Message Deleted Successfully");
-                                        writer.flush();
-
-                                        break;
-
-                                    case 4:
-                                        System.out.println("Which message would you like to edit?");
-//                                    String editMessage = scan.nextLine();
-                                        String editMessage = reader.readUTF();
-
-                                        ArrayList<String> allMessages = messageClass.readMsg(user, userList.get(index), true);
-
-                                        if (allMessages.size() == 0) {
-                                            System.out.println("There are no messages!");
-                                            break;
-                                        }
-
-                                        boolean messageExists = false;
-                                        String editedMessage = null;
-
-                                        try {
-                                            int lineNum = Integer.parseInt(editMessage);
-                                            allMessages = messageClass.readMsg(user, userList.get(index));
-                                            editedMessage = allMessages.get(lineNum - 1).split(":")[1];
-                                            messageExists = true;
-                                        } catch (Exception e) {
-                                            allMessages = messageClass.readMsg(user, userList.get(index), true);
-                                            for (String messageEl : allMessages) {
-                                                if (messageEl.substring(messageEl.lastIndexOf(",") + 1).equals(editMessage)) {
-                                                    editedMessage = editMessage;
-                                                    messageExists = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                        if (!messageExists) {
-                                            System.out.println("Message not found!");
-                                            break;
-                                        }
-
-                                        System.out.println("What would you like your edited message to look like?");
-//                                    String newMessage = scan.nextLine();
-                                        String newMessage = reader.readUTF();
-
-                                        messageClass.edit(user, userList.get(index), editedMessage, newMessage + "\n");
-                                        messageClass.export(user, userList.get(index));
-
-                                        writer.writeUTF("Message Edited Successfully");
-                                        writer.flush();
-
-                                        break;
-
-                                    case 5:
-                                        System.out.println("Enter a keyword to search for a message: ");
-//                                    String keyword = scan.nextLine();
-                                        String keyword = reader.readUTF();
-
-                                        ArrayList<String> searchableMessages = messageClass.readMsg(user, userList.get(index));
-
-                                        boolean foundMessage = false;
-
-                                        for (String searchableMessage : searchableMessages) {
-                                            if (searchableMessage.contains(keyword)) {
-                                                System.out.println("Found Message: ");
-//                                                System.out.println(searchableMessage);
-                                                writer.writeUTF(searchableMessage);
-                                                writer.flush();
-                                                foundMessage = true;
-                                            }
-                                        }
-
-                                        if (!foundMessage) {
-//                                            System.out.println("Message not found!");
-                                            writer.writeUTF("Message not found!");
-                                            writer.flush();
-                                        }
-
-                                        break;
-
-                                    case 6:
-                                        System.out.println("Please enter the filename");
-//                                    String ifileName = scan.nextLine();
-                                        String ifileName = reader.readUTF();
-
-                                        ArrayList<String> importMessages = new ArrayList<>();
-
-                                        importMessage(messageClass, userList, user, index, ifileName, importMessages);
-
-                                        break;
-                                    case 7:
-                                        export(reader, messageClass, userList, user, index);
-                                        break;
-                                    case 8:
-                                        quit = false;
-                                        break;
-                                    default:
-                                        System.out.println("Invalid option number!");
-                                        System.out.println("Please Try Again");
-                                        break;
-                                }
-
+                                quit = messageMenu(optionMessage, writer, reader,
+                                        messageClass, user, userList, index, quit);
                             }
 
                             break;
 
                         case 3:
-                            System.out.println(
-                                    "1. Change password\n" +
-                                            "2. Change username\n" +
-                                            "3. Change email\n" +
-                                            "4. Delete account\n" +
-                                            "5. Change filter\n" +
-                                            "6. Change filter words\n" +
-                                            "7. Display Filter Words\n" +
-                                            "8. Exit\n\n" +
-                                            "Enter Option Number:");
-//                        int optionProfile = scan.nextInt();
-//                        scan.nextLine();
+
                             int optionProfile = Integer.parseInt(reader.readUTF());
 
                             switch (optionProfile) {
                                 case 1:
-                                    System.out.println("Enter new password:");
-//                                String newPassword = scan.nextLine();
                                     String newPassword = reader.readUTF();
                                     user.setPassword(newPassword);
 
                                     try {
                                         updateFile(userList, f);
-//                                        System.out.println("Password has been successfully changed\n");
                                         writer.writeUTF("Success");
                                         writer.flush();
                                     } catch (IOException e) {
                                         writer.writeUTF("Fail");
                                         writer.flush();
-                                        System.out.println("Can't write to the file!");
                                     }
 
 
                                     break;
                                 case 2:
 
-                                    System.out.println("Enter new username:");
-//                                String newUsername = scan.nextLine();
                                     String newUsername = reader.readUTF();
 
                                     boolean sameUsername = false;
@@ -555,21 +282,16 @@ public class ServerMain extends Thread {
 
                                     try {
                                         updateFile(userList, f);
-
-                                        System.out.println("Username has been successfully changed\n");
                                         writer.writeUTF("Success");
                                         writer.flush();
                                     } catch (IOException e) {
                                         writer.writeUTF("Fail");
                                         writer.flush();
-                                        System.out.println("Can't write to the file!");
                                     }
 
                                     break;
 
                                 case 3:
-                                    System.out.println("Enter new email:");
-//                                String newEmail = scan.nextLine();
                                     String newEmail = reader.readUTF();
 
                                     boolean sameEmail = false;
@@ -587,7 +309,6 @@ public class ServerMain extends Thread {
                                     } else {
                                         writer.writeUTF("Fail");
                                         writer.flush();
-                                        System.out.println("Email exists.");
                                         break;
                                     }
 
@@ -595,20 +316,16 @@ public class ServerMain extends Thread {
                                     try {
                                         updateFile(userList, f);
 
-                                        System.out.println("Email has been successfully changed\n");
                                         writer.writeUTF("Success");
                                         writer.flush();
                                     } catch (IOException e) {
                                         writer.writeUTF("Fail");
                                         writer.flush();
-                                        System.out.println("Can't write to the file!");
                                     }
 
                                     break;
 
                                 case 4:
-                                    System.out.println("Deleting Account...");
-
                                     deletedAccount = true;
 
                                     // Removing User from ArrayList
@@ -635,11 +352,8 @@ public class ServerMain extends Thread {
 
                                     break;
                                 case 5:
-                                    System.out.println("Enter new filter:");
-//                                String filter = scan.nextLine();
                                     String filter = reader.readUTF();
                                     ((Student) user).setFilter(filter);
-                                    System.out.println("Changed Successfully");
 
                                     try {
                                         BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
@@ -664,24 +378,15 @@ public class ServerMain extends Thread {
                                     }
                                     break;
                                 case 6:
-                                    System.out.println(
-                                            "1. Add words\n" +
-                                                    "2. Delete words\n" +
-                                                    "3. Exit\n\n" +
-                                                    "Enter Option Number:");
-//                                String answer = scan.nextLine();
                                     String answer = reader.readUTF();
                                     switch (answer) {
                                         case "1":
-                                            System.out.println("Enter words to be added [Comma separated]");
-//                                        String[] words = scan.nextLine().split(",");
                                             String[] words = reader.readUTF().split(",");
                                             ArrayList<String> pastWords = ((Student) user).getFilterWordList();
 
                                             Collections.addAll(pastWords, words);
 
                                             ((Student) user).setFilterWordList(pastWords);
-                                            System.out.println("Added Successfully");
 
                                             updateCensoredWords(user, pastWords);
 
@@ -689,17 +394,9 @@ public class ServerMain extends Thread {
                                         case "2":
                                             ArrayList<String> filterWordList = ((Student) user).getFilterWordList();
 
-                                            System.out.println("Current Filtered Words: ");
-                                            for (String word : filterWordList) {
-                                                System.out.println(word);
-                                            }
-
-                                            System.out.println("Enter words to be deleted [Comma separated]");
-//                                        String[] wordList = scan.nextLine().split(",");
                                             String[] wordList = reader.readUTF().split(",");
 
                                             filterWordList.removeAll(List.of(wordList));
-                                            System.out.println("Deleted Successfully");
 
                                             ((Student) user).setFilterWordList(filterWordList);
 
@@ -709,35 +406,25 @@ public class ServerMain extends Thread {
                                             break;
                                     }
                                 case 7:
-                                    System.out.println("Words currently being censored:");
                                     String size = String.valueOf(((Student) user).getFilterWordList().size());
                                     writer.writeUTF(size);
                                     writer.flush();
 
                                     for (String word : ((Student) user).getFilterWordList()) {
-//                                        System.out.println(word);
                                         writer.writeUTF(word);
                                         writer.flush();
                                     }
-                                    System.out.println();
                                     break;
                                 case 8:
-                                    break;
-                                default:
-                                    System.out.println("Invalid Option Number");
-                                    System.out.println("Please Try Again");
                                     break;
                             }
 
                             break;
 
                         case 4:
-                            System.out.println("Which user would you like to block?");
-//                        String blockUsername = scan.nextLine();
                             String blockUsername = reader.readUTF();
 
                             if (blockUsername.equals(user.getAccountUsername())) {
-//                                System.out.println("Cannot block yourself");
                                 writer.writeUTF("Cannot block yourself");
                                 writer.flush();
                                 break;
@@ -755,7 +442,6 @@ public class ServerMain extends Thread {
                                 writer.writeUTF("Successfully Blocked User");
                                 writer.flush();
                             } catch (IOException e) {
-//                                System.out.println("There are no blocked users");
                                 writer.writeUTF("There are no blocked users");
                                 writer.flush();
                             }
@@ -763,30 +449,35 @@ public class ServerMain extends Thread {
 
                             break;
                         case 5:
-                            System.out.println("Which user would you like to unblock?");
-//                        String unblockUsername = scan.nextLine();
                             String unblockUsername = reader.readUTF();
 
                             if (unblockUsername.equals(user.getAccountUsername())) {
-//                                System.out.println("Cannot unblock yourself");
-
+                                writer.writeUTF("Cannot unblock yourself");
+                                writer.flush();
                                 break;
                             }
 
+                            int i = -1;
                             for (User users : userList) {
                                 if (users.getAccountUsername().equals(unblockUsername)) {
-                                    int i = blockedUserList.indexOf(user + "," + user.getID() + ";" + users.getID());
-                                    blockedUserList.remove(i);
+                                    i = blockedUserList.indexOf(user + "," + user.getID() + ";" + users.getID());
                                     break;
                                 }
                             }
 
-                            unblockUser(blockedUserList, writer);
+                            if (i != -1) {
+                                writer.writeUTF("Success");
+                                writer.flush();
+                                blockedUserList.remove(i);
+                                unblockUser(blockedUserList, writer);
+                            } else {
+                                writer.writeUTF("There is no user with that name blocked");
+                                writer.flush();
+                                break;
+                            }
 
                             break;
                         case 6:
-                            System.out.println("Which user do you want to become invisible to:");
-//                        String invisiblePerson = scan.nextLine();
                             String invisiblePerson = reader.readUTF();
                             for (User users : userList) {
                                 if (users.getAccountUsername().equals(invisiblePerson)) {
@@ -798,7 +489,6 @@ public class ServerMain extends Thread {
 
                             break;
                         case 7:
-                            System.out.println("Have a nice day!");
                             signedIn = false;
                             break;
                     }
@@ -808,43 +498,33 @@ public class ServerMain extends Thread {
                     }
                 } else {
                     // Tutor Interface
-                    System.out.println(
-                            "Menu\n\n" +
-                                    "1. View students\n" +
-                                    "2. Message a student\n" +
-                                    "3. Edit profile\n" +
-                                    "4. Block a student\n" +
-                                    "5. Unblock a student\n" +
-                                    "6. Become invisible to a student\n" +
-                                    "7. Sign out\n\n" +
-                                    "Enter Option Number:");
-//                int option = scan.nextInt();
-//                scan.nextLine();
+
                     int option = Integer.parseInt(reader.readUTF());
-                    System.out.println();
+
+                    boolean deletedAccount = false;
 
                     switch (option) {
+
                         case 1:
+                            readUsers(f, filterList, userList);
                             ArrayList<User> availableStudents = new ArrayList<>();
 
-                            for (User person : userList) {
-                                if (person instanceof Student) {
-                                    if (!messageClass.isBlocked(user, person) &&
-                                            !messageClass.isInvisible(user, person)) {
-                                        availableStudents.add(person);
-                                    }
+                            for (User userEl : userList) {
+                                if (userEl instanceof Student) {
 
+                                    if (!messageClass.isBlocked(user, userEl) &&
+                                            !messageClass.isInvisible(user, userEl)) {
+                                        availableStudents.add(userEl);
+                                    }
                                 }
                             }
 
+
                             if (availableStudents.size() == 0) {
-                                System.out.println("There are no students available to message");
                                 writer.writeUTF("0");
                             } else {
-//                            availability(availableStudents);
                                 availability(availableStudents, writer);
                             }
-
 
                             break;
 
@@ -853,12 +533,12 @@ public class ServerMain extends Thread {
                             int index = -1;
                             boolean unableToMessage = false;
 
-                            System.out.println("Who would you like to message?");
-//                        String person = scan.nextLine();
                             String person = reader.readUTF();
 
                             if (userList.size() == 0) {
-                                System.out.println("There are no students available");
+                                writer.writeUTF("0");
+                                writer.flush();
+                                break;
                             }
 
                             for (int i = 0; i < userList.size(); i++) {
@@ -876,215 +556,40 @@ public class ServerMain extends Thread {
 
                                     index = i;
 
-                                    if ((userList.get(i) instanceof Student)) {
-                                        System.out.println("Person Found\n");
+                                    if (userList.get(i) instanceof Student) {
+                                        writer.writeUTF("Success");
+                                        writer.flush();
                                         unableToMessage = false;
                                         break;
                                     } else {
-                                        System.out.println("You cannot message this person\n");
+                                        writer.writeUTF(String.join("Unable to find/message %s\n\n", person));
+                                        writer.flush();
                                         unableToMessage = true;
+                                        break;
                                     }
                                 }
                             }
 
-                            if (index == -1 || unableToMessage) {
-                                if (index == -1) {
-                                    System.out.printf("Unable to find/message %s\n\n", person);
-                                }
 
+                            if (index == -1 || unableToMessage) {
                                 break;
                             }
 
                             boolean quit = true;
                             while (quit) {
-                                System.out.println(
-                                        "1. Read message\n" +
-                                                "2. Write message\n" +
-                                                "3. Delete message\n" +
-                                                "4. Edit message\n" +
-                                                "5. Search message\n" +
-                                                "6. Import conversation\n" +
-                                                "7. Export conversation\n" +
-                                                "8. Quit\n\n" +
-                                                "Enter Option Number:");
-//                            int optionMessage = scan.nextInt();
-//                            scan.nextLine();
                                 int optionMessage = Integer.parseInt(reader.readUTF());
-
-                                switch (optionMessage) {
-                                    case 1:
-                                        ArrayList<String> messages = messageClass.readMsg(user, userList.get(index));
-
-                                        if (messages.size() == 0) {
-                                            System.out.println("No Messages Available");
-                                            continue;
-                                        }
-
-                                        int count = 1;
-//                                        printMsg(messages, count, user);
-                                        printMsg(messages, count, user, writer);
-                                        System.out.println();
-                                        break;
-                                    case 2:
-                                        System.out.println("Message Body:");
-//                                    String content = scan.nextLine();
-                                        String content = reader.readUTF();
-                                        messageClass.writeMsg(user, userList.get(index), content);
-                                        messageClass.export(user, userList.get(index));
-                                        System.out.println("Written Successfully\n");
-
-                                        break;
-                                    case 3:
-                                        System.out.println("What is the message that you would like to delete?");
-//                                    String answer = scan.nextLine();
-                                        String answer = reader.readUTF();
-
-                                        ArrayList<String> messagesDelete;
-                                        String message = null;
-                                        boolean dMessageExists = false;
-
-                                        try {
-                                            int lineNum = Integer.parseInt(answer);
-                                            messagesDelete = messageClass.readMsg(user, userList.get(index));
-                                            message = messagesDelete.get(lineNum - 1).split(":")[1];
-                                            dMessageExists = true;
-                                        } catch (Exception e) {
-                                            messagesDelete = messageClass.readMsg(user, userList.get(index), true);
-                                            for (String s : messagesDelete) {
-                                                if (s.substring(s.lastIndexOf(",") + 1).equals(answer)) {
-                                                    message = answer;
-                                                    dMessageExists = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                        if (!dMessageExists) {
-                                            System.out.println("Message not found!");
-                                            break;
-                                        }
-
-                                        messageClass.delete(user, userList.get(index), message);
-                                        System.out.println("Message Deleted Successfully\n");
-
-                                        break;
-
-                                    case 4:
-                                        System.out.println("Which message would you like to edit?");
-//                                    String editMessage = scan.nextLine();
-                                        String editMessage = reader.readUTF();
-
-                                        ArrayList<String> allMessages = messageClass.readMsg(user, userList.get(index), true);
-
-                                        if (allMessages.size() == 0) {
-                                            System.out.println("There are no messages!");
-                                            break;
-                                        }
-
-                                        boolean messageExists = false;
-                                        String editedMessage = null;
-
-                                        try {
-                                            int lineNum = Integer.parseInt(editMessage);
-                                            allMessages = messageClass.readMsg(user, userList.get(index));
-                                            editedMessage = allMessages.get(lineNum - 1).split(":")[1];
-                                            System.out.println(editedMessage);
-                                            messageExists = true;
-                                        } catch (Exception e) {
-                                            System.out.println("hi");
-                                            allMessages = messageClass.readMsg(user, userList.get(index), true);
-                                            for (String messageEl : allMessages) {
-                                                if (messageEl.substring(messageEl.lastIndexOf(",") + 1).equals(editMessage)) {
-                                                    editedMessage = editMessage;
-                                                    messageExists = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                        if (!messageExists) {
-                                            System.out.println("Message not found!");
-                                            break;
-                                        }
-
-                                        System.out.println("What would you like your edited message to look like?");
-//                                    String newMessage = scan.nextLine();
-                                        String newMessage = reader.readUTF();
-
-
-                                        messageClass.edit(user, userList.get(index), editedMessage, newMessage + "\n");
-                                        messageClass.export(user, userList.get(index));
-
-                                        break;
-
-                                    case 5:
-                                        System.out.println("Enter a keyword to search for a message: ");
-//                                    String keyword = scan.nextLine();
-                                        String keyword = reader.readUTF();
-
-                                        ArrayList<String> searchableMessages = messageClass.readMsg(user, userList.get(index));
-
-                                        boolean foundMessage = false;
-
-                                        for (String searchableMessage : searchableMessages) {
-                                            if (searchableMessage.contains(keyword)) {
-                                                System.out.println("Found Message: ");
-                                                System.out.println(searchableMessage);
-                                                foundMessage = true;
-                                            }
-                                        }
-
-                                        if (!foundMessage) {
-                                            System.out.println("Message not found!");
-                                        }
-
-                                        break;
-
-                                    case 6:
-                                        System.out.println("Please enter the filename");
-//                                    String ifileName = scan.nextLine();
-                                        String ifileName = reader.readUTF();
-
-                                        ArrayList<String> importMessages = new ArrayList<>();
-
-                                        importMessage(messageClass, userList, user, index, ifileName, importMessages);
-
-                                        break;
-                                    case 7:
-                                        export(reader, messageClass, userList, user, index);
-                                        break;
-                                    case 8:
-                                        quit = false;
-                                        break;
-                                    default:
-                                        System.out.println("Invalid option number!");
-                                        System.out.println("Please Try Again");
-                                        break;
-                                }
+                                quit = messageMenu(optionMessage, writer, reader,
+                                        messageClass, user, userList, index, quit);
                             }
 
 
                             break;
 
                         case 3:
-                            System.out.println(
-                                    "1. Change password\n" +
-                                            "2. Change username\n" +
-                                            "3. Change email\n" +
-                                            "4. Delete account\n" +
-                                            "5. Change filter\n" +
-                                            "6. Change filter words\n" +
-                                            "7. Display filter words\n" +
-                                            "8. Exit\n\n" +
-                                            "Enter Option Number:");
-//                        int optionProfile = scan.nextInt();
-//                        scan.nextLine();
                             int optionProfile = Integer.parseInt(reader.readUTF());
 
                             switch (optionProfile) {
                                 case 1:
-                                    System.out.println("Enter new password:");
-//                                String newPassword = scan.nextLine();
                                     String newPassword = reader.readUTF();
                                     user.setPassword(newPassword);
 
@@ -1100,8 +605,6 @@ public class ServerMain extends Thread {
 
                                 case 2:
 
-                                    System.out.println("Enter new username");
-//                                String newUsername = scan.nextLine();
                                     String newUsername = reader.readUTF();
 
                                     boolean similarUsername = false;
@@ -1131,8 +634,6 @@ public class ServerMain extends Thread {
                                     break;
 
                                 case 3:
-                                    System.out.println("Enter new email:");
-//                                String newEmail = scan.nextLine();
                                     String newEmail = reader.readUTF();
 
                                     boolean similarEmail = false;
@@ -1164,7 +665,6 @@ public class ServerMain extends Thread {
                                     break;
 
                                 case 4:
-                                    System.out.println("Deleting Account...");
 
                                     // Removing User from ArrayList
                                     for (int i = 0; i < userList.size(); i++) {
@@ -1185,11 +685,8 @@ public class ServerMain extends Thread {
 
                                     break;
                                 case 5:
-                                    System.out.println("Enter new filter: ");
-//                                String filter = scan.nextLine();
                                     String filter = reader.readUTF();
                                     ((Tutor) user).setFilter(filter);
-                                    System.out.println("Changed Successfully");
 
                                     try {
                                         BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
@@ -1215,17 +712,10 @@ public class ServerMain extends Thread {
 
                                     break;
                                 case 6:
-                                    System.out.println(
-                                            "1. Add words\n" +
-                                                    "2. Delete words\n" +
-                                                    "3. Exit\n\n" +
-                                                    "Enter Option Number:");
-//                                String answer = scan.nextLine();
+
                                     String answer = reader.readUTF();
                                     switch (answer) {
                                         case "1":
-                                            System.out.println("Enter words to be added [Comma separated]");
-//                                        String[] words = scan.nextLine().split(",");
                                             String[] words = reader.readUTF().split(",");
                                             ArrayList<String> pastWords = ((Tutor) user).getFilterWordList();
 
@@ -1240,13 +730,6 @@ public class ServerMain extends Thread {
                                         case "2":
                                             ArrayList<String> filterWordList = ((Tutor) user).getFilterWordList();
 
-                                            System.out.println("Current Filtered Words: ");
-                                            for (String word : filterWordList) {
-                                                System.out.println(word);
-                                            }
-
-                                            System.out.println("Enter words to be deleted [Comma separated]");
-//                                        String[] wordList = scan.nextLine().split(",");
                                             String[] wordList = reader.readUTF().split(",");
 
                                             filterWordList.removeAll(List.of(wordList));
@@ -1278,8 +761,7 @@ public class ServerMain extends Thread {
                             break;
 
                         case 4:
-                            System.out.println("Which user would you like to block?");
-//                        String blockUsername = scan.nextLine();
+
                             String blockUsername = reader.readUTF();
 
                             if (blockUsername.equals(user.getAccountUsername())) {
@@ -1303,31 +785,37 @@ public class ServerMain extends Thread {
 
                             break;
                         case 5:
-                            System.out.println("Which user would you like to unblock?");
-//                        String unblockUsername = scan.nextLine();
                             String unblockUsername = reader.readUTF();
 
                             if (unblockUsername.equals(user.getAccountUsername())) {
-                                System.out.println("Cannot unblock yourself");
+                                writer.writeUTF("Cannot unblock yourself");
+                                writer.flush();
                                 break;
                             }
 
+                            int i = -1;
                             for (User users : userList) {
                                 if (users.getAccountUsername().equals(unblockUsername)) {
-                                    int i = blockedUserList.indexOf(user + "," + user.getID() + ";" + users.getID());
-                                    blockedUserList.remove(i);
+                                    i = blockedUserList.indexOf(user + "," + user.getID() + ";" + users.getID());
                                     break;
                                 }
                             }
 
-                            unblockUser(blockedUserList, writer);
+                            if (i != -1) {
+                                writer.writeUTF("Success");
+                                writer.flush();
+                                blockedUserList.remove(i);
+                                unblockUser(blockedUserList, writer);
+                            } else {
+                                writer.writeUTF("There is no user with that name blocked");
+                                writer.flush();
+                                break;
+                            }
 
                             break;
                         case 6:
-//                            System.out.println("Which user do you want to become invisible to:");
                             writer.writeUTF("Which user do you want to become invisible to?");
                             writer.flush();
-//                        String invisiblePerson = scan.nextLine();
                             String invisiblePerson = reader.readUTF();
                             for (User users : userList) {
                                 if (users.getAccountUsername().equals(invisiblePerson)) {
@@ -1340,7 +828,6 @@ public class ServerMain extends Thread {
                             break;
 
                         case 7:
-                            System.out.println("Have a nice day!");
                             signedIn = false;
                             break;
                     }
@@ -1366,40 +853,35 @@ public class ServerMain extends Thread {
         pw.flush();
     }
 
-    public static void printMsg(ArrayList<String> messages, int count, User user, DataOutputStream writer) throws IOException {
+    public static void printMsg(ArrayList<String> messages, User user, DataOutputStream writer) throws IOException {
         String finalMessage = "";
 
         if (user instanceof Student) {
             for (String message : messages) {
                 if (!((Student) user).getFilterWordList().get(0).equals("")) {
                     for (String filterWord : ((Student) user).getFilterWordList()) {
-                        finalMessage += message.replaceAll(String.format("(?i)%s", filterWord), ((Student) user).getFilter());
+                        finalMessage = finalMessage + message.replaceAll(String.format("(?i)%s", filterWord), ((Student) user).getFilter()) + ";";
                     }
+                } else {
+                    finalMessage = finalMessage + message + ";";
                 }
-
-                finalMessage += message;
-                System.out.printf("[%d]: %s\n", count++, message);
-
             }
-
-            System.out.println(finalMessage);
             writer.writeUTF(finalMessage);
+            writer.flush();
 
         } else {
             for (String message : messages) {
                 if (!((Tutor) user).getFilterWordList().get(0).equals("")) {
                     for (String filterWord : ((Tutor) user).getFilterWordList()) {
-                        message.replaceAll(String.format("(?i)%s", filterWord), ((Tutor) user).getFilter());
+                        finalMessage = finalMessage + message.replaceAll(String.format("(?i)%s", filterWord), ((Tutor) user).getFilter()) + ";";
                     }
+                } else {
+                    finalMessage = finalMessage + message + ";";
                 }
-
-                finalMessage += message;
-                System.out.printf("[%d]: %s\n", count++, message);
             }
+            writer.writeUTF(finalMessage);
+            writer.flush();
         }
-        System.out.println(finalMessage);
-        writer.writeUTF(finalMessage);
-        writer.flush();
     }
 
     public static void updateFile(ArrayList<User> userList, File f) throws IOException {
@@ -1462,7 +944,6 @@ public class ServerMain extends Thread {
             File invisibleUsers = new File("InvisibleUsers.txt");
             if (!invisibleUsers.exists()) {
                 invisibleUsers.createNewFile();
-                System.out.println("Invisible Users file has been created");
             }
 
             FileWriter fr = new FileWriter(invisibleUsers);
@@ -1473,7 +954,6 @@ public class ServerMain extends Thread {
             }
             pw.flush();
         } catch (IOException e) {
-//            System.out.println("There are no invisible users");
             writer.writeUTF("There are no invisible users");
             writer.flush();
         }
@@ -1493,7 +973,6 @@ public class ServerMain extends Thread {
                 pw.println(s);
             }
         } catch (IOException e) {
-//            System.out.println("User to unblock not found");
             writer.writeUTF("There is no user with that username");
             writer.flush();
         }
@@ -1523,10 +1002,9 @@ public class ServerMain extends Thread {
         }
     }
 
-    public static void export(DataInputStream reader, Message messageClass, ArrayList<User> userList, User user, int index) {
+    public static void export(DataOutputStream writer, DataInputStream reader, Message messageClass, ArrayList<User> userList, User user, int index) throws IOException {
         try {
-            System.out.println("Enter file name to export conversation into:");
-//            String expFileName = scan.nextLine();
+//            System.out.println("Enter file name to export conversation into:");
             String expFileName = reader.readUTF();
 
             File exportFile = new File(expFileName + ".csv");
@@ -1539,23 +1017,27 @@ public class ServerMain extends Thread {
             BufferedWriter bfw = new BufferedWriter(fw);
 
             ArrayList<String> pastMessages = messageClass.readMsg(user, userList.get(index), true);
-            ArrayList<String> unEditPastMessages = messageClass.readMsg(user, userList.get(index));
+//            ArrayList<String> unEditPastMessages = messageClass.readMsg(user, userList.get(index));
 
-            System.out.println("Messages being exported:");
+//            System.out.println("Messages being exported:");
             for (int i = 0; i < pastMessages.size(); i++) {
-                System.out.printf("[%d]: %s", i + 1, unEditPastMessages.get(i));
+//                System.out.printf("[%d]: %s", i + 1, unEditPastMessages.get(i));
                 bfw.write(user.getAccountUsername() + ";" + userList.get(index).getAccountUsername() + "," + user.getAccountUsername() + "," + pastMessages.get(i).split(",")[2] + "," + pastMessages.get(i).split(",")[3] + "\n");
             }
 
             bfw.flush();
-            System.out.println();
-            System.out.println("Conversation exported successfully!");
+//            System.out.println();
+//            System.out.println("Conversation exported successfully!");
+            writer.writeUTF("Success");
+            writer.flush();
         } catch (IOException e) {
-            System.out.println("Unable to export file");
+//            System.out.println("Unable to export file");
+            writer.writeUTF("Fail");
+            writer.flush();
         }
     }
 
-    public static void importMessage(Message messageClass, ArrayList<User> userList, User user, int index, String ifileName, ArrayList<String> importMessages) {
+    public static void importMessage(Message messageClass, ArrayList<User> userList, User user, int index, String ifileName, ArrayList<String> importMessages, DataOutputStream writer) throws IOException {
         try {
             BufferedReader bfr = new BufferedReader(new FileReader(ifileName));
 
@@ -1575,10 +1057,14 @@ public class ServerMain extends Thread {
 
             messageClass.export(user, userList.get(index));
 
-            System.out.println("Imported conversation successfully!");
+//            System.out.println("Imported conversation successfully!");
+            writer.writeUTF("Success");
+            writer.flush();
 
         } catch (IOException e) {
-            System.out.println("Cannot find or read from file!");
+//            System.out.println("Cannot find or read from file!");
+            writer.writeUTF("Fail");
+            writer.flush();
         }
     }
 
@@ -1599,9 +1085,10 @@ public class ServerMain extends Thread {
 
             BufferedReader bfr = new BufferedReader(new FileReader(f));
 
+            userList.clear();
             String userLine = bfr.readLine();
             while (userLine != null) {
-                filterList = new ArrayList<>();
+                filterList.clear();
                 String[] splitLines = userLine.split(",");
 
                 User user;
@@ -1624,13 +1111,173 @@ public class ServerMain extends Thread {
         }
     }
 
+    public boolean messageMenu(int optionMessage, DataOutputStream writer,
+                            DataInputStream reader, Message messageClass,
+                            User user, ArrayList<User> userList, int index, boolean quit) throws IOException {
+        switch (optionMessage) {
+            case 1:
+                ArrayList<String> messages = messageClass.readMsg(user, userList.get(index));
+
+                if (messages.size() == 0) {
+                    writer.writeUTF("0");
+                    break;
+                } else {
+                    writer.writeUTF("1");
+                    writer.flush();
+                }
+
+                printMsg(messages, user, writer);
+                break;
+            case 2:
+
+                String content = reader.readUTF();
+                messageClass.writeMsg(user, userList.get(index), content);
+                messageClass.export(user, userList.get(index));
+                writer.writeUTF("Written Successfully");
+
+                break;
+            case 3:
+                String answer = reader.readUTF();
+
+                ArrayList<String> messagesDelete;
+                String message = null;
+                boolean dMessageExists = false;
+
+                try {
+                    int lineNum = Integer.parseInt(answer);
+                    messagesDelete = messageClass.readMsg(user, userList.get(index));
+                    message = messagesDelete.get(lineNum - 1).split(":")[1];
+                    dMessageExists = true;
+                } catch (Exception e) {
+                    messagesDelete = messageClass.readMsg(user, userList.get(index), true);
+                    for (String s : messagesDelete) {
+                        if (s.substring(s.lastIndexOf(",") + 1).equals(answer)) {
+                            message = answer;
+                            dMessageExists = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!dMessageExists) {
+//                                            System.out.println("Message not found!");
+                    writer.writeUTF("Message not found");
+                    writer.flush();
+                    break;
+                }
+
+                messageClass.delete(user, userList.get(index), message);
+                writer.writeUTF("Message Deleted Successfully");
+                writer.flush();
+
+                break;
+
+            case 4:
+                ArrayList<String> allMessages = messageClass.readMsg(user, userList.get(index), true);
+
+                writer.writeUTF(String.valueOf(allMessages.size()));
+                writer.flush();
+
+                if (allMessages.size() == 0) {
+//                                            System.out.println("There are no messages!");
+                    break;
+                }
+
+                boolean messageExists = false;
+                String editedMessage = null;
+                String editMessage = reader.readUTF();
+
+
+                try {
+                    int lineNum = Integer.parseInt(editMessage);
+                    allMessages = messageClass.readMsg(user, userList.get(index));
+                    editedMessage = allMessages.get(lineNum - 1).split(":")[1];
+                    messageExists = true;
+                } catch (Exception e) {
+                    allMessages = messageClass.readMsg(user, userList.get(index), true);
+                    for (String messageEl : allMessages) {
+                        if (messageEl.substring(messageEl.lastIndexOf(",") + 1).equals(editMessage)) {
+                            editedMessage = editMessage;
+                            messageExists = true;
+                            break;
+                        }
+                    }
+                }
+
+                String newMessage = reader.readUTF();
+
+                if (!messageExists) {
+//                                            System.out.println("Message not found!");
+                    writer.writeUTF("Message not found");
+                    writer.flush();
+                    break;
+                }
+
+                messageClass.edit(user, userList.get(index), editedMessage, newMessage + "\n");
+                messageClass.export(user, userList.get(index));
+
+                writer.writeUTF("Message Edited Successfully");
+                writer.flush();
+
+                break;
+
+            case 5:
+                String keyword = reader.readUTF();
+
+                ArrayList<String> searchableMessages = messageClass.readMsg(user, userList.get(index));
+
+                boolean foundMessage = false;
+
+                int counter = 0;
+                for (String searchableMessage : searchableMessages) {
+                    if (searchableMessage.contains(keyword)) {
+                        counter++;
+                        foundMessage = true;
+                    }
+                }
+
+                if (!foundMessage) {
+                    writer.writeUTF("Message not found!");
+                    writer.flush();
+                    break;
+                }
+
+                writer.writeUTF("Success");
+                writer.flush();
+
+                writer.writeUTF(String.valueOf(counter));
+                writer.flush();
+
+                for (String searchableMessage : searchableMessages) {
+                    if (searchableMessage.contains(keyword)) {
+                        writer.writeUTF(searchableMessage);
+                        writer.flush();
+                    }
+                }
+                break;
+
+            case 6:
+                String ifileName = reader.readUTF();
+                ArrayList<String> importMessages = new ArrayList<>();
+                importMessage(messageClass, userList, user, index, ifileName, importMessages, writer);
+
+                break;
+            case 7:
+                export(writer, reader, messageClass, userList, user, index);
+                break;
+            case 8:
+                quit = false;
+                break;
+        }
+
+        return quit;
+    }
+
     public static void main(String[] args) {
         try {
             ServerSocket serverSocket = new ServerSocket(4240);
             while (true) {
                 Socket socket = serverSocket.accept();
-//                ServerMain serverMain = new ServerMain(socket, serverSocket);
-//                serverMain.run();
                (new ServerMain(socket, serverSocket)).start();
             }
         } catch (Exception e) {
