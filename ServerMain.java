@@ -25,7 +25,37 @@ public class ServerMain extends Thread {
             String password;
 
             ArrayList<String> blockedUserList = new ArrayList<>();
+
+            try {
+                File file = new File("BlockedUsers.txt");
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                BufferedReader bfr = new BufferedReader(new FileReader(file));
+
+                String line = bfr.readLine();
+                while (line != null) {
+                    blockedUserList.add(line);
+                    line = bfr.readLine();
+                }
+            } catch (Exception ignored) {}
+
             ArrayList<String> invisibleList = new ArrayList<>();
+
+            try {
+                File file = new File("InvisibleUsers.txt");
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                BufferedReader bfr = new BufferedReader(new FileReader(file));
+                String line = bfr.readLine();
+                while (line != null) {
+                    invisibleList.add(line);
+                    line = bfr.readLine();
+                }
+            } catch (Exception ignored) {}
 
             ArrayList<String> filterList = new ArrayList<>();
 
@@ -175,6 +205,7 @@ public class ServerMain extends Thread {
 
                             if (availableTutors.size() == 0) {
                                 writer.writeUTF("0");
+                                writer.flush();
                             } else {
                                 availability(availableTutors, writer);
                             }
@@ -185,7 +216,6 @@ public class ServerMain extends Thread {
 
                             int index = -1;
                             boolean unableToMessage = false;
-
                             String person = reader.readUTF();
 
                             if (userList.size() == 0 || userList.size() == 1) {
@@ -212,22 +242,20 @@ public class ServerMain extends Thread {
                                     if (userList.get(i) instanceof Tutor) {
                                         writer.writeUTF("Success");
                                         writer.flush();
-                                        unableToMessage = false;
                                         break;
                                     } else {
                                         writer.writeUTF(String.format("Unable to find/message %s\n\n", person));
                                         writer.flush();
-                                        unableToMessage = true;
                                         break;
                                     }
                                 }
                             }
 
-
-                            if (index == -1 || unableToMessage) {
+                            if (index == -1) {
+                                writer.writeUTF(String.format("Unable to find/message %s\n\n", person));
+                                writer.flush();
                                 break;
                             }
-
 
                             boolean quit = true;
 
@@ -271,7 +299,7 @@ public class ServerMain extends Thread {
 
                                     boolean sameUsername = false;
                                     for (User users : userList) {
-                                        if (users instanceof Student) {
+                                        if (users instanceof Tutor) {
                                             if (users.getAccountUsername().equals(newUsername)) {
                                                 sameUsername = true;
                                                 break;
@@ -350,13 +378,10 @@ public class ServerMain extends Thread {
                                     // Rewriting the file again...
                                     try {
                                         updateFile(userList, f);
-
                                         System.out.println("Account has been deleted");
-
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
                                     }
-
 
                                     break;
                                 case 5:
@@ -413,6 +438,7 @@ public class ServerMain extends Thread {
                                         case "3":
                                             break;
                                     }
+                                    break;
                                 case 7:
                                     String size = String.valueOf(((Student) user).getFilterWordList().size());
                                     writer.writeUTF(size);
@@ -476,7 +502,7 @@ public class ServerMain extends Thread {
                                 writer.writeUTF("Success");
                                 writer.flush();
                                 blockedUserList.remove(i);
-                                unblockUser(blockedUserList, writer);
+                                unblockUser(blockedUserList);
                             } else {
                                 writer.writeUTF("There is no blocked user with that name");
                                 writer.flush();
@@ -548,10 +574,9 @@ public class ServerMain extends Thread {
 
                             int index = -1;
                             boolean unableToMessage = false;
-
                             String person = reader.readUTF();
 
-                            if (userList.size() == 0) {
+                            if (userList.size() == 0 || userList.size() == 1) {
                                 writer.writeUTF("0");
                                 writer.flush();
                                 break;
@@ -575,19 +600,18 @@ public class ServerMain extends Thread {
                                     if (userList.get(i) instanceof Student) {
                                         writer.writeUTF("Success");
                                         writer.flush();
-                                        unableToMessage = false;
                                         break;
                                     } else {
-                                        writer.writeUTF(String.join("Unable to find/message %s\n\n", person));
+                                        writer.writeUTF(String.format("Unable to find/message %s\n\n", person));
                                         writer.flush();
-                                        unableToMessage = true;
                                         break;
                                     }
                                 }
                             }
 
-
-                            if (index == -1 || unableToMessage) {
+                            if (index == -1) {
+                                writer.writeUTF(String.format("Unable to find/message %s\n\n", person));
+                                writer.flush();
                                 break;
                             }
 
@@ -695,6 +719,7 @@ public class ServerMain extends Thread {
                                     break;
 
                                 case 4:
+                                    deletedAccount = true;
 
                                     // Removing User from ArrayList
                                     for (int i = 0; i < userList.size(); i++) {
@@ -749,10 +774,9 @@ public class ServerMain extends Thread {
                                             String[] words = reader.readUTF().split(",");
                                             ArrayList<String> pastWords = ((Tutor) user).getFilterWordList();
 
-                                            pastWords.addAll(Arrays.asList(words));
+                                            Collections.addAll(pastWords, words);
 
                                             ((Tutor) user).setFilterWordList(pastWords);
-                                            System.out.println("Added Successfully");
 
                                             updateCensorWords(user, pastWords);
 
@@ -763,7 +787,6 @@ public class ServerMain extends Thread {
                                             String[] wordList = reader.readUTF().split(",");
 
                                             filterWordList.removeAll(List.of(wordList));
-                                            System.out.println("Deleted Successfully");
 
                                             ((Tutor) user).setFilterWordList(filterWordList);
 
@@ -772,13 +795,17 @@ public class ServerMain extends Thread {
                                         case "3":
                                             break;
                                     }
+                                    break;
 
                                 case 7:
-                                    System.out.println("Words currently being censored:");
+                                    String size = String.valueOf(((Tutor) user).getFilterWordList().size());
+                                    writer.writeUTF(size);
+                                    writer.flush();
+
                                     for (String word : ((Tutor) user).getFilterWordList()) {
-                                        System.out.println(word);
+                                        writer.writeUTF(word);
+                                        writer.flush();
                                     }
-                                    System.out.println();
                                     break;
                                 case 8:
                                     break;
@@ -833,7 +860,7 @@ public class ServerMain extends Thread {
                                 writer.writeUTF("Success");
                                 writer.flush();
                                 blockedUserList.remove(i);
-                                unblockUser(blockedUserList, writer);
+                                unblockUser(blockedUserList);
                             } else {
                                 writer.writeUTF("There is no blocked user with that name");
                                 writer.flush();
@@ -864,6 +891,10 @@ public class ServerMain extends Thread {
                             signedIn = false;
                             break;
                     }
+
+                    if (deletedAccount) {
+                        break;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -888,6 +919,9 @@ public class ServerMain extends Thread {
 
     public static void printMsg(ArrayList<String> messages, User user, DataOutputStream writer) throws IOException {
         String finalMessage = "";
+        System.out.println(((Student) user).getFilterWordList());
+        System.out.println(((Student) user).getFilterWordList().get(0));
+        System.out.println(((Student) user).getFilterWordList().get(0).equals(""));
 
         if (user instanceof Student) {
             for (String message : messages) {
@@ -992,7 +1026,7 @@ public class ServerMain extends Thread {
         writer.flush();
     }
 
-    public static void unblockUser(ArrayList<String> blockedUserList, DataOutputStream writer) throws IOException {
+    public static void unblockUser(ArrayList<String> blockedUserList) {
         try {
             File blockedUsers = new File("BlockedUsers.txt");
             if (!blockedUsers.exists()) {
@@ -1115,16 +1149,30 @@ public class ServerMain extends Thread {
                 User user;
 
                 if (splitLines[5].equals("Student")) {
+//                    System.out.println(splitLines[4].split(";").length);
                     Collections.addAll(filterList, splitLines[4].split(";"));
+//                    System.out.println(filterList);
                     user = new Student(splitLines[0], splitLines[1], splitLines[2], splitLines[3], filterList, UUID.fromString(splitLines[6]));
+//                    System.out.println(((Student) user).getFilterWordList());
                 } else {
+//                    System.out.println(splitLines[6].split(";").length);
                     Collections.addAll(filterList, splitLines[6].split(";"));
                     user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(";"), Double.parseDouble(splitLines[4]), splitLines[5], filterList, UUID.fromString(splitLines[8]));
+//                    System.out.println(((Tutor) user).getFilterWordList());
                 }
 
                 userList.add(user);
                 userLine = bfr.readLine();
             }
+
+//            System.out.println(userList.size());
+//            for (User user : userList) {
+//                if (user instanceof Student) {
+//                    System.out.println(((Student) user).getFilterWordList());
+//                } else {
+//                    System.out.println(((Tutor) user).getFilterWordList());
+//                }
+//            }
 
             bfr.close();
         } catch (IOException e) {

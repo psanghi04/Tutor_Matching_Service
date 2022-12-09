@@ -53,7 +53,6 @@ public class GUI {
         createAcc.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Create Account Selected successfully");
                 try {
                     writer.writeUTF("1");
                     writer.flush();
@@ -124,7 +123,6 @@ public class GUI {
                 } catch (IOException ex) {
                     System.out.println("error");
                 }
-                System.out.println("Log In Selected successfully");
 
                 frame.setTitle("Messenger");
                 JPanel usernamePanel = new JPanel();
@@ -140,7 +138,7 @@ public class GUI {
                 usernameField.setText("");
 
                 JLabel passwordPrompt = new JLabel("Password:");
-                JTextField passwordField = new JTextField(10);
+                JPasswordField passwordField = new JPasswordField(10);
                 passwordField.setText("");
 
                 usernamePanel.add(usernamePrompt);
@@ -165,7 +163,7 @@ public class GUI {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String username = usernameField.getText();
-                        String passwd = passwordField.getText();
+                        String passwd = String.valueOf(passwordField.getPassword());
                         try {
                             writer.writeUTF(username);
                             writer.writeUTF(passwd);
@@ -261,8 +259,7 @@ public class GUI {
         emailField.setText("");
 
         JLabel passwordPrompt = new JLabel("Password:");
-        JTextField passwordField = new JTextField(10);
-        passwordField.setText("");
+        JPasswordField passwordField = new JPasswordField(10);
 
         JTextField subField = new JTextField(10);
         JTextField priceField = new JTextField(10);
@@ -315,7 +312,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
                 String email = emailField.getText();
-                String passwd = passwordField.getText();
+                String passwd = String.valueOf(passwordField.getPassword());
 
                 try {
                     writer.writeUTF(username);
@@ -511,6 +508,7 @@ public class GUI {
                                     JMenuItem importC = new JMenuItem("Import conversation");
                                     JMenuItem exportC = new JMenuItem("Export conversation");
                                     JMenuItem quit = new JMenuItem("Quit");
+                                    quit.setBackground(new Color(255, 0, 0));
                                     JPanel menuMessage = new JPanel();
                                     menuMessage.setLayout(new BoxLayout(menuMessage, BoxLayout.Y_AXIS));
 
@@ -636,7 +634,7 @@ public class GUI {
                                                 writer.flush();
 
                                                 JLabel messagePerson = new JLabel("Which message do you want to delete?");
-                                                JTextField delMsg = new JTextField("Delete Message", 10);
+                                                JTextField delMsg = new JTextField("", 10);
 
                                                 JButton deleteButton = new JButton("Delete");
                                                 deleteButton.setPreferredSize(new Dimension(151, 29));
@@ -1038,6 +1036,7 @@ public class GUI {
         JMenuItem inv = new JMenuItem("Become Invisible to a Student");
         JMenuItem exit = new JMenuItem("Sign Out");
         exit.setBackground(new Color(255,0, 0 ));
+
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
 
@@ -1098,7 +1097,7 @@ public class GUI {
                                 String response = reader.readUTF();
 
                                 if (response.equals("0")) {
-                                    JLabel noUser = new JLabel("There are no tutors available");
+                                    JLabel noUser = new JLabel("There are no students available");
                                     noUser.setHorizontalAlignment(SwingConstants.CENTER);
                                     noUser.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -1150,6 +1149,7 @@ public class GUI {
                                         }
                                     });
                                 } else {
+                                    System.out.println(response);
                                     JMenuItem readMsg = new JMenuItem("Read message");
                                     JMenuItem writeMsg = new JMenuItem("Write message");
                                     JMenuItem deleteMsg = new JMenuItem("Delete message");
@@ -1158,6 +1158,7 @@ public class GUI {
                                     JMenuItem importC = new JMenuItem("Import conversation");
                                     JMenuItem exportC = new JMenuItem("Export conversation");
                                     JMenuItem quit = new JMenuItem("Quit");
+                                    quit.setBackground(new Color(255, 0, 0));
                                     JPanel menuMessage = new JPanel();
                                     menuMessage.setLayout(new BoxLayout(menuMessage, BoxLayout.Y_AXIS));
 
@@ -1284,7 +1285,7 @@ public class GUI {
                                                 writer.flush();
 
                                                 JLabel messagePerson = new JLabel("Which message do you want to delete?");
-                                                JTextField delMsg = new JTextField("Delete Message", 10);
+                                                JTextField delMsg = new JTextField("", 10);
 
                                                 JButton deleteButton = new JButton("Delete");
                                                 deleteButton.setPreferredSize(new Dimension(151, 29));
@@ -1407,75 +1408,80 @@ public class GUI {
                                         @Override
                                         public void actionPerformed(ActionEvent e) {
                                             try {
-                                                writer.writeUTF("5");
-                                                writer.flush();
+                                                try {
+                                                    writer.writeUTF("5");
+                                                    writer.flush();
 
-                                                JLabel messagePerson = new JLabel("Enter a keyword to search for a message");
-                                                JTextField keyword = new JTextField("", 10);
+                                                    JLabel messagePerson = new JLabel("Enter a keyword to search for a message");
+                                                    JTextField keyword = new JTextField("", 10);
 
-                                                JButton searchButton = new JButton("Search");
-                                                searchButton.setPreferredSize(new Dimension(151, 29));
+                                                    JButton searchButton = new JButton("Search");
+                                                    searchButton.setPreferredSize(new Dimension(151, 29));
 
-                                                JPanel promptPanel = new JPanel();
-                                                promptPanel.add(messagePerson);
-                                                promptPanel.add(keyword);
+                                                    JPanel promptPanel = new JPanel();
+                                                    promptPanel.add(messagePerson);
+                                                    promptPanel.add(keyword);
 
-                                                JPanel buttonPanel = new JPanel();
-                                                buttonPanel.add(searchButton);
+                                                    JPanel buttonPanel = new JPanel();
+                                                    buttonPanel.add(searchButton);
 
-                                                JPanel holder = new JPanel(new GridLayout(0, 1));
-                                                holder.add(promptPanel);
-                                                holder.add(buttonPanel);
+                                                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                                                    holder.add(promptPanel);
+                                                    holder.add(buttonPanel);
 
-                                                content.add("Search Message", holder);
-                                                cl.show(content, "Search Message");
+                                                    content.add("Search Message", holder);
+                                                    cl.show(content, "Search Message");
 
-                                                searchButton.addActionListener(new ActionListener() {
-                                                    @Override
-                                                    public void actionPerformed(ActionEvent e) {
-                                                        try {
-                                                            writer.writeUTF(keyword.getText());
-                                                            writer.flush();
+                                                    searchButton.addActionListener(new ActionListener() {
+                                                        @Override
+                                                        public void actionPerformed(ActionEvent e) {
+                                                            try {
+                                                                writer.writeUTF(keyword.getText());
+                                                                writer.flush();
 
-                                                            String response = reader.readUTF();
-                                                            if (response.equals("Message not found!")) {
-                                                                errorPage("Tutor", response);
-                                                            }
+                                                                String response = reader.readUTF();
+                                                                if (response.equals("Message not found!")) {
+                                                                    errorPage("Tutor", response);
+                                                                } else {
 
-                                                            int size = Integer.parseInt(reader.readUTF());
+                                                                    int size = Integer.parseInt(reader.readUTF());
 
-                                                            JPanel resultPanel = new JPanel(new GridLayout(0, 1));
-                                                            for (int i = 0; i < size; i++) {
-                                                                String searchResult = reader.readUTF();
+                                                                    JPanel resultPanel = new JPanel(new GridLayout(0, 1));
+                                                                    for (int i = 0; i < size; i++) {
+                                                                        String searchResult = reader.readUTF();
 
-                                                                JLabel display = new JLabel(searchResult);
-                                                                resultPanel.add(display);
-                                                            }
+                                                                        JLabel display = new JLabel(searchResult);
+                                                                        resultPanel.add(display);
+                                                                    }
 
-                                                            JButton okButton = new JButton("OK");
-                                                            okButton.setPreferredSize(new Dimension(151, 29));
+                                                                    JButton okButton = new JButton("OK");
+                                                                    okButton.setPreferredSize(new Dimension(151, 29));
 
-                                                            JPanel buttonPanel = new JPanel();
-                                                            buttonPanel.add(okButton);
+                                                                    JPanel buttonPanel = new JPanel();
+                                                                    buttonPanel.add(okButton);
 
-                                                            JPanel holder = new JPanel(new GridLayout(0, 1));
-                                                            holder.add(resultPanel);
-                                                            holder.add(buttonPanel);
+                                                                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                                                                    holder.add(resultPanel);
+                                                                    holder.add(buttonPanel);
 
-                                                            content.add("Searched Message", holder);
-                                                            cl.show(content, "Searched Message");
+                                                                    content.add("Searched Message", holder);
+                                                                    cl.show(content, "Searched Message");
 
-                                                            okButton.addActionListener(new ActionListener() {
-                                                                @Override
-                                                                public void actionPerformed(ActionEvent e) {
-                                                                    cl.show(content, "Tutor Message Menu");
+                                                                    okButton.addActionListener(new ActionListener() {
+                                                                        @Override
+                                                                        public void actionPerformed(ActionEvent e) {
+                                                                            cl.show(content, "Tutor Message Menu");
+                                                                        }
+                                                                    });
                                                                 }
-                                                            });
-                                                        } catch (IOException ex) {
-                                                            throw new RuntimeException(ex);
+                                                            } catch (IOException ex) {
+                                                                throw new RuntimeException(ex);
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                } catch (Exception ex) {
+                                                    ex.printStackTrace();
+                                                }
                                             } catch (Exception ex) {
                                                 ex.printStackTrace();
                                             }
@@ -2013,6 +2019,8 @@ public class GUI {
                                         try {
                                             writer.writeUTF(answer.getText());
                                             writer.flush();
+
+                                            cl.show(content, role + " Menu");
                                         } catch (IOException ex) {
                                             throw new RuntimeException(ex);
                                         }

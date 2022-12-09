@@ -10,7 +10,7 @@ public class ClientMain {
             GUI gui = new GUI(reader, writer);
             gui.createInterface();
         } catch (Exception e) {
-            System.out.println("Couldn't print");
+            System.out.println("Couldn't connect");
         }
     }
 }
