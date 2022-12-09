@@ -388,6 +388,8 @@ public class GUI {
         JMenuItem ublk = new JMenuItem("Unblock a Tutor");
         JMenuItem inv = new JMenuItem("Become Invisible to a Tutor");
         JMenuItem exit = new JMenuItem("Sign Out");
+        exit.setBackground(new Color(255,0, 0 ));
+
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
 
@@ -537,9 +539,8 @@ public class GUI {
                                                     errorPage("Student", "No Messages Available");
                                                 } else {
                                                     String[] messages = reader.readUTF().split(";");
-                                                    JPanel displayMsg = new JPanel();
+                                                    JPanel displayMsg = new JPanel(new GridLayout(0, 1));
                                                     JPanel holder = new JPanel(new GridLayout(0, 1));
-                                                    displayMsg.setLayout(new GridLayout(0, 1));
                                                     for (String line : messages) {
                                                         JLabel label = new JLabel(line);
                                                         if (line.contains(user)) {
@@ -599,7 +600,7 @@ public class GUI {
                                                 writeMsgPanel.add(message);
                                                 buttonPanel.add(sendButton);
 
-                                                JPanel holder = new JPanel(new GridLayout(0, 1));
+                                                JPanel holder = new JPanel(new GridLayout(2, 1));
                                                 holder.add(writeMsgPanel);
                                                 holder.add(sendButton);
 
@@ -634,7 +635,7 @@ public class GUI {
                                                 writer.writeUTF("3");
                                                 writer.flush();
 
-                                                JLabel messagePerson = new JLabel("What message or line number do you want to delete?");
+                                                JLabel messagePerson = new JLabel("Which message do you want to delete?");
                                                 JTextField delMsg = new JTextField("Delete Message", 10);
 
                                                 JButton deleteButton = new JButton("Delete");
@@ -690,7 +691,7 @@ public class GUI {
                                                 int size = Integer.parseInt(reader.readUTF());
 
                                                 if (size != 0) {
-                                                    JLabel messagePerson = new JLabel("What message or line number do you want to edit?");
+                                                    JLabel messagePerson = new JLabel("Which message do you want to edit?");
 
                                                     JLabel oldLabel = new JLabel("Old");
                                                     JLabel newLabel = new JLabel("New");
@@ -1036,6 +1037,7 @@ public class GUI {
         JMenuItem ublk = new JMenuItem("Unblock a Student");
         JMenuItem inv = new JMenuItem("Become Invisible to a Student");
         JMenuItem exit = new JMenuItem("Sign Out");
+        exit.setBackground(new Color(255,0, 0 ));
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
 
@@ -1281,7 +1283,7 @@ public class GUI {
                                                 writer.writeUTF("3");
                                                 writer.flush();
 
-                                                JLabel messagePerson = new JLabel("What message or line number do you want to delete?");
+                                                JLabel messagePerson = new JLabel("Which message do you want to delete?");
                                                 JTextField delMsg = new JTextField("Delete Message", 10);
 
                                                 JButton deleteButton = new JButton("Delete");
@@ -1337,7 +1339,7 @@ public class GUI {
                                                 int size = Integer.parseInt(reader.readUTF());
 
                                                 if (size != 0) {
-                                                    JLabel messagePerson = new JLabel("What message or line number do you want to edit?");
+                                                    JLabel messagePerson = new JLabel("Which message do you want to edit?");
 
                                                     JLabel oldLabel = new JLabel("Old");
                                                     JLabel newLabel = new JLabel("New");
@@ -1803,6 +1805,7 @@ public class GUI {
         JPanel responsePanel = new JPanel();
         JLabel responseLabel = new JLabel(response);
         responseLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        responseLabel.setVerticalAlignment(SwingConstants.CENTER);
         responsePanel.add(responseLabel);
 
         JPanel buttonPanel = new JPanel();
@@ -1855,7 +1858,7 @@ public class GUI {
                     String response = reader.readUTF();
                     if (response.contains("Cannot")) {
                         changedVisibility(response, "Block yourself", role);
-                    } else if (response.contains("no")) {
+                    } else if (response.contains("not")) {
                         changedVisibility(response, "No Blocked User", role);
                     } else {
                         changedVisibility(response, "Successful Block", role);
@@ -1876,6 +1879,7 @@ public class GUI {
         JMenuItem changeFilterWords = new JMenuItem("Change Filter Words");
         JMenuItem displayFilterWords = new JMenuItem("Display Filter Words");
         JMenuItem exit = new JMenuItem("Exit");
+        exit.setBackground(new Color(255,0, 0 ));
 
         JPanel editProfileMenu = new JPanel();
         editProfileMenu.setLayout(new BoxLayout(editProfileMenu, BoxLayout.Y_AXIS));
@@ -2094,16 +2098,29 @@ public class GUI {
 
                     JPanel censorPanel = new JPanel(new GridLayout(0, 1));
                     int size = Integer.parseInt(reader.readUTF());
-                    for (int i = 0; i < size; i++) {
-                        JLabel censorWord = new JLabel(reader.readUTF());
+                    if (size == 0) {
+                        JLabel censorWord = new JLabel("No Words being Filtered");
                         censorWord.setHorizontalAlignment(SwingConstants.CENTER);
                         censorPanel.add(censorWord);
+                    } else {
+                        for (int i = 0; i < size; i++) {
+                            JLabel censorWord = new JLabel(reader.readUTF());
+                            censorWord.setHorizontalAlignment(SwingConstants.CENTER);
+                            censorPanel.add(censorWord);
+                        }
                     }
 
                     JButton okButton = new JButton("OK");
                     okButton.setPreferredSize(new Dimension(151, 29));
 
-                    content.add("Censor List", censorPanel);
+                    JPanel buttonPanel = new JPanel();
+                    buttonPanel.add(okButton);
+
+                    JPanel holder = new JPanel(new GridLayout(0, 1));
+                    holder.add(censorPanel);
+                    holder.add(buttonPanel);
+
+                    content.add("Censor List", holder);
                     cl.show(content, "Censor List");
 
                     okButton.addActionListener(new ActionListener() {
@@ -2134,10 +2151,8 @@ public class GUI {
     }
 
     public void invisiblePage(String role) throws IOException {
-        String response = reader.readUTF();
-
         JPanel promptPanel = new JPanel();
-        JLabel prompt = new JLabel(response);
+        JLabel prompt = new JLabel("Who would you like to become invisible to?");
         JTextField answer = new JTextField("", 10);
         promptPanel.add(prompt);
         promptPanel.add(answer);
@@ -2162,7 +2177,7 @@ public class GUI {
                     writer.flush();
 
                     String response = reader.readUTF();
-                    if (response.equals("There are no invisible users")) {
+                    if (response.equals("User not found")) {
                         changedVisibility(response, "No Invisible Users", role);
                     } else {
                         changedVisibility(response, "Successful Invisibility", role);

@@ -188,7 +188,7 @@ public class ServerMain extends Thread {
 
                             String person = reader.readUTF();
 
-                            if (userList.size() == 0) {
+                            if (userList.size() == 0 || userList.size() == 1) {
                                 writer.writeUTF("0");
                                 writer.flush();
                                 break;
@@ -246,18 +246,24 @@ public class ServerMain extends Thread {
                             switch (optionProfile) {
                                 case 1:
                                     String newPassword = reader.readUTF();
+
+                                    if (newPassword.equals(user.getPassword())) {
+                                        writer.writeUTF("Fail");
+                                        writer.flush();
+                                        break;
+                                    }
                                     user.setPassword(newPassword);
 
                                     try {
                                         updateFile(userList, f);
                                         writer.writeUTF("Success");
                                         writer.flush();
+                                        break;
                                     } catch (IOException e) {
-                                        writer.writeUTF("Fail");
-                                        writer.flush();
                                     }
 
-
+                                    writer.writeUTF("Fail");
+                                    writer.flush();
                                     break;
                                 case 2:
 
@@ -276,7 +282,8 @@ public class ServerMain extends Thread {
                                     if (!sameUsername) {
                                         user.setAccountUsername(newUsername);
                                     } else {
-                                        System.out.println("Username exists.");
+                                        writer.writeUTF("Fail");
+                                        writer.flush();
                                         continue;
                                     }
 
@@ -284,11 +291,12 @@ public class ServerMain extends Thread {
                                         updateFile(userList, f);
                                         writer.writeUTF("Success");
                                         writer.flush();
+                                        break;
                                     } catch (IOException e) {
-                                        writer.writeUTF("Fail");
-                                        writer.flush();
                                     }
 
+                                    writer.writeUTF("Fail");
+                                    writer.flush();
                                     break;
 
                                 case 3:
@@ -315,14 +323,14 @@ public class ServerMain extends Thread {
 
                                     try {
                                         updateFile(userList, f);
-
                                         writer.writeUTF("Success");
                                         writer.flush();
+                                        break;
                                     } catch (IOException e) {
-                                        writer.writeUTF("Fail");
-                                        writer.flush();
                                     }
 
+                                    writer.writeUTF("Fail");
+                                    writer.flush();
                                     break;
 
                                 case 4:
@@ -430,23 +438,22 @@ public class ServerMain extends Thread {
                                 break;
                             }
 
+                            int check = 0;
                             for (User users : userList) {
                                 if (users.getAccountUsername().equals(blockUsername)) {
                                     blockedUserList.add(user + "," + user.getID() + ";" + users.getID());
+                                    block(blockedUserList);
+                                    writer.writeUTF("Successfully Blocked User");
+                                    writer.flush();
+                                    check = 1;
                                     break;
                                 }
                             }
 
-                            try {
-                                block(blockedUserList);
-                                writer.writeUTF("Successfully Blocked User");
-                                writer.flush();
-                            } catch (IOException e) {
-                                writer.writeUTF("There are no blocked users");
+                            if (check == 0) {
+                                writer.writeUTF("User does not exist");
                                 writer.flush();
                             }
-
-
                             break;
                         case 5:
                             String unblockUsername = reader.readUTF();
@@ -471,7 +478,7 @@ public class ServerMain extends Thread {
                                 blockedUserList.remove(i);
                                 unblockUser(blockedUserList, writer);
                             } else {
-                                writer.writeUTF("There is no user with that name blocked");
+                                writer.writeUTF("There is no blocked user with that name");
                                 writer.flush();
                                 break;
                             }
@@ -479,13 +486,21 @@ public class ServerMain extends Thread {
                             break;
                         case 6:
                             String invisiblePerson = reader.readUTF();
+                            int count = 0;
                             for (User users : userList) {
                                 if (users.getAccountUsername().equals(invisiblePerson)) {
                                     invisibleList.add(user + "," + user.getID() + ";" + users.getID());
+                                    count++;
+                                    break;
                                 }
                             }
 
-                            setInvisible(invisibleList, writer);
+                            if (count != 0) {
+                                setInvisible(invisibleList, writer);
+                            } else {
+                                writer.writeUTF("User not found");
+                                writer.flush();
+                            }
 
                             break;
                         case 7:
@@ -522,6 +537,7 @@ public class ServerMain extends Thread {
 
                             if (availableStudents.size() == 0) {
                                 writer.writeUTF("0");
+                                writer.flush();
                             } else {
                                 availability(availableStudents, writer);
                             }
@@ -591,77 +607,91 @@ public class ServerMain extends Thread {
                             switch (optionProfile) {
                                 case 1:
                                     String newPassword = reader.readUTF();
+
+                                    if (newPassword.equals(user.getPassword())) {
+                                        writer.writeUTF("Fail");
+                                        writer.flush();
+                                        break;
+                                    }
                                     user.setPassword(newPassword);
 
                                     try {
                                         updateFile(userList, f);
-                                        System.out.println("Password has been changed successfully");
+                                        writer.writeUTF("Success");
+                                        writer.flush();
+                                        break;
                                     } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
 
-
+                                    writer.writeUTF("Fail");
+                                    writer.flush();
                                     break;
-
                                 case 2:
 
                                     String newUsername = reader.readUTF();
 
-                                    boolean similarUsername = false;
+                                    boolean sameUsername = false;
                                     for (User users : userList) {
-                                        if (users instanceof Tutor) {
+                                        if (users instanceof Student) {
                                             if (users.getAccountUsername().equals(newUsername)) {
-                                                similarUsername = true;
+                                                sameUsername = true;
                                                 break;
                                             }
                                         }
                                     }
 
-                                    if (!similarUsername) {
+                                    if (!sameUsername) {
                                         user.setAccountUsername(newUsername);
                                     } else {
-                                        System.out.println("Username exists.");
+                                        writer.writeUTF("Fail");
+                                        writer.flush();
                                         continue;
                                     }
 
                                     try {
                                         updateFile(userList, f);
-                                        System.out.println("Username has been changed successfully!");
+                                        writer.writeUTF("Success");
+                                        writer.flush();
+                                        break;
                                     } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
 
+                                    writer.writeUTF("Fail");
+                                    writer.flush();
                                     break;
 
                                 case 3:
                                     String newEmail = reader.readUTF();
 
-                                    boolean similarEmail = false;
+                                    boolean sameEmail = false;
                                     for (User users : userList) {
                                         if (users instanceof Tutor) {
                                             if (users.getEmail().equals(newEmail)) {
-                                                similarEmail = true;
+                                                sameEmail = true;
                                                 break;
                                             }
                                         }
                                     }
 
-                                    if (!similarEmail) {
+                                    if (!sameEmail) {
                                         user.setEmail(newEmail);
                                     } else {
-                                        System.out.println("Email exists.");
-                                        continue;
+                                        writer.writeUTF("Fail");
+                                        writer.flush();
+                                        break;
                                     }
 
 
                                     try {
                                         updateFile(userList, f);
-
-                                        System.out.println("Email has been successfully changed!");
+                                        writer.writeUTF("Success");
+                                        writer.flush();
+                                        break;
                                     } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
 
+                                    writer.writeUTF("Fail");
+                                    writer.flush();
                                     break;
 
                                 case 4:
@@ -752,37 +782,35 @@ public class ServerMain extends Thread {
                                     break;
                                 case 8:
                                     break;
-                                default:
-                                    System.out.println("Invalid Option Number");
-                                    System.out.println("Please Try Again");
-                                    break;
                             }
 
                             break;
 
                         case 4:
-
                             String blockUsername = reader.readUTF();
 
                             if (blockUsername.equals(user.getAccountUsername())) {
-                                System.out.println("Cannot block yourself");
+                                writer.writeUTF("Cannot block yourself");
+                                writer.flush();
                                 break;
                             }
 
+                            int check = 0;
                             for (User users : userList) {
                                 if (users.getAccountUsername().equals(blockUsername)) {
                                     blockedUserList.add(user + "," + user.getID() + ";" + users.getID());
+                                    block(blockedUserList);
+                                    writer.writeUTF("Successfully Blocked User");
+                                    writer.flush();
+                                    check = 1;
                                     break;
                                 }
                             }
 
-                            try {
-                                block(blockedUserList);
-                            } catch (IOException e) {
-                                System.out.println("Unable to write to file");
+                            if (check == 0) {
+                                writer.writeUTF("User does not exist");
+                                writer.flush();
                             }
-
-
                             break;
                         case 5:
                             String unblockUsername = reader.readUTF();
@@ -807,26 +835,31 @@ public class ServerMain extends Thread {
                                 blockedUserList.remove(i);
                                 unblockUser(blockedUserList, writer);
                             } else {
-                                writer.writeUTF("There is no user with that name blocked");
+                                writer.writeUTF("There is no blocked user with that name");
                                 writer.flush();
                                 break;
                             }
 
                             break;
                         case 6:
-                            writer.writeUTF("Which user do you want to become invisible to?");
-                            writer.flush();
                             String invisiblePerson = reader.readUTF();
+                            int count = 0;
                             for (User users : userList) {
                                 if (users.getAccountUsername().equals(invisiblePerson)) {
                                     invisibleList.add(user + "," + user.getID() + ";" + users.getID());
+                                    count++;
+                                    break;
                                 }
                             }
 
-                            setInvisible(invisibleList, writer);
+                            if (count != 0) {
+                                setInvisible(invisibleList, writer);
+                            } else {
+                                writer.writeUTF("User not found");
+                                writer.flush();
+                            }
 
                             break;
-
                         case 7:
                             signedIn = false;
                             break;
@@ -946,17 +979,17 @@ public class ServerMain extends Thread {
                 invisibleUsers.createNewFile();
             }
 
-            FileWriter fr = new FileWriter(invisibleUsers);
-            PrintWriter pw = new PrintWriter(new BufferedWriter(fr));
+            PrintWriter pw = new PrintWriter(new FileWriter(invisibleUsers));
 
             for (String s : invisibleList) {
                 pw.println(s);
             }
             pw.flush();
         } catch (IOException e) {
-            writer.writeUTF("There are no invisible users");
-            writer.flush();
         }
+
+        writer.writeUTF("Successfully Changed Visibility");
+        writer.flush();
     }
 
     public static void unblockUser(ArrayList<String> blockedUserList, DataOutputStream writer) throws IOException {
@@ -973,8 +1006,6 @@ public class ServerMain extends Thread {
                 pw.println(s);
             }
         } catch (IOException e) {
-            writer.writeUTF("There is no user with that username");
-            writer.flush();
         }
     }
 
@@ -1110,6 +1141,7 @@ public class ServerMain extends Thread {
 
                 if (messages.size() == 0) {
                     writer.writeUTF("0");
+                    writer.flush();
                     break;
                 } else {
                     writer.writeUTF("1");
@@ -1123,7 +1155,6 @@ public class ServerMain extends Thread {
                 String content = reader.readUTF();
                 messageClass.writeMsg(user, userList.get(index), content);
                 messageClass.export(user, userList.get(index));
-                writer.writeUTF("Written Successfully");
 
                 break;
             case 3:
