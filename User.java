@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class User {
@@ -7,18 +8,26 @@ public class User {
 
     private final UUID ID;
 
-    public User(String accountUsername, String password, String email) {
+    private String filter;
+
+    private ArrayList<String> filterWordList;
+
+    public User(String accountUsername, String password, String email, String filter, ArrayList<String> filterWordList) {
         this.accountUsername = accountUsername; // sets the current instance of accountUsername to the parameter accountUsername
         this.password = password; // sets the current instance of password to the parameter password
         this.email = email; // sets the current instance of email to the parameter email
         this.ID = UUID.randomUUID();
+        this.filter = filter;
+        this.filterWordList = filterWordList;
     }
 
-    public User(String accountUsername, String password, String email, UUID ID) {
+    public User(String accountUsername, String password, String email, UUID ID, String filter, ArrayList<String> filterWordList) {
         this.accountUsername = accountUsername; // sets the current instance of accountUsername to the parameter accountUsername
         this.password = password; // sets the current instance of password to the parameter password
         this.email = email; // sets the current instance of email to the parameter email
         this.ID = ID;
+        this.filter = filter;
+        this.filterWordList = filterWordList;
     }
 
     public UUID getID() {
@@ -55,4 +64,19 @@ public class User {
         this.email = email;
     }
 
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public ArrayList<String> getFilterWordList() {
+        return filterWordList;
+    }
+
+    public void setFilterWordList(ArrayList<String> filterWordList) {
+        this.filterWordList = filterWordList;
+    }
 }

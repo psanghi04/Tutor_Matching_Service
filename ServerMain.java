@@ -8,6 +8,8 @@ public class ServerMain extends Thread {
     Socket client;
     ServerSocket serverSocket;
 
+    static Object obj;
+
     public ServerMain(Socket client, ServerSocket socket) {
         this.client = client;
         this.serverSocket = socket;
@@ -25,43 +27,42 @@ public class ServerMain extends Thread {
             String password;
 
             ArrayList<String> blockedUserList = new ArrayList<>();
-
-            try {
-                File file = new File("BlockedUsers.txt");
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
-
-                BufferedReader bfr = new BufferedReader(new FileReader(file));
-
-                String line = bfr.readLine();
-                while (line != null) {
-                    blockedUserList.add(line);
-                    line = bfr.readLine();
-                }
-            } catch (Exception ignored) {}
-
             ArrayList<String> invisibleList = new ArrayList<>();
 
-            try {
-                File file = new File("InvisibleUsers.txt");
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
+            synchronized (obj) {
+                try {
+                    File file = new File("BlockedUsers.txt");
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
 
-                BufferedReader bfr = new BufferedReader(new FileReader(file));
-                String line = bfr.readLine();
-                while (line != null) {
-                    invisibleList.add(line);
+                    BufferedReader bfr = new BufferedReader(new FileReader(file));
+
+                    String line = bfr.readLine();
+                    while (line != null) {
+                        blockedUserList.add(line);
+                        line = bfr.readLine();
+                    }
+
+                    file = new File("InvisibleUsers.txt");
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+
+                    bfr = new BufferedReader(new FileReader(file));
                     line = bfr.readLine();
-                }
-            } catch (Exception ignored) {}
+                    while (line != null) {
+                        invisibleList.add(line);
+                        line = bfr.readLine();
+                    }
+                } catch (Exception ignored) {}
+            }
 
             ArrayList<String> filterList = new ArrayList<>();
 
             File f = new File("UserDetails.txt");
 
-            readUsers(f, filterList, userList);
+            readUsers(f, userList);
 
             User user = null; // currentUser logged in
             boolean signedIn = false;
@@ -183,13 +184,11 @@ public class ServerMain extends Thread {
                     // Student Interface
 
                     int option = Integer.parseInt(reader.readUTF());
-
                     boolean deletedAccount = false;
-
                     switch (option) {
 
                         case 1:
-                            readUsers(f, filterList, userList);
+                            readUsers(f, userList);
                             ArrayList<User> availableTutors = new ArrayList<>();
 
                             for (User userEl : userList) {
@@ -215,7 +214,6 @@ public class ServerMain extends Thread {
                         case 2:
 
                             int index = -1;
-                            boolean unableToMessage = false;
                             String person = reader.readUTF();
 
                             if (userList.size() == 0 || userList.size() == 1) {
@@ -378,7 +376,6 @@ public class ServerMain extends Thread {
                                     // Rewriting the file again...
                                     try {
                                         updateFile(userList, f);
-                                        System.out.println("Account has been deleted");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
                                     }
@@ -386,53 +383,53 @@ public class ServerMain extends Thread {
                                     break;
                                 case 5:
                                     String filter = reader.readUTF();
-                                    ((Student) user).setFilter(filter);
+                                    user.setFilter(filter);
 
-                                    try {
-                                        BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
-                                        ArrayList<String> lines = new ArrayList<>();
-                                        String line;
-                                        while ((line = bfr.readLine()) != null) {
-                                            String[] newLine = line.split(",");
-                                            if (newLine[0].equals(user.getAccountUsername())) {
-                                                newLine[3] = filter;
-                                                line = String.join(",", newLine);
+                                    synchronized (obj) {
+                                        try {
+                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+                                            ArrayList<String> lines = new ArrayList<>();
+                                            String line;
+                                            while ((line = bfr.readLine()) != null) {
+                                                String[] newLine = line.split(",");
+                                                if (newLine[0].equals(user.getAccountUsername())) {
+                                                    newLine[3] = filter;
+                                                    line = String.join(",", newLine);
+                                                }
+                                                lines.add(line);
                                             }
-                                            lines.add(line);
-                                        }
 
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
-                                        for (String det : lines) {
-                                            pw.write(det + "\n");
-                                            pw.flush();
+                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+                                            for (String det : lines) {
+                                                pw.write(det + "\n");
+                                                pw.flush();
+                                            }
+                                            writer.writeUTF("Success");
+                                            writer.flush();
+                                            break;
+                                        } catch (IOException e) {
+                                            System.out.println("Unable to write file");
                                         }
-                                    } catch (IOException e) {
-                                        System.out.println("Unable to write file");
                                     }
+                                    writer.writeUTF("Fail");
+                                    writer.flush();
                                     break;
                                 case 6:
                                     String answer = reader.readUTF();
                                     switch (answer) {
                                         case "1":
                                             String[] words = reader.readUTF().split(",");
-                                            ArrayList<String> pastWords = ((Student) user).getFilterWordList();
-
+                                            ArrayList<String> pastWords = user.getFilterWordList();
                                             Collections.addAll(pastWords, words);
-
-                                            ((Student) user).setFilterWordList(pastWords);
-
+                                            user.setFilterWordList(pastWords);
                                             updateCensoredWords(user, pastWords);
 
                                             break;
                                         case "2":
-                                            ArrayList<String> filterWordList = ((Student) user).getFilterWordList();
-
+                                            ArrayList<String> filterWordList = user.getFilterWordList();
                                             String[] wordList = reader.readUTF().split(",");
-
                                             filterWordList.removeAll(List.of(wordList));
-
-                                            ((Student) user).setFilterWordList(filterWordList);
-
+                                            user.setFilterWordList(filterWordList);
                                             updateCensoredWords(user, filterWordList);
                                             break;
                                         case "3":
@@ -440,11 +437,11 @@ public class ServerMain extends Thread {
                                     }
                                     break;
                                 case 7:
-                                    String size = String.valueOf(((Student) user).getFilterWordList().size());
+                                    String size = String.valueOf(user.getFilterWordList().size());
                                     writer.writeUTF(size);
                                     writer.flush();
 
-                                    for (String word : ((Student) user).getFilterWordList()) {
+                                    for (String word : user.getFilterWordList()) {
                                         writer.writeUTF(word);
                                         writer.flush();
                                     }
@@ -533,7 +530,6 @@ public class ServerMain extends Thread {
                             signedIn = false;
                             break;
                     }
-
                     if (deletedAccount) {
                         break;
                     }
@@ -541,13 +537,11 @@ public class ServerMain extends Thread {
                     // Tutor Interface
 
                     int option = Integer.parseInt(reader.readUTF());
-
                     boolean deletedAccount = false;
-
                     switch (option) {
 
                         case 1:
-                            readUsers(f, filterList, userList);
+                            readUsers(f, userList);
                             ArrayList<User> availableStudents = new ArrayList<>();
 
                             for (User userEl : userList) {
@@ -573,7 +567,6 @@ public class ServerMain extends Thread {
                         case 2:
 
                             int index = -1;
-                            boolean unableToMessage = false;
                             String person = reader.readUTF();
 
                             if (userList.size() == 0 || userList.size() == 1) {
@@ -644,8 +637,7 @@ public class ServerMain extends Thread {
                                         writer.writeUTF("Success");
                                         writer.flush();
                                         break;
-                                    } catch (IOException e) {
-                                    }
+                                    } catch (IOException e) {}
 
                                     writer.writeUTF("Fail");
                                     writer.flush();
@@ -677,8 +669,7 @@ public class ServerMain extends Thread {
                                         writer.writeUTF("Success");
                                         writer.flush();
                                         break;
-                                    } catch (IOException e) {
-                                    }
+                                    } catch (IOException e) {}
 
                                     writer.writeUTF("Fail");
                                     writer.flush();
@@ -733,7 +724,6 @@ public class ServerMain extends Thread {
                                     // Rewriting the file again...
                                     try {
                                         updateFile(userList, f);
-                                        System.out.println("Account has been deleted");
                                     } catch (IOException e) {
                                         System.out.println("Can't write to the file!");
                                     }
@@ -741,30 +731,37 @@ public class ServerMain extends Thread {
                                     break;
                                 case 5:
                                     String filter = reader.readUTF();
-                                    ((Tutor) user).setFilter(filter);
+                                    user.setFilter(filter);
 
-                                    try {
-                                        BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
-                                        ArrayList<String> lines = new ArrayList<>();
-                                        String line;
-                                        while ((line = bfr.readLine()) != null) {
-                                            String[] newLine = line.split(",");
-                                            if (newLine[0].equals(user.getAccountUsername())) {
-                                                newLine[5] = filter;
-                                                line = String.join(",", newLine);
+                                    synchronized (obj) {
+                                        try {
+                                            BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
+                                            ArrayList<String> lines = new ArrayList<>();
+                                            String line;
+                                            while ((line = bfr.readLine()) != null) {
+                                                String[] newLine = line.split(",");
+                                                if (newLine[0].equals(user.getAccountUsername())) {
+                                                    newLine[5] = filter;
+                                                    line = String.join(",", newLine);
+                                                }
+                                                lines.add(line);
                                             }
-                                            lines.add(line);
-                                        }
 
-                                        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
-                                        for (String det : lines) {
-                                            pw.write(det + "\n");
-                                            pw.flush();
+                                            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("UserDetails.txt")));
+                                            for (String det : lines) {
+                                                pw.write(det + "\n");
+                                                pw.flush();
+                                            }
+                                            writer.writeUTF("Success");
+                                            writer.flush();
+                                            break;
+                                        } catch (IOException e) {
+                                            System.out.println("Unable to write file");
                                         }
-                                    } catch (IOException e) {
-                                        System.out.println("Unable to write file");
                                     }
 
+                                    writer.writeUTF("Fail");
+                                    writer.flush();
                                     break;
                                 case 6:
 
@@ -772,24 +769,16 @@ public class ServerMain extends Thread {
                                     switch (answer) {
                                         case "1":
                                             String[] words = reader.readUTF().split(",");
-                                            ArrayList<String> pastWords = ((Tutor) user).getFilterWordList();
-
+                                            ArrayList<String> pastWords = user.getFilterWordList();
                                             Collections.addAll(pastWords, words);
-
-                                            ((Tutor) user).setFilterWordList(pastWords);
-
+                                            user.setFilterWordList(pastWords);
                                             updateCensorWords(user, pastWords);
-
                                             break;
                                         case "2":
-                                            ArrayList<String> filterWordList = ((Tutor) user).getFilterWordList();
-
+                                            ArrayList<String> filterWordList = user.getFilterWordList();
                                             String[] wordList = reader.readUTF().split(",");
-
                                             filterWordList.removeAll(List.of(wordList));
-
-                                            ((Tutor) user).setFilterWordList(filterWordList);
-
+                                            user.setFilterWordList(filterWordList);
                                             updateCensorWords(user, filterWordList);
                                             break;
                                         case "3":
@@ -798,11 +787,11 @@ public class ServerMain extends Thread {
                                     break;
 
                                 case 7:
-                                    String size = String.valueOf(((Tutor) user).getFilterWordList().size());
+                                    String size = String.valueOf(user.getFilterWordList().size());
                                     writer.writeUTF(size);
                                     writer.flush();
 
-                                    for (String word : ((Tutor) user).getFilterWordList()) {
+                                    for (String word : user.getFilterWordList()) {
                                         writer.writeUTF(word);
                                         writer.flush();
                                     }
@@ -891,7 +880,6 @@ public class ServerMain extends Thread {
                             signedIn = false;
                             break;
                     }
-
                     if (deletedAccount) {
                         break;
                     }
@@ -902,7 +890,7 @@ public class ServerMain extends Thread {
         }
     }
 
-    public static void block(ArrayList<String> blockList) throws IOException {
+    public static synchronized void block(ArrayList<String> blockList) throws IOException {
         File blockedUsers = new File("BlockedUsers.txt");
         if (!blockedUsers.exists()) {
             blockedUsers.createNewFile();
@@ -919,39 +907,23 @@ public class ServerMain extends Thread {
 
     public static void printMsg(ArrayList<String> messages, User user, DataOutputStream writer) throws IOException {
         String finalMessage = "";
-        System.out.println(((Student) user).getFilterWordList());
-        System.out.println(((Student) user).getFilterWordList().get(0));
-        System.out.println(((Student) user).getFilterWordList().get(0).equals(""));
 
-        if (user instanceof Student) {
-            for (String message : messages) {
-                if (!((Student) user).getFilterWordList().get(0).equals("")) {
-                    for (String filterWord : ((Student) user).getFilterWordList()) {
-                        finalMessage = finalMessage + message.replaceAll(String.format("(?i)%s", filterWord), ((Student) user).getFilter()) + ";";
-                    }
-                } else {
-                    finalMessage = finalMessage + message + ";";
+        for (String message : messages) {
+            if (!user.getFilterWordList().get(0).equals("")) {
+                for (String filterWord : user.getFilterWordList()) {
+                    message = message.split(":")[0] + ":" + message.split(":")[1].replaceAll(String.format("(?i)%s", filterWord), user.getFilter()) + ";";
                 }
+                finalMessage = finalMessage + message + ";";
+            } else {
+                finalMessage =  finalMessage + message + ";";
             }
-            writer.writeUTF(finalMessage);
-            writer.flush();
-
-        } else {
-            for (String message : messages) {
-                if (!((Tutor) user).getFilterWordList().get(0).equals("")) {
-                    for (String filterWord : ((Tutor) user).getFilterWordList()) {
-                        finalMessage = finalMessage + message.replaceAll(String.format("(?i)%s", filterWord), ((Tutor) user).getFilter()) + ";";
-                    }
-                } else {
-                    finalMessage = finalMessage + message + ";";
-                }
-            }
-            writer.writeUTF(finalMessage);
-            writer.flush();
         }
+        System.out.println(finalMessage);
+        writer.writeUTF(finalMessage);
+        writer.flush();
     }
 
-    public static void updateFile(ArrayList<User> userList, File f) throws IOException {
+    public static synchronized void updateFile(ArrayList<User> userList, File f) throws IOException {
         BufferedReader bfr = new BufferedReader(new FileReader(f));
         String line;
         int count = 0;
@@ -982,7 +954,7 @@ public class ServerMain extends Thread {
         pw.flush();
     }
 
-    public static void updateCensorWords(User user, ArrayList<String> pastWords) {
+    public static synchronized void updateCensorWords(User user, ArrayList<String> pastWords) {
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
             ArrayList<String> lines = new ArrayList<>();
@@ -1006,7 +978,7 @@ public class ServerMain extends Thread {
         }
     }
 
-    public static void setInvisible(ArrayList<String> invisibleList, DataOutputStream writer) throws IOException {
+    public static synchronized void setInvisible(ArrayList<String> invisibleList, DataOutputStream writer) throws IOException {
         try {
             File invisibleUsers = new File("InvisibleUsers.txt");
             if (!invisibleUsers.exists()) {
@@ -1026,7 +998,7 @@ public class ServerMain extends Thread {
         writer.flush();
     }
 
-    public static void unblockUser(ArrayList<String> blockedUserList) {
+    public static synchronized void unblockUser(ArrayList<String> blockedUserList) {
         try {
             File blockedUsers = new File("BlockedUsers.txt");
             if (!blockedUsers.exists()) {
@@ -1043,7 +1015,7 @@ public class ServerMain extends Thread {
         }
     }
 
-    public static void updateCensoredWords(User user, ArrayList<String> pastWords) {
+    public static synchronized void updateCensoredWords(User user, ArrayList<String> pastWords) {
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("UserDetails.txt"));
             ArrayList<String> lines = new ArrayList<>();
@@ -1067,7 +1039,7 @@ public class ServerMain extends Thread {
         }
     }
 
-    public static void export(DataOutputStream writer, DataInputStream reader, Message messageClass, ArrayList<User> userList, User user, int index) throws IOException {
+    public static synchronized void export(DataOutputStream writer, DataInputStream reader, Message messageClass, ArrayList<User> userList, User user, int index) throws IOException {
         try {
             String expFileName = reader.readUTF();
 
@@ -1094,7 +1066,7 @@ public class ServerMain extends Thread {
         }
     }
 
-    public static void importMessage(Message messageClass, ArrayList<User> userList, User user, int index, String ifileName, ArrayList<String> importMessages, DataOutputStream writer) throws IOException {
+    public static synchronized void importMessage(Message messageClass, ArrayList<User> userList, User user, int index, String ifileName, ArrayList<String> importMessages, DataOutputStream writer) throws IOException {
         try {
             BufferedReader bfr = new BufferedReader(new FileReader(ifileName));
 
@@ -1132,47 +1104,34 @@ public class ServerMain extends Thread {
         System.out.println();
     }
 
-    public void readUsers(File f, ArrayList<String> filterList, ArrayList<User> userList) {
+    public synchronized void readUsers(File f, ArrayList<User> userList) {
         try {
             if (!f.exists()) {
                 f.createNewFile();
             }
 
             BufferedReader bfr = new BufferedReader(new FileReader(f));
+            ArrayList<String> filterList;
 
             userList.clear();
             String userLine = bfr.readLine();
             while (userLine != null) {
-                filterList.clear();
+                filterList = new ArrayList<>();
                 String[] splitLines = userLine.split(",");
 
                 User user;
 
                 if (splitLines[5].equals("Student")) {
-//                    System.out.println(splitLines[4].split(";").length);
                     Collections.addAll(filterList, splitLines[4].split(";"));
-//                    System.out.println(filterList);
                     user = new Student(splitLines[0], splitLines[1], splitLines[2], splitLines[3], filterList, UUID.fromString(splitLines[6]));
-//                    System.out.println(((Student) user).getFilterWordList());
                 } else {
-//                    System.out.println(splitLines[6].split(";").length);
                     Collections.addAll(filterList, splitLines[6].split(";"));
                     user = new Tutor(splitLines[0], splitLines[1], splitLines[2], splitLines[3].split(";"), Double.parseDouble(splitLines[4]), splitLines[5], filterList, UUID.fromString(splitLines[8]));
-//                    System.out.println(((Tutor) user).getFilterWordList());
                 }
 
                 userList.add(user);
                 userLine = bfr.readLine();
             }
-
-//            System.out.println(userList.size());
-//            for (User user : userList) {
-//                if (user instanceof Student) {
-//                    System.out.println(((Student) user).getFilterWordList());
-//                } else {
-//                    System.out.println(((Tutor) user).getFilterWordList());
-//                }
-//            }
 
             bfr.close();
         } catch (IOException e) {

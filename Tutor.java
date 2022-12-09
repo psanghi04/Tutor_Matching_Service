@@ -4,27 +4,21 @@ import java.util.UUID;
 public class Tutor extends User {
     private String[] subjects;
     double price;
-    String filter;
-    ArrayList<String> filterWordList;
 
     public Tutor(String accountUsername, String password, String email,
                  String[] subjects, double price, String filter,
                  ArrayList<String> filterWordList) {
-        super(accountUsername, password, email);
+        super(accountUsername, password, email, filter, filterWordList);
         this.subjects = subjects;
         this.price = price;
-        this.filter = filter;
-        this.filterWordList = filterWordList;
     }
 
     public Tutor(String accountUsername, String password, String email,
                  String[] subjects, double price, String filter,
                  ArrayList<String> filterWordList, UUID ID) {
-        super(accountUsername, password, email, ID);
+        super(accountUsername, password, email, ID, filter, filterWordList);
         this.subjects = subjects;
         this.price = price;
-        this.filter = filter;
-        this.filterWordList = filterWordList;
     }
 
     public String[] getSubjects() {
@@ -41,22 +35,6 @@ public class Tutor extends User {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public String getFilter() {
-        return filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
-
-    public ArrayList<String> getFilterWordList() {
-        return filterWordList;
-    }
-
-    public void setFilterWordList(ArrayList<String> filterWordList) {
-        this.filterWordList = filterWordList;
     }
 
     @Override

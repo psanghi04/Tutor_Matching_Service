@@ -263,6 +263,7 @@ public class GUI {
 
         JTextField subField = new JTextField(10);
         JTextField priceField = new JTextField(10);
+
         if (role == 'T') {
             JLabel subPrompt = new JLabel("Subjects Taught:");
             subField.setText("");
@@ -1773,11 +1774,11 @@ public class GUI {
 
     public void changeProfile(String action, String user) {
         JLabel prompt = new JLabel("Enter new " + action);
-        JTextField pass = new JTextField("", 10);
+        JTextField text = new JTextField("", 10);
 
         JPanel promptPanel = new JPanel();
         promptPanel.add(prompt);
-        promptPanel.add(pass);
+        promptPanel.add(text);
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(151, 29));
@@ -1795,7 +1796,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    writer.writeUTF(pass.getText());
+                    writer.writeUTF(text.getText());
                     writer.flush();
 
                     String response = reader.readUTF();
@@ -1960,7 +1961,7 @@ public class GUI {
                 try {
                     writer.writeUTF("5");
                     writer.flush();
-                    changed("Filter", role);
+                    changeProfile("Filter", role);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -2065,6 +2066,7 @@ public class GUI {
                                         try {
                                             writer.writeUTF(answer.getText());
                                             writer.flush();
+                                            changed("Success", role);
                                         } catch (IOException ex) {
                                             throw new RuntimeException(ex);
                                         }
