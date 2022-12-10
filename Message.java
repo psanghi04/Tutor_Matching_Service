@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Message {
-    public boolean isBlocked(User user, User personBlocked) {
+    public synchronized boolean isBlocked(User user, User personBlocked) {
 
         String[] lineArr;
         try (BufferedReader bfr = new BufferedReader(new FileReader("BlockedUsers.txt"))) {
@@ -24,7 +24,7 @@ public class Message {
         return false;
     } // if he is blocked/invisible and correct user
 
-    public boolean isInvisible(User user, User personInvisible) {
+    public synchronized boolean isInvisible(User user, User personInvisible) {
 
         String[] lineArr;
         try (BufferedReader bfr = new BufferedReader(new FileReader("InvisibleUsers.txt"))) {
@@ -43,7 +43,7 @@ public class Message {
         return false;
     }
 
-    public void edit(User user, User otherPerson, String message, String edit) {
+    public synchronized void edit(User user, User otherPerson, String message, String edit) {
         ArrayList<String> conversation = new ArrayList<>();
         try {
             File f = new File(user.getID() + "_" + otherPerson.getID());
@@ -76,7 +76,7 @@ public class Message {
         }
     }
 
-    public void delete(User user, User otherPerson, String messageDeleted) {
+    public synchronized void delete(User user, User otherPerson, String messageDeleted) {
         ArrayList<String> conversation = new ArrayList<>();
         try {
             File f = new File(user.getID() + "_" + otherPerson.getID());
@@ -112,29 +112,7 @@ public class Message {
         return currentTime.toString().substring(0, 19); // returns time with precision as seconds
     }
 
-    // remove
-//    public ArrayList<String> readMsg(String sender, String receiver) {
-//        ArrayList<String> messages = new ArrayList<>();
-//
-//        try (BufferedReader bfr = new BufferedReader(new FileReader(sender + "_" + receiver))) {
-//            String line = bfr.readLine();
-//            while (line != null) {
-//                String message = line.split(",")[1] + ": " + line.split(",")[3];
-//                messages.add(message);
-//                line = bfr.readLine();
-//            }
-//        } catch (FileNotFoundException e) {
-//            System.out.println("Conversation does not exist!");
-//        } catch (IOException e) {
-//            System.out.println("Reading suspended. I/O Exception caught.");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("There was an error. Exception caught.");
-//        }
-//        return messages;
-//    }
-
-    public ArrayList<String> readMsg(User sender, User receiver) {
+    public synchronized ArrayList<String> readMsg(User sender, User receiver) {
         ArrayList<String> messages = new ArrayList<>();
 
         try (BufferedReader bfr = new BufferedReader(new FileReader(sender.getID() + "_" + receiver.getID()))) {
@@ -155,7 +133,7 @@ public class Message {
         return messages;
     }
 
-    public ArrayList<String> readMsg(User sender, User receiver, boolean ex) {
+    public synchronized ArrayList<String> readMsg(User sender, User receiver, boolean ex) {
         ArrayList<String> messages = new ArrayList<>();
 
         try (BufferedReader bfr = new BufferedReader(new FileReader(sender.getID() + "_" + receiver.getID()))) {
@@ -175,54 +153,7 @@ public class Message {
         return messages;
     }
 
-    // remove
-//    public ArrayList<String> readMsg(String sender, String receiver, boolean ex) {
-//        ArrayList<String> messages = new ArrayList<>();
-//
-//        try (BufferedReader bfr = new BufferedReader(new FileReader(sender + "_" + receiver))) {
-//            String line = bfr.readLine();
-//            while (line != null) {
-//                messages.add(line);
-//                line = bfr.readLine();
-//            }
-//        } catch (FileNotFoundException e) {
-//            System.out.println("Conversation does not exist!");
-//        } catch (IOException e) {
-//            System.out.println("Reading suspended. I/O Exception caught.");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("There was an error. Exception caught.");
-//        }
-//        return messages;
-//    }
-
-    // remove
-//    public void writeMsg(String sender, String receiver, String content) {
-//
-//        try {
-//            File f = new File(sender + "_" + receiver);
-//            if(f.exists()){
-//                f.createNewFile();
-//            }
-//
-//            BufferedWriter bfw = new BufferedWriter(new FileWriter(f, true));
-//
-//            String line = "%s;%s,%s,%s,%s";
-//            bfw.write(String.format(
-//                    line,
-//                    sender,
-//                    receiver,
-//                    sender,
-//                    this.getTime(),
-//                    content));
-//            bfw.newLine();
-//            bfw.flush();
-//        } catch (Exception e) {
-//            System.out.println("Writing suspended. Exception caught");
-//        }
-//    }
-
-    public void writeMsg(User sender, User receiver, String content) {
+    public synchronized void writeMsg(User sender, User receiver, String content) {
 
         try {
             File f = new File(sender.getID() + "_" + receiver.getID());
@@ -247,30 +178,7 @@ public class Message {
         }
     }
 
-    // remove
-//    public void export(String sender, String receiver) {
-//        ArrayList<String> messages = readMsg(sender, receiver, true);
-//        String fileName = receiver + "_" + sender;
-//        File f = new File(fileName);
-//
-//        try{
-//            if(!f.exists()){
-//                f.createNewFile();
-//            }
-//
-//            BufferedWriter bfw = new BufferedWriter(new FileWriter(f));
-//
-//            for (String msg : messages) {
-//                bfw.write(msg);
-//                bfw.newLine();
-//                bfw.flush();
-//            }
-//        } catch (IOException e){
-//            System.out.println("Error!");
-//        }
-//    }
-
-    public void export(User sender, User receiver) {
+    public synchronized void export(User sender, User receiver) {
         ArrayList<String> messages = readMsg(sender, receiver, true);
         String fileName = receiver.getID() + "_" + sender.getID();
         File f = new File(fileName);

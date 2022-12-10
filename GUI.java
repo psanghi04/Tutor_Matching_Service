@@ -474,7 +474,8 @@ public class GUI {
                                             cl.show(content, "Student Menu");
                                         }
                                     });
-                                } else if (response.contains("Unable")) {
+                                }
+                                else if (response.contains("Unable")) {
                                     JLabel noUser = new JLabel(response);
                                     noUser.setHorizontalAlignment(SwingConstants.CENTER);
                                     noUser.setVerticalAlignment(SwingConstants.CENTER);
@@ -500,7 +501,8 @@ public class GUI {
                                             cl.show(content, "Student Menu");
                                         }
                                     });
-                                } else {
+                                }
+                                else {
                                     JMenuItem readMsg = new JMenuItem("Read message");
                                     JMenuItem writeMsg = new JMenuItem("Write message");
                                     JMenuItem deleteMsg = new JMenuItem("Delete message");
@@ -570,7 +572,16 @@ public class GUI {
                                                     okButton.addActionListener(new ActionListener() {
                                                         @Override
                                                         public void actionPerformed(ActionEvent e) {
-                                                            cl.show(content, "Student Message Menu");
+                                                            try {
+                                                                String response = reader.readUTF();
+                                                                if (response.equals("QUIT")) {
+                                                                    cl.show(content, "Student Menu");
+                                                                } else {
+                                                                    cl.show(content, "Student Message Menu");
+                                                                }
+                                                            } catch (IOException ex) {
+                                                                throw new RuntimeException(ex);
+                                                            }
                                                         }
                                                     });
                                                 }
@@ -819,7 +830,16 @@ public class GUI {
                                                                 okButton.addActionListener(new ActionListener() {
                                                                     @Override
                                                                     public void actionPerformed(ActionEvent e) {
-                                                                        cl.show(content, "Student Message Menu");
+                                                                        try {
+                                                                            String response = reader.readUTF();
+                                                                            if (response.equals("QUIT")) {
+                                                                                cl.show(content, "Student Menu");
+                                                                            } else {
+                                                                                cl.show(content, "Student Message Menu");
+                                                                            }
+                                                                        } catch (IOException ex) {
+                                                                            throw new RuntimeException(ex);
+                                                                        }
                                                                     }
                                                                 });
                                                             }
@@ -945,6 +965,7 @@ public class GUI {
                                                 writer.flush();
 
                                                 cl.show(content, "Student Menu");
+                                                reader.readUTF();
                                             } catch (Exception ex) {
                                                 ex.printStackTrace();
                                             }
@@ -1150,7 +1171,6 @@ public class GUI {
                                         }
                                     });
                                 } else {
-                                    System.out.println(response);
                                     JMenuItem readMsg = new JMenuItem("Read message");
                                     JMenuItem writeMsg = new JMenuItem("Write message");
                                     JMenuItem deleteMsg = new JMenuItem("Delete message");
@@ -1221,7 +1241,16 @@ public class GUI {
                                                     okButton.addActionListener(new ActionListener() {
                                                         @Override
                                                         public void actionPerformed(ActionEvent e) {
-                                                            cl.show(content, "Tutor Message Menu");
+                                                            try {
+                                                                String response = reader.readUTF();
+                                                                if (response.equals("QUIT")) {
+                                                                    cl.show(content, "Tutor Menu");
+                                                                } else {
+                                                                    cl.show(content, "Tutor Message Menu");
+                                                                }
+                                                            } catch (IOException ex) {
+                                                                throw new RuntimeException(ex);
+                                                            }
                                                         }
                                                     });
                                                 }
@@ -1471,7 +1500,16 @@ public class GUI {
                                                                     okButton.addActionListener(new ActionListener() {
                                                                         @Override
                                                                         public void actionPerformed(ActionEvent e) {
-                                                                            cl.show(content, "Tutor Message Menu");
+                                                                            try {
+                                                                                String response = reader.readUTF();
+                                                                                if (response.equals("QUIT")) {
+                                                                                    cl.show(content, "Tutor Menu");
+                                                                                } else {
+                                                                                    cl.show(content, "Tutor Message Menu");
+                                                                                }
+                                                                            } catch (IOException ex) {
+                                                                                throw new RuntimeException(ex);
+                                                                            }
                                                                         }
                                                                     });
                                                                 }
@@ -1600,6 +1638,7 @@ public class GUI {
                                                 writer.flush();
 
                                                 cl.show(content, "Tutor Menu");
+                                                reader.readUTF();
                                             } catch (Exception ex) {
                                                 ex.printStackTrace();
                                             }
@@ -1863,6 +1902,7 @@ public class GUI {
                     writer.flush();
 
                     String response = reader.readUTF();
+                    System.out.println(response);
                     if (response.contains("Cannot")) {
                         changedVisibility(response, "Block yourself", role);
                     } else if (response.contains("not")) {
@@ -2234,7 +2274,16 @@ public class GUI {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cl.show(content, role + " Message Menu");
+                try {
+                    String response = reader.readUTF();
+                    if (response.equals("QUIT")) {
+                        cl.show(content, role + " Menu");
+                    } else {
+                        cl.show(content, role + " Message Menu");
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }
@@ -2260,7 +2309,16 @@ public class GUI {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cl.show(content, role + " Message Menu");
+                try {
+                    String response = reader.readUTF();
+                    if (response.equals("QUIT")) {
+                        cl.show(content, role + " Menu");
+                    } else {
+                        cl.show(content, role + " Message Menu");
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }

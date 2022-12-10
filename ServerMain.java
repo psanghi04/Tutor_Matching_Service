@@ -261,6 +261,14 @@ public class ServerMain extends Thread {
                                 int optionMessage = Integer.parseInt(reader.readUTF());
                                 quit = messageMenu(optionMessage, writer, reader,
                                         messageClass, user, userList, index, quit);
+                                if (messageClass.isBlocked(user, userList.get(index)) ||
+                                        messageClass.isInvisible(user, userList.get(index))) {
+                                    writer.writeUTF("QUIT");
+                                    writer.flush();
+                                    break;
+                                }
+                                writer.writeUTF("CONTINUE");
+                                writer.flush();
                             }
 
                             break;
@@ -613,6 +621,14 @@ public class ServerMain extends Thread {
                                 int optionMessage = Integer.parseInt(reader.readUTF());
                                 quit = messageMenu(optionMessage, writer, reader,
                                         messageClass, user, userList, index, quit);
+                                if (messageClass.isBlocked(user, userList.get(index)) ||
+                                        messageClass.isInvisible(user, userList.get(index))) {
+                                    writer.writeUTF("QUIT");
+                                    writer.flush();
+                                    break;
+                                }
+                                writer.writeUTF("CONTINUE");
+                                writer.flush();
                             }
 
 
