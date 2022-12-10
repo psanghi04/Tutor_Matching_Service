@@ -8,7 +8,7 @@ public class ServerMain extends Thread {
     Socket client;
     ServerSocket serverSocket;
 
-    static Object obj;
+    static Object obj = new Object();
 
     public ServerMain(Socket client, ServerSocket socket) {
         this.client = client;
@@ -1097,8 +1097,13 @@ public class ServerMain extends Thread {
 
     public static void availability(ArrayList<User> userList, DataOutputStream writer) throws IOException {
         writer.writeUTF(String.valueOf(userList.size()));
+        writer.flush();
         for (int i = 0; i < userList.size(); i++) {
-            writer.writeUTF(userList.get(i).getAccountUsername());
+            if (userList.get(i) instanceof Student) {
+                writer.writeUTF(userList.get(i).getAccountUsername());
+            } else {
+                writer.writeUTF(String.format("%s | %s | %s)",userList.get(i).getAccountUsername(), Arrays.toString(((Tutor) userList.get(i)).getSubjects()), ((Tutor) userList.get(i)).getPrice()));
+            }
         }
         writer.flush();
         System.out.println();

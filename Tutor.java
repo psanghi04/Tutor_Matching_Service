@@ -25,16 +25,12 @@ public class Tutor extends User {
         return subjects;
     }
 
-    public void setSubjects(String[] subjects) {
-        this.subjects = subjects;
-    }
-
     public double price() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public double getPrice() {
+        return price;
     }
 
     @Override
