@@ -923,10 +923,12 @@ public class ServerMain extends Thread {
 
     public static void printMsg(ArrayList<String> messages, User user, DataOutputStream writer) throws IOException {
         String finalMessage = "";
+        ArrayList<String> filterWordList = new ArrayList<>(user.getFilterWordList());
+        filterWordList.remove(0);
 
         for (String message : messages) {
-            if (!user.getFilterWordList().get(0).equals("")) {
-                for (String filterWord : user.getFilterWordList()) {
+            if (!(filterWordList.size() == 0)) {
+                for (String filterWord : filterWordList) {
                     message = message.split(":")[0] + ":" + message.split(":")[1].replaceAll(String.format("(?i)%s", filterWord), user.getFilter()) + ";";
                 }
                 finalMessage = finalMessage + message + ";";
@@ -934,7 +936,6 @@ public class ServerMain extends Thread {
                 finalMessage =  finalMessage + message + ";";
             }
         }
-        System.out.println(finalMessage);
         writer.writeUTF(finalMessage);
         writer.flush();
     }
