@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 
@@ -10,7 +12,10 @@ public class ClientMain {
             GUI gui = new GUI(reader, writer);
             gui.createInterface();
         } catch (Exception e) {
-            System.out.println("Couldn't connect");
+            JPanel errorPanel = new JPanel();
+            JLabel error = new JLabel("Couldn't connect");
+            errorPanel.add(error);
+            errorPanel.setVisible(true);
         }
     }
 }

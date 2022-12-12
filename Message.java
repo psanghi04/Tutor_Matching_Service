@@ -71,9 +71,7 @@ public class Message {
             }
             bfr.close();
             bfw.close();
-        } catch (IOException e) {
-            System.out.println("This chat does not exist");
-        }
+        } catch (IOException e) {}
     }
 
     public synchronized void delete(User user, User otherPerson, String messageDeleted) {
@@ -102,9 +100,7 @@ public class Message {
                 bfw.write(conversation.get(i) + "\n");
             }
             bfw.close();
-        } catch (IOException e) {
-            System.out.println("This chat does not exist");
-        }
+        } catch (IOException e) {}
     }
 
     public String getTime() {
@@ -123,12 +119,9 @@ public class Message {
                 line = bfr.readLine();
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Conversation does not exist!");
         } catch (IOException e) {
-            System.out.println("Reading suspended. I/O Exception caught.");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("There was an error. Exception caught.");
         }
         return messages;
     }
@@ -143,12 +136,9 @@ public class Message {
                 line = bfr.readLine();
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Conversation does not exist!");
         } catch (IOException e) {
-            System.out.println("Reading suspended. I/O Exception caught.");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("There was an error. Exception caught.");
         }
         return messages;
     }
@@ -173,9 +163,7 @@ public class Message {
                     content));
             bfw.newLine();
             bfw.flush();
-        } catch (Exception e) {
-            System.out.println("Writing suspended. Exception caught");
-        }
+        } catch (Exception e) {}
     }
 
     public synchronized void export(User sender, User receiver) {
@@ -195,9 +183,7 @@ public class Message {
                 bfw.newLine();
                 bfw.flush();
             }
-        } catch (IOException e) {
-            System.out.println("Error!");
-        }
+        } catch (IOException e) {}
     }
 
 }

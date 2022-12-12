@@ -56,9 +56,7 @@ public class GUI {
                 try {
                     writer.writeUTF("1");
                     writer.flush();
-                } catch (Exception ex) {
-                    System.out.println("error");
-                }
+                } catch (Exception ex) {}
 
                 frame.setTitle("Messenger");
                 JPanel buttonPanel = new JPanel();
@@ -93,9 +91,7 @@ public class GUI {
                             writer.writeUTF("1");
                             writer.flush();
 
-                        } catch (IOException ex) {
-                            System.out.println("error");
-                        }
+                        } catch (IOException ex) {}
                         createPage('S');
                     }
                 });
@@ -105,9 +101,7 @@ public class GUI {
                         try {
                             writer.writeUTF("2");
                             writer.flush();
-                        } catch (IOException ex) {
-                            System.out.println("error");
-                        }
+                        } catch (IOException ex) {}
                         createPage('T');
                     }
                 });
@@ -120,9 +114,7 @@ public class GUI {
                 try {
                     writer.writeUTF("2");
                     writer.flush();
-                } catch (IOException ex) {
-                    System.out.println("error");
-                }
+                } catch (IOException ex) {}
 
                 frame.setTitle("Messenger");
                 JPanel usernamePanel = new JPanel();
@@ -223,9 +215,7 @@ public class GUI {
                                     }
                                 });
                             }
-                        } catch (IOException ex) {
-                            System.out.println("error");
-                        }
+                        } catch (IOException ex) {}
                     }
                 });
             }
@@ -1902,7 +1892,6 @@ public class GUI {
                     writer.flush();
 
                     String response = reader.readUTF();
-                    System.out.println(response);
                     if (response.contains("Cannot")) {
                         changedVisibility(response, "Block yourself", role);
                     } else if (response.contains("not")) {

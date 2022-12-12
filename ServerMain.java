@@ -102,7 +102,6 @@ public class ServerMain extends Thread {
                                     writer.writeUTF("Success");
                                     writer.flush();
                                 } catch (IOException e) {
-                                    System.out.println("Unable to write file");
                                 }
                             } else {
                                 writer.writeUTF("Sorry");
@@ -125,7 +124,6 @@ public class ServerMain extends Thread {
                                     pw.write(userName + "," + password + "," + email + "," + String.join(";", newSubjects) + "," + price + "," + "****,," + user + "," + user.getID() + "\n");
                                     pw.flush();
                                 } catch (IOException e) {
-                                    System.out.println("Unable to write file");
                                 }
                             } else {
                                 writer.writeUTF("Sorry");
@@ -387,7 +385,6 @@ public class ServerMain extends Thread {
                                     try {
                                         updateFile(userList, f);
                                     } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
 
                                     break;
@@ -418,7 +415,6 @@ public class ServerMain extends Thread {
                                             writer.flush();
                                             break;
                                         } catch (IOException e) {
-                                            System.out.println("Unable to write file");
                                         }
                                     }
                                     writer.writeUTF("Fail");
@@ -748,7 +744,6 @@ public class ServerMain extends Thread {
                                     try {
                                         updateFile(userList, f);
                                     } catch (IOException e) {
-                                        System.out.println("Can't write to the file!");
                                     }
 
                                     break;
@@ -779,7 +774,6 @@ public class ServerMain extends Thread {
                                             writer.flush();
                                             break;
                                         } catch (IOException e) {
-                                            System.out.println("Unable to write file");
                                         }
                                     }
 
@@ -909,7 +903,6 @@ public class ServerMain extends Thread {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Socket Closed");
         }
     }
 
@@ -998,7 +991,6 @@ public class ServerMain extends Thread {
                 pw.flush();
             }
         } catch (IOException e) {
-            System.out.println("Unable to write file");
         }
     }
 
@@ -1059,7 +1051,6 @@ public class ServerMain extends Thread {
                 pw.flush();
             }
         } catch (IOException e) {
-            System.out.println("Unable to write file");
         }
     }
 
@@ -1130,7 +1121,6 @@ public class ServerMain extends Thread {
             }
         }
         writer.flush();
-        System.out.println();
     }
 
     public synchronized void readUsers(File f, ArrayList<User> userList) {
@@ -1164,7 +1154,6 @@ public class ServerMain extends Thread {
 
             bfr.close();
         } catch (IOException e) {
-            System.out.println("Cannot read file!");
         }
     }
 
@@ -1335,7 +1324,6 @@ public class ServerMain extends Thread {
                 (new ServerMain(socket, serverSocket)).start();
             }
         } catch (Exception e) {
-            System.out.println("Couldn't Connect");
         }
     }
 }
