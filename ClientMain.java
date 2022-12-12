@@ -12,10 +12,14 @@ public class ClientMain {
             GUI gui = new GUI(reader, writer);
             gui.createInterface();
         } catch (Exception e) {
+            JFrame frame = new JFrame();
             JPanel errorPanel = new JPanel();
             JLabel error = new JLabel("Couldn't connect");
             errorPanel.add(error);
-            errorPanel.setVisible(true);
+            frame.add(errorPanel);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(317, 150);
+            frame.setVisible(true);
         }
     }
 }
