@@ -1126,7 +1126,7 @@ public class ServerMain extends Thread {
             if (userList.get(i) instanceof Student) {
                 writer.writeUTF(userList.get(i).getAccountUsername());
             } else {
-                writer.writeUTF(String.format("%s | %s | %s)",userList.get(i).getAccountUsername(), Arrays.toString(((Tutor) userList.get(i)).getSubjects()), ((Tutor) userList.get(i)).getPrice()));
+                writer.writeUTF(String.format("%s | %s | %s",userList.get(i).getAccountUsername(), Arrays.toString(((Tutor) userList.get(i)).getSubjects()), ((Tutor) userList.get(i)).getPrice()));
             }
         }
         writer.flush();
