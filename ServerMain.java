@@ -228,10 +228,12 @@ public class ServerMain extends Thread {
                                     User checkBlock = userList.get(i);
 
                                     if (messageClass.isBlocked(user, checkBlock)) {
+                                        index = -1;
                                         break;
                                     }
 
                                     if (messageClass.isInvisible(user, checkBlock)) {
+                                        index = -1;
                                         break;
                                     }
 
@@ -581,6 +583,9 @@ public class ServerMain extends Thread {
                                 writer.writeUTF("0");
                                 writer.flush();
                                 break;
+                            } else {
+                                writer.writeUTF("1");
+                                writer.flush();
                             }
 
                             for (int i = 0; i < userList.size(); i++) {
@@ -589,10 +594,12 @@ public class ServerMain extends Thread {
                                     User checkBlock = userList.get(i);
 
                                     if (messageClass.isBlocked(user, checkBlock)) {
+                                        index = -1;
                                         break;
                                     }
 
                                     if (messageClass.isInvisible(user, checkBlock)) {
+                                        index = -1;
                                         break;
                                     }
 
